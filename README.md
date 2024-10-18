@@ -1,70 +1,115 @@
-# Getting Started with Create React App
+# AiiDA-WorkGraph
+[![PyPI version](https://badge.fury.io/py/aiida-workgraph.svg)](https://badge.fury.io/py/aiida-workgraph)
+[![Unit test](https://github.com/aiidateam/aiida-workgraph/actions/workflows/ci.yaml/badge.svg)](https://github.com/aiidateam/aiida-workgraph/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/superstar54/aiida-workgraph/branch/main/graph/badge.svg)](https://codecov.io/gh/superstar54/aiida-workgraph)
+[![Docs status](https://readthedocs.org/projects/aiida-workgraph/badge)](http://aiida-workgraph.readthedocs.io/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Efficiently design and manage flexible workflows with AiiDA, featuring an interactive GUI, checkpoints, provenance tracking, error-resistant, and remote execution capabilities.
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```console
+    pip install aiida-workgraph[widget]
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To install the latest version from source, first clone the repository and then install using `pip`:
 
-### `npm test`
+```console
+git clone https://github.com/aiidateam/aiida-workgraph
+cd aiida-workgraph
+pip install -e .
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To install the jupyter widget support you need to in addition build the JavaScript packages:
 
-### `npm run build`
+```console
+pip install .[widget]
+# build widget
+cd aiida_workgraph/widget/
+npm install
+npm run build
+# build web frontend
+cd ../../aiida_workgraph/web/frontend/
+npm install
+npm run build
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Documentation
+Explore the comprehensive [documentation](https://aiida-workgraph.readthedocs.io/en/latest/) to discover all the features and capabilities of AiiDA Workgraph.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Demo
+Visit the [Workgraph Collections repository](https://github.com/superstar54/workgraph-collections) to see demonstrations of how to utilize AiiDA Workgraph for different computational codes.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Examples
+Suppose we want to calculate ```(x + y) * z ``` in two steps. First, add `x` and `y`, then multiply the result with `z`.
 
-### `npm run eject`
+```python
+from aiida_workgraph import WorkGraph, task
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# define add task
+@task.calcfunction
+def add(x, y):
+    return x + y
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# define multiply task
+@task.calcfunction
+def multiply(x, y):
+    return x*y
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Create a workgraph to link the tasks.
+wg = WorkGraph("test_add_multiply")
+wg.add_task(add, name="add1")
+wg.add_task(multiply, name="multiply1")
+wg.add_link(wg.tasks["add1"].outputs["result"], wg.tasks["multiply1"].inputs["x"])
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
 
-## Learn More
+Prepare inputs and submit the workflow:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```python
+from aiida import load_profile
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+load_profile()
 
-### Code Splitting
+wg.submit(inputs = {"add1": {"x": 2, "y": 3}, "multiply1": {"y": 4}}, wait=True)
+print("Result of multiply1 is", wg.tasks["multiply1"].outputs[0].value)
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Start the web app, open a terminal and run:
+```console
+workgraph web start
+```
 
-### Analyzing the Bundle Size
+Then visit the page http://127.0.0.1:8000/workgraph, you should find a `first_workflow` WorkGraph, click the pk and view the WorkGraph.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<img src="docs/source/_static/images/first-workflow.png" />
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+One can also generate the node graph from the process:
+```console
+verdi node generate pk
+```
 
-### Advanced Configuration
+<img src="docs/source/_static/images/add_multiply.png"/>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+## Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Pre-commit and Tests
+To contribute to this repository, please enable pre-commit so the code in commits are conform to the standards.
+```console
+pip install -e .[tests,pre-commit]
+pre-commit install
+```
 
-### `npm run build` fails to minify
+### Widget
+See the [README.md](https://github.com/aiidateam/aiida-workgraph/blob/main/aiida_workgraph/widget/README.md)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Web app
+See the [README.md](https://github.com/aiidateam/aiida-workgraph/blob/main/aiida_workgraph/web/README.md)
+
+
+## License
+[MIT](http://opensource.org/licenses/MIT)
