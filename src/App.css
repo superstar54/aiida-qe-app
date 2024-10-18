@@ -42,7 +42,6 @@ button {
   cursor: pointer;
 }
 
-/* App.css */
 .container {
   max-width: 800px;
   margin: auto;
@@ -51,4 +50,28 @@ button {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+}
+
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.0rem;
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.2rem;
+  margin-right: 15px;
+  padding: 10px 15px;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffdd57; /* Change link color on hover */
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.1);
 }

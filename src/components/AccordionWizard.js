@@ -10,6 +10,9 @@ const AccordionWizard = () => {
     { title: 'Review and Submit', confirmed: false }
   ]);
 
+  // Track which step is currently open (step 1 by default)
+  const [activeStep, setActiveStep] = useState("0"); // String type required for activeKey
+
   // Tab content for each step
   const tabsContent = {
     step1: [
@@ -36,10 +39,15 @@ const AccordionWizard = () => {
       updatedSteps[stepIndex].confirmed = true;
       return updatedSteps;
     });
+
+    // Automatically close the current step and open the next one
+    if (stepIndex < steps.length - 1) {
+      setActiveStep((stepIndex + 1).toString());  // Open the next step
+    }
   };
 
   return (
-    <Accordion defaultActiveKey="0">
+    <Accordion activeKey={activeStep}>
       {steps.map((step, index) => (
         <AccordionStep
           key={index}
