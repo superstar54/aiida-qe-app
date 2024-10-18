@@ -1,8 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const DaemonControl = ({ workers, handleDaemonControl, adjustWorkers }) => {
+function Settings() {
+  const [workers, setWorkers] = useState([]);
+
+  const fetchWorkers = () => {
+    fetch('http://localhost:8000/api/daemon/worker')
+      .then(response => response.json())
+      .then(data => setWorkers(Object.values(data)))
+      .catch(error => console.error('Failed to fetch workers:', error));
+  };
+
+  useEffect(() => {
+    fetchWorkers();
+    const interval = setInterval(fetchWorkers, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
+
+  const handleDaemonControl = (action) => {
+    fetch(`http://localhost:8000/api/daemon/${action}`, { method: 'POST' })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Daemon operation failed: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        toast.success(`Daemon ${action}ed successfully`);
+        fetchWorkers();
+      })
+      .catch(error => toast.error(error.message));
+  };
+
+  const adjustWorkers = (action) => {
+    fetch(`http://localhost:8000/api/daemon/${action}`, { method: 'POST' })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to ${action} workers: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        toast.success(`Workers ${action}ed successfully`);
+        fetchWorkers(); // Refetch workers after adjusting
+      })
+      .catch(error => toast.error(error.message));
+  };
+
   return (
     <div>
       <h2>Daemon Control</h2>
@@ -33,6 +78,6 @@ const DaemonControl = ({ workers, handleDaemonControl, adjustWorkers }) => {
       <button className="button button-adjust" onClick={() => adjustWorkers('decrease')}>Decrease Workers</button>
     </div>
   );
-};
+}
 
-export default DaemonControl;
+export default Settings;

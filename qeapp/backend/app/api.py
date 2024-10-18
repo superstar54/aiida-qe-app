@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from aiida.manage import manager
-from aiida_workgraph.web.backend.app.daemon import router as daemon_router
-from aiida_workgraph.web.backend.app.workgraph import router as workgraph_router
-from aiida_workgraph.web.backend.app.datanode import router as datanode_router
+from qeapp.backend.app.daemon import router as daemon_router
+from qeapp.backend.app.computer import router as computer_router
+from qeapp.backend.app.code import router as code_router
+from qeapp.backend.app.submit import router as submit_router
+from qeapp.backend.app.workgraph import router as workgraph_router
+from qeapp.backend.app.datanode import router as datanode_router
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import os
@@ -18,17 +21,17 @@ from pydantic_settings import BaseSettings
 class BackendSettings(BaseSettings):
     """
     Settings can be set by setting the environment variables in upper case.
-    For example for setting `aiida_workgraph_gui_profile` one has to export
-    the evironment variable `AIIDA_WORKGRAPH_GUI_PROFILE`.
+    For example for setting `qeapp_gui_profile` one has to export
+    the evironment variable `qeapp_GUI_PROFILE`.
     """
 
-    aiida_workgraph_gui_profile: str = ""  # if empty aiida uses default profile
+    qeapp_gui_profile: str = ""  # if empty aiida uses default profile
 
 
 backend_settings = BackendSettings()
 
 app = FastAPI()
-manager.get_manager().load_profile(backend_settings.aiida_workgraph_gui_profile)
+manager.get_manager().load_profile(backend_settings.qeapp_gui_profile)
 
 app.add_middleware(
     CORSMiddleware,
@@ -47,6 +50,9 @@ async def read_root() -> dict:
 app.include_router(workgraph_router)
 app.include_router(datanode_router)
 app.include_router(daemon_router)
+app.include_router(computer_router)
+app.include_router(code_router)
+app.include_router(submit_router)
 
 
 @app.get("/debug")

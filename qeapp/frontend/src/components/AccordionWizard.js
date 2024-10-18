@@ -11,7 +11,7 @@ import ReviewAndSubmit from './ReviewAndSubmit';
 const initialStepsData = [
   {
     title: 'Select Structure',
-    "tabs": [
+    tabs: [
       {
         "title": "Structure Selection", 
         "content": <StructureSelection />
