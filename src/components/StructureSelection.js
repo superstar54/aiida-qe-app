@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, Tab, Form, Button } from 'react-bootstrap';
 import StructureViewer from './StructureViewer';
 import { parseXYZ, parseCIF, parseCube } from 'weas';
 
-const StructureSelection = () => {
-  const [selectedStructure, setSelectedStructure] = useState(null);
+const StructureSelection = ({ data = {}, onDataChange }) => {
+  const handleChange = (field, value) => {
+    const newData = { ...data, [field]: value };
+    onDataChange(newData);
+  };
 
   // Function to handle file upload
   const handleFileUpload = (event) => {
@@ -29,9 +32,9 @@ const StructureSelection = () => {
           return;
         }
 
-        // Set parsed structure
+        // Update data with parsed structure
         console.log("parsedStructure: ", parsedStructure);
-        setSelectedStructure(parsedStructure);
+        handleChange('selectedStructure', parsedStructure);
       };
 
       // Read file as text
@@ -40,15 +43,21 @@ const StructureSelection = () => {
   };
 
   const handleOptimadeSelect = () => {
-    setSelectedStructure("Structure from OPTIMADE");
+    // Implement logic to select a structure from OPTIMADE
+    const optimadeStructure = "Structure from OPTIMADE";
+    handleChange('selectedStructure', optimadeStructure);
   };
 
   const handleAiiDaSelect = () => {
-    setSelectedStructure("Structure from AiiDA database");
+    // Implement logic to select a structure from AiiDA database
+    const aiidaStructure = "Structure from AiiDA database";
+    handleChange('selectedStructure', aiidaStructure);
   };
 
   const handleExampleSelect = () => {
-    setSelectedStructure("Structure from example");
+    // Implement logic to select a structure from examples
+    const exampleStructure = "Structure from example";
+    handleChange('selectedStructure', exampleStructure);
   };
 
   return (
@@ -80,9 +89,8 @@ const StructureSelection = () => {
         </Tab>
       </Tabs>
 
-
       {/* Structure Viewer Section */}
-      <StructureViewer structure={selectedStructure} />
+      <StructureViewer structure={data.selectedStructure} />
     </div>
   );
 };

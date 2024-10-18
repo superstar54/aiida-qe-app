@@ -66,12 +66,8 @@ const AccordionWizard = () => {
     setSteps((prevSteps) => {
       const updatedSteps = [...prevSteps];
       updatedSteps[stepIndex].confirmed = true;
-      
-      // Pass the data to the next step if applicable
-      if (stepIndex < updatedSteps.length - 1) {
-        const currentData = updatedSteps[stepIndex].data;
-        updatedSteps[stepIndex + 1].data = { ...updatedSteps[stepIndex + 1].data, ...currentData };
-      }
+      console.log("index", stepIndex);
+      console.log('Confirmed Steps:', updatedSteps);
 
       return updatedSteps;
     });
@@ -108,11 +104,11 @@ const AccordionWizard = () => {
           tabs={step.tabs}
           confirmed={step.confirmed}
           modified={step.modified}
-          stepData={step.data} // Pass the step's data to AccordionStep
-          onDataChange={(newData) => handleDataChange(index, newData)} // Handle data change for the current step
-          onConfirm={() => handleConfirm(index)}  // Confirm step and pass data to next step
-          onModify={() => handleModify(index)}    // Allow modification of previous steps
-          disabled={index > 0 && !steps[index - 1].confirmed}  // Disable a step if the previous one isn't confirmed
+          allStepsData={steps}
+          onDataChange={(newData) => handleDataChange(index, newData)}
+          onConfirm={() => handleConfirm(index)}
+          onModify={() => handleModify(index)}
+          disabled={index > 0 && !steps[index - 1].confirmed}
         />
       ))}
     </Accordion>

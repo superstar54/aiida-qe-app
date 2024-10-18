@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import * as yaml from 'js-yaml';
 
-const ReviewAndSubmit = ({ stepData = [] }) => {
+const ReviewAndSubmit = ({ allStepsData = []}) => {
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  console.log('All Steps Data:', allStepsData);
 
   // Function to handle editing data
   const handleEdit = () => {
     setIsEditing(true);
-    const accumulatedData = Array.isArray(stepData)
-      ? stepData.reduce((acc, step) => {
+    const accumulatedData = Array.isArray(allStepsData)
+      ? allStepsData.reduce((acc, step) => {
+          if (step.title === 'Select Structure') return acc;
           acc[step.title] = step.data; // Accumulate step data
           return acc;
         }, {})
@@ -47,7 +50,9 @@ const ReviewAndSubmit = ({ stepData = [] }) => {
         </div>
       ) : (
         <div>
-          <pre>{yaml.dump(Array.isArray(stepData) ? stepData.reduce((acc, step) => {
+          <pre>{yaml.dump(Array.isArray(allStepsData) ? allStepsData.reduce((acc, step) => {
+            // skip if the title is "Select Structure"
+            if (step.title === 'Select Structure') return acc;
             acc[step.title] = step.data;
             return acc;
           }, {}) : {})}</pre>

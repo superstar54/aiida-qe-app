@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
+import { Tab, Tabs } from 'react-bootstrap';
 
-const Tabs = ({ tabs }) => {
-  const [activeTab, setActiveTab] = useState(0);
+const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
+  const [key, setKey] = useState(tabs[0].title);
 
   return (
-    <div>
-      <ul className="tabs">
-        {tabs.map((tab, index) => (
-          <li key={index} className={activeTab === index ? 'active' : ''} onClick={() => setActiveTab(index)}>
-            {tab.title}
-          </li>
-        ))}
-      </ul>
-      <div className="tab-content">
-        {tabs[activeTab].content}
-      </div>
-    </div>
+    <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
+      {tabs.map((tab, index) => (
+        <Tab eventKey={tab.title} title={tab.title} key={index}>
+          {React.cloneElement(tab.content, {
+            data: stepData[tab.title] || {},
+            onDataChange: (newData) => {
+              onDataChange({ ...stepData, [tab.title]: newData });
+            },
+            allStepsData,  // Full steps data
+          })}
+        </Tab>
+      ))}
+    </Tabs>
   );
 };
 
-export default Tabs;
+export default WizardTabs;

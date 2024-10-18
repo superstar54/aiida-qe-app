@@ -1,38 +1,14 @@
-import React, { useState } from 'react';
-import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 
-const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
-  // State for codes, nodes, and CPUs
-  const [pwXCode, setPwXCode] = useState('pw-7.2@localhost');
-  const [projwfcXCode, setProjwfcXCode] = useState('projwfc-7.2@localhost');
-  const [pwXNodes, setPwXNodes] = useState(1);
-  const [pwXCPUs, setPwXCPUs] = useState(1);
-  const [projwfcXNodes, setProjwfcXNodes] = useState(1);
-  const [projwfcXCPUs, setProjwfcXCPUs] = useState(1);
-
-  // State for labeling the job
-  const [label, setLabel] = useState('');
-  const [description, setDescription] = useState('');
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const resourceData = {
-      pwXCode,
-      projwfcXCode,
-      pwXNodes,
-      pwXCPUs,
-      projwfcXNodes,
-      projwfcXCPUs,
-      label,
-      description
-    };
-    onDataChange(resourceData); // Send data back to the wizard
-    onSubmit(); // Confirm and move to the next step
+const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
+  const handleChange = (field, value) => {
+    const newData = { ...data, [field]: value };
+    onDataChange(newData);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       {/* Code Selection Section */}
       <h4>Codes</h4>
       <Form.Group as={Row} className="mb-3">
@@ -40,8 +16,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
         <Col sm={4}>
           <Form.Control
             as="select"
-            value={pwXCode}
-            onChange={(e) => setPwXCode(e.target.value)}
+            value={data.pwXCode || 'pw-7.2@localhost'}
+            onChange={(e) => handleChange('pwXCode', e.target.value)}
           >
             <option>pw-7.2@localhost</option>
             <option>pw-7.1@remote</option>
@@ -53,8 +29,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
             <InputGroup.Text>Nodes</InputGroup.Text>
             <Form.Control
               type="number"
-              value={pwXNodes}
-              onChange={(e) => setPwXNodes(e.target.value)}
+              value={data.pwXNodes || 1}
+              onChange={(e) => handleChange('pwXNodes', e.target.value)}
               min={1}
             />
           </InputGroup>
@@ -64,8 +40,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
             <InputGroup.Text>CPUs</InputGroup.Text>
             <Form.Control
               type="number"
-              value={pwXCPUs}
-              onChange={(e) => setPwXCPUs(e.target.value)}
+              value={data.pwXCPUs || 1}
+              onChange={(e) => handleChange('pwXCPUs', e.target.value)}
               min={1}
             />
           </InputGroup>
@@ -77,8 +53,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
         <Col sm={4}>
           <Form.Control
             as="select"
-            value={projwfcXCode}
-            onChange={(e) => setProjwfcXCode(e.target.value)}
+            value={data.projwfcXCode || 'projwfc-7.2@localhost'}
+            onChange={(e) => handleChange('projwfcXCode', e.target.value)}
           >
             <option>projwfc-7.2@localhost</option>
             <option>projwfc-7.1@remote</option>
@@ -90,8 +66,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
             <InputGroup.Text>Nodes</InputGroup.Text>
             <Form.Control
               type="number"
-              value={projwfcXNodes}
-              onChange={(e) => setProjwfcXNodes(e.target.value)}
+              value={data.projwfcXNodes || 1}
+              onChange={(e) => handleChange('projwfcXNodes', e.target.value)}
               min={1}
             />
           </InputGroup>
@@ -101,8 +77,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
             <InputGroup.Text>CPUs</InputGroup.Text>
             <Form.Control
               type="number"
-              value={projwfcXCPUs}
-              onChange={(e) => setProjwfcXCPUs(e.target.value)}
+              value={data.projwfcXCPUs || 1}
+              onChange={(e) => handleChange('projwfcXCPUs', e.target.value)}
               min={1}
             />
           </InputGroup>
@@ -115,8 +91,8 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
         <Form.Label>Label:</Form.Label>
         <Form.Control
           type="text"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
+          value={data.label || ''}
+          onChange={(e) => handleChange('label', e.target.value)}
           placeholder="Enter job label"
         />
       </Form.Group>
@@ -126,12 +102,11 @@ const ChooseResourcesTab = ({ onSubmit, stepData, onDataChange }) => {
         <Form.Control
           as="textarea"
           rows={3}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={data.description || ''}
+          onChange={(e) => handleChange('description', e.target.value)}
           placeholder="Enter job description"
         />
       </Form.Group>
-
     </Form>
   );
 };
