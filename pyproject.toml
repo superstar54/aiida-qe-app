@@ -64,8 +64,8 @@ tests = [
     "httpx",
 ]
 
-[project.scripts]
-workgraph = "qeapp.cli.cmd_workgraph:workgraph"
+[project.entry-points.'aiida.workflows']
+"qeapp.workchain" = "qeapp.workflows.qeapp_workchain:QeAppWorkChain"
 
 [tool.flit.sdist]
 exclude = [
