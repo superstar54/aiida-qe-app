@@ -3,6 +3,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import AccordionStep from './AccordionStep';
 import BasicSettingsTab from './BasicSettingsTab';
 import AdvancedSettingsTab from './AdvancedSettingsTab';
+import StructureSelection from './StructureSelection';
 
 const AccordionWizard = () => {
   // Define steps and their dependent steps
@@ -11,21 +12,9 @@ const AccordionWizard = () => {
       title: 'Select Structure',
       "tabs": [
             {
-                "title": "Upload file", 
-                "content": "Upload structure file here..."
+                "title": "Structure Selection", 
+                "content": <StructureSelection />
             },
-            {
-                "title": "OPTIMADE", 
-                "content": "Search and select structure from OPTIMADE database..."
-            },
-            {
-                "title": "AiiDA database", 
-                "content": "Select structure from AiiDA database..."
-            },
-            {
-                "title": "From Examples", 
-                "content": "Select a structure from predefined examples..."
-            }
         ],
       dependents: [1, 2, 3]
     },
