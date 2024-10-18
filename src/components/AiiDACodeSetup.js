@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // To navigate back
 
-const AddCode = ({ computers }) => {
+const AddCode = () => {
   const [codeLabel, setCodeLabel] = useState('');
   const [execPath, setExecPath] = useState('');
-  const [computer, setComputer] = useState(computers.length ? computers[0].name : '');
+  const [computer, setComputer] = useState('');
+  const [computers, setComputers] = useState([]);
   const navigate = useNavigate();
+
+  // Fetch the list of computers when the component mounts
+  useEffect(() => {
+    const fetchComputers = async () => {
+      try {
+        // Replace this mock data with your real API/database call
+        const response = [
+          { id: 1, name: 'Computer 1', hostname: 'localhost' },
+          { id: 2, name: 'Computer 2', hostname: 'remotehost' },
+        ];
+        setComputers(response);
+        if (response.length > 0) {
+          setComputer(response[0].name); // Set the default selected computer
+        }
+      } catch (error) {
+        console.error('Error fetching computers:', error);
+      }
+    };
+
+    fetchComputers();
+  }, []);
 
   const handleAddCode = (e) => {
     e.preventDefault();
@@ -48,10 +70,20 @@ const AddCode = ({ computers }) => {
         </div>
         <div className="form-group">
           <label>Computer</label>
-          <select className="form-control" value={computer} onChange={(e) => setComputer(e.target.value)}>
-            {computers.map((comp) => (
-              <option key={comp.id} value={comp.name}>{comp.name}</option>
-            ))}
+          <select
+            className="form-control"
+            value={computer}
+            onChange={(e) => setComputer(e.target.value)}
+          >
+            {computers.length > 0 ? (
+              computers.map((comp) => (
+                <option key={comp.id} value={comp.name}>
+                  {comp.name}
+                </option>
+              ))
+            ) : (
+              <option>No computers available</option>
+            )}
           </select>
         </div>
         <button type="submit" className="btn btn-primary mt-3">Save Code</button>

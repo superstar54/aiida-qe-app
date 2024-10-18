@@ -3,6 +3,7 @@ import { Accordion, Button } from 'react-bootstrap';
 import Tabs from './Tabs';
 
 const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify, disabled, onDataChange, stepData }) => {
+  console.log("stepData: ", stepData);
   return (
     <Accordion.Item eventKey={(stepNumber - 1).toString()}>
       <Accordion.Header>
