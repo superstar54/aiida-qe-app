@@ -4,6 +4,7 @@ import AccordionStep from './AccordionStep';
 import BasicSettingsTab from './BasicSettingsTab';
 import AdvancedSettingsTab from './AdvancedSettingsTab';
 import StructureSelection from './StructureSelection';
+import ChooseResourcesTab from './ChooseResourcesTab';
 
 const AccordionWizard = () => {
   // Define steps and their dependent steps
@@ -29,8 +30,7 @@ const AccordionWizard = () => {
     {
       title: 'Choose Computational Resources',
       tabs: [
-        { title: 'Basic resource settings', content: <div>Basic resource settings content here...</div> },
-        { title: 'Advanced resource settings', content: <div>Advanced resource settings content here...</div> }
+        { title: 'Basic resource settings', content: <ChooseResourcesTab /> },
       ],
       dependents: [3]
     },
@@ -47,6 +47,7 @@ const AccordionWizard = () => {
     ...step,
     confirmed: false,
     modified: false,
+    data: {} // Add data for each step
   })));
   const [activeStep, setActiveStep] = useState("0");
 
@@ -61,11 +62,27 @@ const AccordionWizard = () => {
     setSteps(updatedSteps);
   };
 
+  // Function to handle data change in steps
+  const handleDataChange = (stepIndex, newData) => {
+    setSteps((prevSteps) => {
+      const updatedSteps = [...prevSteps];
+      updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], data: newData };
+      return updatedSteps;
+    });
+  };
+
   // Function to handle confirming a step
   const handleConfirm = (stepIndex) => {
     setSteps((prevSteps) => {
       const updatedSteps = [...prevSteps];
       updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], confirmed: true, modified: false };
+      
+      // Pass data to the next step (if applicable)
+      if (stepIndex < updatedSteps.length - 1) {
+        const currentData = updatedSteps[stepIndex].data;
+        updatedSteps[stepIndex + 1] = { ...updatedSteps[stepIndex + 1], data: { ...currentData } }; // Pass data
+      }
+
       return updatedSteps;
     });
     if (stepIndex < steps.length - 1) {
@@ -97,9 +114,11 @@ const AccordionWizard = () => {
           key={index}
           stepNumber={index + 1}
           title={step.title}
-          tabs={step.tabs}  // Pass tabs to AccordionStep
+          tabs={step.tabs}
           confirmed={step.confirmed}
           modified={step.modified}
+          stepData={step.data} // Pass the step's data to AccordionStep
+          onDataChange={(newData) => handleDataChange(index, newData)} // Handle data change for the current step
           onConfirm={() => handleConfirm(index)}
           onModify={() => handleModify(index)}
           disabled={index > 0 && !steps[index - 1].confirmed}  // Disable step if the previous one isn't confirmed

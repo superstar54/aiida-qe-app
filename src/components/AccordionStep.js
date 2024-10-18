@@ -2,15 +2,15 @@ import React from 'react';
 import { Accordion, Button } from 'react-bootstrap';
 import Tabs from './Tabs';
 
-const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify, disabled }) => {
+const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify, disabled, onDataChange, stepData }) => {
   return (
     <Accordion.Item eventKey={(stepNumber - 1).toString()}>
       <Accordion.Header>
         {`Step ${stepNumber}: ${title} ${confirmed ? '✔️' : ''}`}
       </Accordion.Header>
       <Accordion.Body>
-        {/* Render Tabs */}
-        <Tabs tabs={tabs} />
+        {/* Render Tabs with the data passed */}
+        <Tabs tabs={tabs} stepData={stepData} onDataChange={onDataChange} />
         
         {/* Confirm button */}
         <Button

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Header from './components/Header';
@@ -7,6 +7,8 @@ import AccordionWizard from './components/AccordionWizard';
 import GetStarted from './components/GetStarted';
 import JobHistory from './components/JobHistory';
 import Settings from './components/Settings';
+import AddComputer from './components/AiiDAComputerSetup';
+import AddCode from './components/AiiDACodeSetup';
 import './App.css';
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
             <Route path="/calculate" element={<AccordionWizard />} />
             <Route path="/job-history" element={<JobHistory />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/add-computer" element={<AddComputer />} />
+            <Route path="/settings/add-code" element={<AddCode />} />
           </Routes>
         </div>
 
