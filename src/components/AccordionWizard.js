@@ -82,14 +82,19 @@ const AccordionWizard = () => {
   const handleModify = (stepIndex) => {
     setSteps((prevSteps) => {
       const updatedSteps = prevSteps.map((step, index) => {
-        if (index >= stepIndex) {
-          return { ...step, confirmed: false, modified: true, data: {} }; // Reset current and subsequent steps
+        if (index === stepIndex) {
+          // For the current step, only change confirmed and modified flags
+          return { ...step, confirmed: false, modified: true };
+        } else if (index > stepIndex) {
+          // For subsequent steps, reset confirmed, modified, and data
+          return { ...step, confirmed: false, modified: true, data: {} };
         }
+        // For previous steps, return them as is
         return step;
       });
       return updatedSteps;
     });
-
+  
     // Move back to the step being modified
     setActiveStep(stepIndex.toString());
   };
