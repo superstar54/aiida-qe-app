@@ -1,23 +1,39 @@
 import React, { useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import AccordionStep from './AccordionStep';
+import BasicSettingsTab from './BasicSettingsTab';
+import AdvancedSettingsTab from './AdvancedSettingsTab';
 
 const AccordionWizard = () => {
   // Define steps and their dependent steps
   const stepsData = [
     {
       title: 'Select Structure',
-      tabs: [
-        { title: 'Basic settings', content: <div>Basic structure settings content here...</div> },
-        { title: 'Advanced settings', content: <div>Advanced structure settings content here...</div> }
-      ],
+      "tabs": [
+            {
+                "title": "Upload file", 
+                "content": "Upload structure file here..."
+            },
+            {
+                "title": "OPTIMADE", 
+                "content": "Search and select structure from OPTIMADE database..."
+            },
+            {
+                "title": "AiiDA database", 
+                "content": "Select structure from AiiDA database..."
+            },
+            {
+                "title": "From Examples", 
+                "content": "Select a structure from predefined examples..."
+            }
+        ],
       dependents: [1, 2, 3]
     },
     {
       title: 'Configure Workflow',
       tabs: [
-        { title: 'Basic workflow settings', content: <div>Basic workflow settings content here...</div> },
-        { title: 'Advanced workflow settings', content: <div>Advanced workflow settings content here...</div> }
+        { title: 'Basic workflow settings', content: <BasicSettingsTab /> }, // You can reuse components
+        { title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> }
       ],
       dependents: [2, 3]
     },
