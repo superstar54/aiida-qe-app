@@ -1,0 +1,126 @@
+/* App.css */
+header, footer {
+  padding: 20px;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+.wizard {
+  margin: 20px auto;
+  max-width: 800px;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.tabs li {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tabs li.active {
+  border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.wizard-controls {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.0rem;
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.2rem;
+  margin-right: 15px;
+  padding: 10px 15px;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffdd57; /* Change link color on hover */
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Stylish Buttons */
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #4CAF50;
+}
+
+/* You can add more specific styles for each button type if needed */
+.button-start {
+  background-color: #008CBA; /* Blue */
+}
+
+.button-start:hover {
+  border: 2px solid #008CBA;
+}
+
+.button-stop {
+  background-color: #f44336; /* Red */
+}
+
+.button-stop:hover {
+  border: 2px solid #f44336;
+}
+
+.button-adjust {
+  background-color: #e7e7e7; /* Light Grey */
+  color: black;
+}
+
+.button-adjust:hover {
+  border: 2px solid #e7e7e7;
+}
