@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Form, Row, Col, Button, Pagination, Spinner, Alert } from 'react-bootstrap';
 
+function parseDateString(dateStr) {
+  try {
+    console.log("dateStr", dateStr)
+    const fixedDateStr = dateStr.replace(/\.(\d{3})\d+/, '.$1');
+    const date = new Date(fixedDateStr);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid Date');
+    }
+    return date;
+  } catch (error) {
+    console.error('Failed to parse date:', error);
+    return null;
+  }
+}
+
 const JobHistory = () => {
   // State for jobs data
   const [jobs, setJobs] = useState([]);
@@ -245,13 +260,14 @@ const JobHistory = () => {
             </thead>
             <tbody>
               {paginatedJobs.map((job) => (
+                console.log("job", job),
                 <tr key={job.id}>
                   <td>{job.id}</td>
-                  <td>{new Date(job.creationTime).toLocaleString()}</td>
-                  <td>{job.structure}</td>
-                  <td>{job.state}</td>
+                  <td>{parseDateString(job.ctime)?.toLocaleString()}</td>
+                  <td>{job["extras.structure"]}</td>
+                  <td>{job["attributes.process_state"]}</td>
                   <td>{job.label}</td>
-                  <td>{job.relaxType}</td>
+                  <td>{job["extras.workchain.relax_type"]}</td>
                   <td>
                     <Button variant="danger" size="sm" onClick={() => handleDeleteJob(job.id)}>
                       Delete

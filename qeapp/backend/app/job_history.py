@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.get("/api/jobs-data")
-async def read_workgraph_data(search: str = Query(None)):
+async def read_job_data(search: str = Query(None)):
     from qeapp.workflows.qeapp_workchain import QeAppWorkChain
     from aiida.orm import QueryBuilder
     
@@ -29,6 +29,7 @@ async def read_workgraph_data(search: str = Query(None)):
         data = []
         for p in results:
             data.append({projections[i]: p[i] for i in range(len(projections))})
+        print(data)
         return {"jobs": data}
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
@@ -36,7 +37,7 @@ async def read_workgraph_data(search: str = Query(None)):
 
 
 @router.get("/api/jobs/{id}")
-async def read_workgraph(id: int):
+async def read_job(id: int):
     from .utils import (
         get_node_summary,
         get_node_inputs,
@@ -70,3 +71,32 @@ async def read_workgraph(id: int):
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
 
+
+# Route for deleting a job item
+@router.delete("/api/jobs-data/{id}")
+async def delete_job(
+    id: int,
+    dry_run: bool = False,
+) -> Dict[str, Union[bool, str, List[int]]]:
+    from aiida.tools import delete_nodes
+
+    try:
+        # Perform the delete action here
+        deleted_nodes, was_deleted = delete_nodes([id], dry_run=dry_run)
+        if was_deleted:
+            return {
+                "deleted": True,
+                "message": f"Deleted job {id}",
+                "deleted_nodes": list(deleted_nodes),
+            }
+        else:
+            message = f"Did not delete job {id}"
+            if dry_run:
+                message += " [dry-run]"
+            return {
+                "deleted": False,
+                "message": message,
+                "deleted_nodes": list(deleted_nodes),
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

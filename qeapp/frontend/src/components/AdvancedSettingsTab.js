@@ -6,13 +6,13 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
   useEffect(() => {
     const defaultData = {
       cleanUp: false,
-      forceConvergence: '0.0001',
-      energyConvergence: '0.00001',
-      scfConvergence: '2e-10',
-      maxElectronSteps: '80',
+      forceConvergence: 0.0001,
+      energyConvergence: 0.00001,
+      scfConvergence: 2e-10,
+      maxElectronSteps: 80,
       smearingType: 'cold',
-      smearingWidth: '0.01',
-      kPointsDistance: '0.15',
+      smearingWidth: 0.01,
+      kPointsDistance: 0.15,
       hubbard: 'off',
       spinOrbit: 'off',
     };
@@ -51,7 +51,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="0.0001" 
-            value={data.forceConvergence || "0.0001"} 
+            value={data.forceConvergence || 0.0001} 
             onChange={(e) => handleChange('forceConvergence', e.target.value)} 
           />
         </Col>
@@ -60,7 +60,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="0.00001" 
-            value={data.energyConvergence || "0.00001"} 
+            value={data.energyConvergence || 0.00001} 
             onChange={(e) => handleChange('energyConvergence', e.target.value)} 
           />
         </Col>
@@ -69,7 +69,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="2e-10" 
-            value={data.scfConvergence || "2e-10"} 
+            value={data.scfConvergence || 2e-10} 
             onChange={(e) => handleChange('scfConvergence', e.target.value)} 
           />
         </Col>
@@ -81,7 +81,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="80" 
-            value={data.maxElectronSteps || "80"} 
+            value={data.maxElectronSteps || 80} 
             onChange={(e) => handleChange('maxElectronSteps', e.target.value)} 
           />
         </Col>
@@ -105,7 +105,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="0.01" 
-            value={data.smearingWidth || "0.01"} 
+            value={data.smearingWidth || 0.01} 
             onChange={(e) => handleChange('smearingWidth', e.target.value)} 
           />
         </Col>
@@ -118,7 +118,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           <Form.Control 
             type="number" 
             placeholder="0.15" 
-            value={data.kPointsDistance || "0.15"} 
+            value={data.kPointsDistance || 0.15} 
             onChange={(e) => handleChange('kPointsDistance', e.target.value)} 
           />
         </Col>

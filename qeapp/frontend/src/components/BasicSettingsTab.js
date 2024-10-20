@@ -4,12 +4,12 @@ import { Row, Col, ToggleButton, ToggleButtonGroup, Form } from 'react-bootstrap
 const BasicSettingsTab = ({ data = {}, onDataChange }) => {
   useEffect(() => {
     const defaultData = {
-      structureType: 'structure',
+      relaxType: 'positions',
       electronicType: 'metal',
-      magnetism: 'off',
+      spinType: 'none',
       protocol: 'moderate',
       bader: false,
-      bandStructure: false,
+      bands: false,
       pdos: false,
       xas: false,
       xps: false,
@@ -40,17 +40,17 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       <ToggleButtonGroup 
         type="radio" 
         name="structureOptions" 
-        value={data.structureType || 'structure'} 
-        onChange={(value) => handleChange('structureType', value)} 
+        value={data.relaxType || 'none'} 
+        onChange={(value) => handleChange('relaxType', value)} 
         className="mb-3"
       >
-        <ToggleButton id="structure-as-is" value="structure" variant="outline-primary" className="px-3">
+        <ToggleButton id="structure-as-is" value="none" variant="outline-primary" className="px-3">
           Structure as is
         </ToggleButton>
-        <ToggleButton id="atomic-positions" value="atomic" variant="outline-primary" className="px-3">
+        <ToggleButton id="atomic-positions" value="positions" variant="outline-primary" className="px-3">
           Atomic positions
         </ToggleButton>
-        <ToggleButton id="full-geometry" value="geometry" variant="outline-primary" className="px-3">
+        <ToggleButton id="full-geometry" value="positions_cell" variant="outline-primary" className="px-3">
           Full geometry
         </ToggleButton>
       </ToggleButtonGroup>
@@ -74,15 +74,15 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       <h5>Magnetism</h5>
       <ToggleButtonGroup 
         type="radio" 
-        name="magnetism" 
-        value={data.magnetism || 'off'} 
-        onChange={(value) => handleChange('magnetism', value)} 
+        name="spinType" 
+        value={data.spinType || 'none'} 
+        onChange={(value) => handleChange('spinType', value)} 
         className="mb-3"
       >
-        <ToggleButton id="magnetism-off" value="off" variant="outline-secondary" className="px-4">
+        <ToggleButton id="spinType-off" value="none" variant="outline-secondary" className="px-4">
           Off
         </ToggleButton>
-        <ToggleButton id="magnetism-on" value="on" variant="outline-secondary" className="px-4">
+        <ToggleButton id="spinType-on" value="collinear" variant="outline-secondary" className="px-4">
           On
         </ToggleButton>
       </ToggleButtonGroup>
@@ -99,8 +99,8 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
         <Form.Check 
           type="checkbox" 
           label="Electronic band structure" 
-          checked={data.bandStructure || false} 
-          onChange={(e) => handleChange('bandStructure', e.target.checked)} 
+          checked={data.bands || false} 
+          onChange={(e) => handleChange('bands', e.target.checked)} 
         />
         <Form.Check 
           type="checkbox" 

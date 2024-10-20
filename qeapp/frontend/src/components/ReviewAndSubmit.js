@@ -6,7 +6,6 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
 
-  console.log('All Steps Data:', allStepsData);
 
   // Function to handle editing data
   const handleEdit = () => {
@@ -23,7 +22,6 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
       const updatedData = yaml.load(editableData);
       // Update the allStepsData with edited data if necessary
       // For now, we'll just log it
-      console.log('Updated Data:', updatedData);
       setIsEditing(false);
     } catch (error) {
       console.error('Error parsing YAML:', error);
@@ -48,54 +46,51 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
   };
 
   // Function to submit the data to the backend
-  const handleSubmit = () => {
-    // Accumulate the data
-    const accumulatedData = accumulateData();
-    // change the 'Select Structure' key to 'Structure' if it exists
-    if (accumulatedData['Select Structure']) {
-      accumulatedData['structure'] = accumulatedData['Select Structure'];
-      delete accumulatedData['Select Structure'];
-    }
-    // change the 'Configure Workflow' key to 'Workflow_settings' if it exists
-    if (accumulatedData['Configure Workflow']) {
-      accumulatedData['workflow_settings'] = accumulatedData['Configure Workflow'];
-      delete accumulatedData['Configure Workflow'];
-    }
-    // change the 'Choose Computational Resources' key to 'Computational_Resources' if it exists
-    if (accumulatedData['Choose Computational Resources']) {
-      accumulatedData['computational_resources'] = accumulatedData['Choose Computational Resources'];
-      delete accumulatedData['Choose Computational Resources'];
-    }
-    console.log('Accumulated Data:', accumulatedData);
-
-
-    // Send the data to the backend using fetch
-    fetch('http://localhost:8000/api/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(accumulatedData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Server responded with ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Submission successful:', data);
-        setSubmissionStatus('success');
-        // Optionally, redirect or show success message
-        // also show the `job_id` returned from the server
-        alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
-      })
-      .catch((error) => {
-        console.error('Error submitting data:', error);
-        setSubmissionStatus('error');
-        alert('Error submitting data. Please try again.');
+  const handleSubmit = async () => {
+    try {
+      // Accumulate the data
+      const accumulatedData = accumulateData();
+  
+      // Normalize keys in accumulatedData
+      if (accumulatedData['Select Structure']) {
+        accumulatedData['structure'] = accumulatedData['Select Structure'];
+        delete accumulatedData['Select Structure'];
+      }
+      if (accumulatedData['Configure Workflow']) {
+        accumulatedData['workflow_settings'] = accumulatedData['Configure Workflow'];
+        delete accumulatedData['Configure Workflow'];
+      }
+      if (accumulatedData['Choose Computational Resources']) {
+        accumulatedData['computational_resources'] = accumulatedData['Choose Computational Resources'];
+        delete accumulatedData['Choose Computational Resources'];
+      }
+  
+      // Send the data to the backend using fetch
+      const response = await fetch('http://localhost:8000/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(accumulatedData),
       });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.detail || `Server responded with ${response.status}, ${response.statusText}`;
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json();
+      console.log('Submission successful:', data);
+      setSubmissionStatus('success');
+      alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      setSubmissionStatus('error');
+      alert(`Error submitting data: ${error.message}`);
+    }
   };
+  
 
   return (
     <div>
@@ -105,7 +100,7 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
           <textarea
             value={editableData}
             onChange={(e) => setEditableData(e.target.value)}
-            rows={10}
+            rows={30}
             style={{ width: '100%', fontFamily: 'monospace' }}
           />
           <button className="btn btn-success mt-3" onClick={handleSave}>
