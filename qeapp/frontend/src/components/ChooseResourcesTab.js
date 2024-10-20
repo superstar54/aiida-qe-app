@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 
 const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
+  useEffect(() => {
+    const defaultData = {
+      pwXCode: 'pw-7.2@localhost',
+      pwXNodes: 1,
+      pwXCPUs: 1,
+      projwfcXCode: 'projwfc-7.2@localhost',
+      projwfcXNodes: 1,
+      projwfcXCPUs: 1,
+      label: '',
+      description: '',
+    };
+
+    // Merge default data with any existing data
+    const initialData = { ...defaultData, ...data };
+
+    // Update data if it doesn't already have all default values
+    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
+      onDataChange(initialData);
+    }
+  }, []);
+  
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);

@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
+
+  useEffect(() => {
+    const defaultData = {
+      cleanUp: false,
+      forceConvergence: '0.0001',
+      energyConvergence: '0.00001',
+      scfConvergence: '2e-10',
+      maxElectronSteps: '80',
+      smearingType: 'cold',
+      smearingWidth: '0.01',
+      kPointsDistance: '0.15',
+      hubbard: 'off',
+      spinOrbit: 'off',
+    };
+
+    // Merge default data with any existing data
+    const initialData = { ...defaultData, ...data };
+
+    // Update data if it doesn't already have all default values
+    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
+      onDataChange(initialData);
+    }
+  }, []);
+
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);

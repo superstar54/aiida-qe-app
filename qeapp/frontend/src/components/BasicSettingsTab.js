@@ -1,7 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, ToggleButton, ToggleButtonGroup, Form } from 'react-bootstrap';
 
 const BasicSettingsTab = ({ data = {}, onDataChange }) => {
+  useEffect(() => {
+    const defaultData = {
+      structureType: 'structure',
+      electronicType: 'metal',
+      magnetism: 'off',
+      protocol: 'moderate',
+      bader: false,
+      bandStructure: false,
+      pdos: false,
+      xas: false,
+      xps: false,
+    };
+
+    // Merge default data with any existing data
+    const initialData = { ...defaultData, ...data };
+
+    // Update data if it doesn't already have all default values
+    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
+      onDataChange(initialData);
+    }
+  }, []);
+  
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);
