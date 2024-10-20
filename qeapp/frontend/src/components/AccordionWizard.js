@@ -7,6 +7,7 @@ import AdvancedSettingsTab from './AdvancedSettingsTab';
 import StructureSelection from './StructureSelection';
 import ChooseResourcesTab from './ChooseResourcesTab';
 import ReviewAndSubmit from './ReviewAndSubmit';
+import WorkflowSummaryTab from './WorkflowSummary';
 
 // Define steps and their dependent steps
 const initialStepsData = [
@@ -48,8 +49,17 @@ const initialStepsData = [
       { title: 'Review settings', content: <ReviewAndSubmit /> },  // The review step shows all data.
     ],
     dependents: [],
-    ButtonText: null,
+    ButtonText: "Confirm",
   },
+  {
+    title: 'Status & Results',
+    id: "status_results",
+    tabs: [
+      { title: 'Workflow summary', content: <WorkflowSummaryTab /> },
+    ],
+    dependents: [],
+    ButtonText: null,
+  }
 ];
 
 const AccordionWizard = () => {

@@ -261,7 +261,6 @@ const JobHistory = () => {
             </thead>
             <tbody>
               {paginatedJobs.map((job) => (
-                console.log("job", job),
                 <tr key={job.id}>
                   <td>{job.id}</td>
                   <td>{parseDateString(job.ctime)?.toLocaleString()}</td>

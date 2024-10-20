@@ -17,6 +17,7 @@ class CalculationData(BaseModel):
     structure: dict
     workflow_settings: dict
     computational_resources: dict
+    review_submit: dict
 
 def get_advanced_setting_value(data):
     # basic workflow settings
@@ -78,6 +79,7 @@ def prepare_inputs(data: CalculationData):
     from ase import Atoms
     from copy import deepcopy
     data = deepcopy(data)
+    print("data: ", data)
     # structure
     structure = data.structure["Structure Selection"]["selectedStructure"]
     if isinstance(structure, list):

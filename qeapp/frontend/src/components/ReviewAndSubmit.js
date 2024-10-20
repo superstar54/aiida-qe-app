@@ -37,7 +37,7 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
             if (includeStructure) {
               acc[step.title] = step.data;
             }
-          } else if (step.title !== 'Review and Submit') {
+          } else {
             acc[step.title] = step.data;
           }
           return acc;
@@ -64,7 +64,14 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
         accumulatedData['computational_resources'] = accumulatedData['Choose Computational Resources'];
         delete accumulatedData['Choose Computational Resources'];
       }
-  
+      if (accumulatedData['Review and Submit']) {
+        accumulatedData['review_submit'] = accumulatedData['Review and Submit'];
+        delete accumulatedData['Review and Submit'];
+      }
+      if (accumulatedData['Status & Results']) {
+        accumulatedData['status_results'] = accumulatedData['Status & Results'];
+        delete accumulatedData['Status & Results'];
+      }
       // Send the data to the backend using fetch
       const response = await fetch('http://localhost:8000/api/submit', {
         method: 'POST',
