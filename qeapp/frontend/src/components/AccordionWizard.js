@@ -53,10 +53,12 @@ const AccordionWizard = () => {
   const [activeStep, setActiveStep] = useState("0");
 
   // Function to handle data change in a step
-  const handleDataChange = (stepIndex, newData) => {
+  const handleDataChange = (stepIndex, dataUpdater) => {
     setSteps((prevSteps) => {
       const updatedSteps = [...prevSteps];
-      updatedSteps[stepIndex].data = newData;
+      const existingData = updatedSteps[stepIndex].data || {};
+      // Use dataUpdater to compute the new data
+      updatedSteps[stepIndex].data = dataUpdater(existingData);
       return updatedSteps;
     });
   };
@@ -110,7 +112,7 @@ const AccordionWizard = () => {
           confirmed={step.confirmed}
           modified={step.modified}
           allStepsData={steps}
-          onDataChange={(newData) => handleDataChange(index, newData)}
+          onDataChange={(dataUpdater) => handleDataChange(index, dataUpdater)}
           onConfirm={() => handleConfirm(index)}
           onModify={() => handleModify(index)}
           disabled={index > 0 && !steps[index - 1].confirmed}

@@ -11,9 +11,15 @@ const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
           {React.cloneElement(tab.content, {
             data: stepData[tab.title] || {},
             onDataChange: (newData) => {
-              onDataChange({ ...stepData, [tab.title]: newData });
+              // Define dataUpdater inline
+              const dataUpdater = (prevData) => ({
+                ...prevData,
+                [tab.title]: newData,
+              });
+              // Pass dataUpdater to onDataChange from AccordionStep
+              onDataChange(dataUpdater);
             },
-            allStepsData,  // Full steps data
+            allStepsData, // Full steps data
           })}
         </Tab>
       ))}

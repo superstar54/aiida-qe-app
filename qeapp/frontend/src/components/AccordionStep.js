@@ -1,8 +1,18 @@
 import React from 'react';
 import { Accordion, Button } from 'react-bootstrap';
-import WizardTabs from './Tabs';
+import WizardTabs from './WizardTabs';
 
-const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify, disabled, onDataChange, allStepsData }) => {
+const AccordionStep = ({
+  stepNumber,
+  title,
+  tabs,
+  confirmed,
+  onConfirm,
+  onModify,
+  disabled,
+  onDataChange,
+  allStepsData,
+}) => {
   return (
     <Accordion.Item eventKey={(stepNumber - 1).toString()}>
       <Accordion.Header>
@@ -10,8 +20,13 @@ const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify
       </Accordion.Header>
       <Accordion.Body>
         {/* Render Tabs with the data passed */}
-        <WizardTabs tabs={tabs} stepData={allStepsData[stepNumber - 1].data} allStepsData={allStepsData} onDataChange={onDataChange} />
-        
+        <WizardTabs
+          tabs={tabs}
+          stepData={allStepsData[stepNumber - 1].data}
+          allStepsData={allStepsData}
+          onDataChange={onDataChange}
+        />
+
         {/* Confirm button */}
         <Button
           variant="success"
@@ -24,11 +39,7 @@ const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify
 
         {/* Modify button, shown only if the step is confirmed */}
         {confirmed && (
-          <Button
-            variant="warning"
-            onClick={onModify}
-            className="mt-3 ms-2"
-          >
+          <Button variant="warning" onClick={onModify} className="mt-3 ms-2">
             Modify
           </Button>
         )}
