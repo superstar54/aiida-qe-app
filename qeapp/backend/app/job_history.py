@@ -39,11 +39,16 @@ async def read_job_data(search: str = Query(None)):
 @router.get("/api/jobs-data/{id}")
 async def read_job(id: int):
     from aiida.orm.utils.serialize import deserialize_unsafe
+    from aiida.cmdline.utils.ascii_vis import build_call_graph
 
     try:
         node = orm.load_node(id)
         content = deserialize_unsafe(node.base.extras.get("ui_parameters", ""))
-        return {"stepsData": content}
+        process_status = build_call_graph(node)
+        # output structure
+        structure = node.outputs.structure.backend_entity.attributes
+        return {"stepsData": content, "processStatus": process_status,
+                "structure": structure}
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
 

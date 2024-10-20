@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import * as yaml from 'js-yaml';
 import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
 
-const ReviewAndSubmit = ({ allStepsData = [] }) => {
+const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
+
+  const handleChange = (field, value) => {
+    const newData = { ...data, [field]: value };
+    console.log('New data:', newData);
+    onDataChange(newData);
+  };
 
   // Function to handle editing data
   const handleEdit = () => {
@@ -91,6 +97,7 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
       console.log('Submission successful:', data);
       setSubmissionStatus('success');
       alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
+      handleChange('jobId', data.job_id); // Update the job_id in the parent component
     } catch (error) {
       console.error('Error submitting data:', error);
       setSubmissionStatus('error');

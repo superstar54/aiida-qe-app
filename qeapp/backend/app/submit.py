@@ -111,6 +111,7 @@ async def submit_calculation(data: CalculationData):
         builder = QeAppWorkChain.get_builder_from_protocol(**inputs)
         print("builder: ", builder)
         process = submit(builder)
+        data.review_submit.setdefault("Review settings", {"jobId": process.pk})
         process.base.extras.set("ui_parameters", serialize(data))
         # store the workchain name in extras, this will help to filter the workchain in the future
         process.base.extras.set("workchain", inputs["parameters"]["workchain"])

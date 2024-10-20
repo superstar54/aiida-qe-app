@@ -8,6 +8,8 @@ import StructureSelection from './StructureSelection';
 import ChooseResourcesTab from './ChooseResourcesTab';
 import ReviewAndSubmit from './ReviewAndSubmit';
 import WorkflowSummaryTab from './WorkflowSummary';
+import JobStatusTab from './JobStatus';
+import FinalStructureTab from './FinalStructure';
 
 // Define steps and their dependent steps
 const initialStepsData = [
@@ -55,7 +57,8 @@ const initialStepsData = [
     title: 'Status & Results',
     id: "status_results",
     tabs: [
-      { title: 'Workflow summary', content: <WorkflowSummaryTab /> },
+      { title: 'Job status', content: <JobStatusTab /> },
+      { title: 'Final structure', content: <FinalStructureTab /> },
     ],
     dependents: [],
     ButtonText: null,
