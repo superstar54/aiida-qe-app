@@ -36,7 +36,7 @@ function App() {
         <div className="container mt-5">
           <Routes>
             <Route path="/" element={<GetStarted />} />
-            <Route path="/calculate" element={<AccordionWizard />} />
+            <Route path="/calculate/:jobId?" element={<AccordionWizard />} />
             <Route path="/job-history" element={<JobHistory />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/add-computer" element={<AddComputer />} />

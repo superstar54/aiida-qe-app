@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Table, Form, Row, Col, Button, Pagination, Spinner, Alert } from 'react-bootstrap';
 
 function parseDateString(dateStr) {
@@ -17,6 +18,7 @@ function parseDateString(dateStr) {
 }
 
 const JobHistory = () => {
+  const navigate = useNavigate();
   // State for jobs data
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
@@ -137,8 +139,7 @@ const JobHistory = () => {
 
   // Handle inspect job (you can implement this function)
   const handleInspectJob = (jobId) => {
-    // Redirect to job details page or open modal
-    console.log(`Inspect job ${jobId}`);
+    navigate(`/calculate/${jobId}`);
   };
 
   return (
@@ -274,9 +275,9 @@ const JobHistory = () => {
                     </Button>
                   </td>
                   <td>
-                    <Button variant="info" size="sm" onClick={() => handleInspectJob(job.id)}>
-                      Inspect
-                    </Button>
+                  <Button variant="info" size="sm" onClick={() => handleInspectJob(job.id)}>
+                    Inspect
+                  </Button>
                   </td>
                 </tr>
               ))}

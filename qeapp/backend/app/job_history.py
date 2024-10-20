@@ -36,38 +36,14 @@ async def read_job_data(search: str = Query(None)):
 
 
 
-@router.get("/api/jobs/{id}")
+@router.get("/api/jobs-data/{id}")
 async def read_job(id: int):
-    from .utils import (
-        get_node_summary,
-        get_node_inputs,
-        get_node_outputs,
-    )
-    from aiida_workgraph.utils import get_parent_workgraphs
+    from aiida.orm.utils.serialize import deserialize_unsafe
 
     try:
-        tstart = time.time()
-
         node = orm.load_node(id)
-
-        content = node.base.extras.get("_workgraph_short", None)
-        if content is None:
-            print("No workgraph data found in the node.")
-            return
-        summary = {
-            "table": get_node_summary(node),
-            "inputs": get_node_inputs(id),
-            "outputs": get_node_outputs(id),
-        }
-
-        parent_workgraphs = get_parent_workgraphs(id)
-        parent_workgraphs.reverse()
-        print(f"Time to load process latest: {time.time() - tstart}")
-        tstart = time.time()
-        content["summary"] = summary
-        content["parent_workgraphs"] = parent_workgraphs
-        content["processes_info"] = {}
-        return content
+        content = deserialize_unsafe(node.base.extras.get("ui_parameters", ""))
+        return {"stepsData": content}
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
 

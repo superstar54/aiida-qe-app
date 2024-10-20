@@ -76,6 +76,8 @@ def prepare_inputs(data: CalculationData):
     Prepare inputs for the calculation
     """
     from ase import Atoms
+    from copy import deepcopy
+    data = deepcopy(data)
     # structure
     structure = data.structure["Structure Selection"]["selectedStructure"]
     if isinstance(structure, list):

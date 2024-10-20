@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import * as yaml from 'js-yaml';
+import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
 
 const ReviewAndSubmit = ({ allStepsData = [] }) => {
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
-
 
   // Function to handle editing data
   const handleEdit = () => {
@@ -90,7 +90,6 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
       alert(`Error submitting data: ${error.message}`);
     }
   };
-  
 
   return (
     <div>
@@ -113,7 +112,11 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
           <button className="btn btn-primary mt-3 me-2" onClick={handleEdit}>
             Edit
           </button>
-          <button className="btn btn-success mt-3" onClick={handleSubmit}>
+          <button
+            className="btn btn-success mt-3"
+            onClick={handleSubmit}
+            disabled={submissionStatus === 'success'} // Disable button after success
+          >
             Submit
           </button>
         </div>
@@ -121,7 +124,8 @@ const ReviewAndSubmit = ({ allStepsData = [] }) => {
       {/* Optionally, display submission status */}
       {submissionStatus === 'success' && (
         <div className="alert alert-success mt-3">
-          Calculation submitted successfully!
+          Calculation submitted successfully!{' '}
+          <Link to="/job-history">Go to Job History</Link>
         </div>
       )}
       {submissionStatus === 'error' && (

@@ -8,6 +8,13 @@ function StructureViewer({ structure }) {
     if (!structure) {
         return;
     }
+    // if structure is a object, convert it to Atoms object
+    if (typeof structure === 'object') {
+      console.log("structure", structure);
+      // remove species from structure
+      delete structure.species;
+      structure = new Atoms(structure);
+    }
     if (weasContainerRef.current) {
       // Create an instance of AtomsViewer and pass the Atoms object to it
       weasContainerRef.current.innerHTML = ""; // Clear the container when unmounting

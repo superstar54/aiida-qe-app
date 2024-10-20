@@ -12,6 +12,7 @@ const AccordionStep = ({
   disabled,
   onDataChange,
   allStepsData,
+  ButtonText,
 }) => {
   return (
     <Accordion.Item eventKey={(stepNumber - 1).toString()}>
@@ -27,15 +28,17 @@ const AccordionStep = ({
           onDataChange={onDataChange}
         />
 
-        {/* Confirm button */}
-        <Button
-          variant="success"
-          onClick={onConfirm}
-          disabled={disabled || confirmed}
-          className="mt-3"
-        >
-          {confirmed ? 'Confirmed' : 'Confirm'}
-        </Button>
+        {/* Conditionally render the Confirm button */}
+        {ButtonText && (
+          <Button
+            variant="success"
+            onClick={onConfirm}
+            disabled={disabled || confirmed}
+            className="mt-3"
+          >
+            {confirmed ? ButtonText + "ed" : ButtonText}
+          </Button>
+        )}
 
         {/* Modify button, shown only if the step is confirmed */}
         {confirmed && (
