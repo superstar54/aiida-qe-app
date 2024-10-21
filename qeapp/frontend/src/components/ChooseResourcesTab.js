@@ -1,6 +1,23 @@
 import React, { useEffect } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 
+function getChemicalFormula(symbols) {
+  const elementCounts = {};
+
+  // Count occurrences of each element
+  symbols.forEach(symbol => {
+      elementCounts[symbol] = (elementCounts[symbol] || 0) + 1;
+  });
+
+  // Construct the chemical formula
+  let formula = '';
+  for (const [element, count] of Object.entries(elementCounts)) {
+      formula += element + (count > 1 ? count : '');
+  }
+
+  return formula;
+}
+
 // Reusable component for code selection
 const CodeSelector = ({ codeLabel, codeValue, onCodeChange, nodeValue, onNodeChange, cpuValue, onCpuChange, codeOptions }) => {
   return (
@@ -45,16 +62,16 @@ const CodeSelector = ({ codeLabel, codeValue, onCodeChange, nodeValue, onNodeCha
   );
 };
 
-const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
+const ChooseResourcesTab = ({ data = {}, structure, onDataChange }) => {
   useEffect(() => {
     const defaultData = {
-      pwCode: 'pw-7.2@localhost',
+      pwCode: 'qe-7.2-pw@localhost',
       pwNodes: 1,
       pwCPUs: 1,
-      projwfcCode: 'projwfc-7.2@localhost',
+      projwfcCode: 'qe-7.2-projwfc@localhost',
       projwfcNodes: 1,
       projwfcCPUs: 1,
-      dosCode: 'dos-7.2@localhost',  // New code for dos.x
+      dosCode: 'qe-7.2-dos@localhost',  // New code for dos.x
       dosNodes: 1,
       dosCPUs: 1,
       label: '',
@@ -67,6 +84,14 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
       onDataChange(initialData);
     }
   }, []);
+
+  useEffect(() => {
+    if (!structure) {
+      return;
+    }
+    const formula = getChemicalFormula(structure.symbols);
+    handleChange('label', `${formula}`);
+  }, [structure]);
   
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
@@ -81,11 +106,11 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
       {/* pw.x Code */}
       <CodeSelector
         codeLabel="pw.x"
-        codeValue={data.pwCode}
+        codeValue={data.pwCode || 'qe-7.2-pw@localhost'}
         onCodeChange={(value) => handleChange('pwCode', value)}
-        nodeValue={data.pwNodes}
+        nodeValue={data.pwNodes || 1}
         onNodeChange={(value) => handleChange('pwNodes', value)}
-        cpuValue={data.pwCPUs}
+        cpuValue={data.pwCPUs || 1}
         onCpuChange={(value) => handleChange('pwCPUs', value)}
         codeOptions={['pw-7.2@localhost', 'pw-7.1@remote']}
       />
@@ -93,11 +118,11 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
       {/* projwfc.x Code */}
       <CodeSelector
         codeLabel="projwfc.x"
-        codeValue={data.projwfcCode}
+        codeValue={data.projwfcCode || 'qe-7.2-projwfc@localhost'}
         onCodeChange={(value) => handleChange('projwfcCode', value)}
-        nodeValue={data.projwfcNodes}
+        nodeValue={data.projwfcNodes || 1}
         onNodeChange={(value) => handleChange('projwfcNodes', value)}
-        cpuValue={data.projwfcCPUs}
+        cpuValue={data.projwfcCPUs || 1}
         onCpuChange={(value) => handleChange('projwfcCPUs', value)}
         codeOptions={['projwfc-7.2@localhost', 'projwfc-7.1@remote']}
       />
@@ -105,11 +130,11 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
       {/* dos.x Code */}
       <CodeSelector
         codeLabel="dos.x"
-        codeValue={data.dosCode}
+        codeValue={data.dosCode || 'qe-7.2-dos@localhost'}
         onCodeChange={(value) => handleChange('dosCode', value)}
-        nodeValue={data.dosNodes}
+        nodeValue={data.dosNodes || 1}
         onNodeChange={(value) => handleChange('dosNodes', value)}
-        cpuValue={data.dosCPUs}
+        cpuValue={data.dosCPUs || 1}
         onCpuChange={(value) => handleChange('dosCPUs', value)}
         codeOptions={['dos-7.2@localhost', 'dos-7.1@remote']}
       />
@@ -120,7 +145,7 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
         <Form.Label>Label:</Form.Label>
         <Form.Control
           type="text"
-          value={data.label}
+          value={data.label || ""}
           onChange={(e) => handleChange('label', e.target.value)}
           placeholder="Enter job label"
         />
@@ -131,7 +156,7 @@ const ChooseResourcesTab = ({ data = {}, onDataChange }) => {
         <Form.Control
           as="textarea"
           rows={3}
-          value={data.description}
+          value={data.description || ""}
           onChange={(e) => handleChange('description', e.target.value)}
           placeholder="Enter job description"
         />

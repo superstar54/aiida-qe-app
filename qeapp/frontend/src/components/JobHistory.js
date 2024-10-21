@@ -45,7 +45,7 @@ const JobHistory = () => {
   const jobsPerPage = 20; // Configurable
 
   // Sorting state
-  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'ascending' });
+  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'descending' });
 
   // useEffect to fetch data from the API when the component mounts or when search filters change
   useEffect(() => {

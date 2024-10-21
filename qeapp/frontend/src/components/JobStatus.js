@@ -43,6 +43,7 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
         setLoading(false);
         return;
       }
+      setLoading(true);
 
       try {
         const response = await fetch(
@@ -106,8 +107,14 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
   };
 
   if (loading) {
-    return <Spinner animation="border" variant="primary" />;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <Spinner animation="border" variant="primary" />
+        <p>Loading job status...</p>
+      </div>
+    );
   }
+  
 
   if (error) {
     return <div>Error: {error}</div>;

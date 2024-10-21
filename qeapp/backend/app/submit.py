@@ -101,32 +101,33 @@ def prepare_inputs(data: CalculationData):
     # workflow settings
     parameters = get_advanced_setting_value(data)
     # computational resources
-    pw_code = load_code(data.computational_resources.get("pwCode", "qe-7.2-pw@localhost"))
-    projwfc_code = load_code(data.computational_resources.get("projwfcCode", "qe-7.2-projwfc@localhost"))
-    dos_code = load_code(data.computational_resources.get("dosCode", "qe-7.2-dos@localhost"))
+    basic_resource_settings = data.computational_resources.get('Basic resource settings', {})
+    pw_code = load_code(basic_resource_settings.get("pwCode", "qe-7.2-pw@localhost"))
+    projwfc_code = load_code(basic_resource_settings.get("projwfcCode", "qe-7.2-projwfc@localhost"))
+    dos_code = load_code(basic_resource_settings.get("dosCode", "qe-7.2-dos@localhost"))
     parameters["codes"] = {"pw": {"code": pw_code.uuid,
-                                  "nodes": data.computational_resources.get("pwNodes", 1),
-                                  "ntasks_per_node": data.computational_resources.get("pwCPUs", 1),
+                                  "nodes": basic_resource_settings.get("pwNodes", 1),
+                                  "ntasks_per_node": basic_resource_settings.get("pwCPUs", 1),
                                   "cpus_per_task": 1,
-                                  "max_wallclock_seconds": data.computational_resources.get("pwTime", 3600),
+                                  "max_wallclock_seconds": basic_resource_settings.get("pwTime", 3600),
                                   },
                            "projwfc_bands": {"code": projwfc_code.uuid,
-                                       "nodes": data.computational_resources.get("projwfcNodes", 1),
-                                       "ntasks_per_node": data.computational_resources.get("projwfcCPUs", 1),
+                                       "nodes": basic_resource_settings.get("projwfcNodes", 1),
+                                       "ntasks_per_node": basic_resource_settings.get("projwfcCPUs", 1),
                                        "cpus_per_task": 1,
-                                       "max_wallclock_seconds": data.computational_resources.get("projwfcTime", 3600),
+                                       "max_wallclock_seconds": basic_resource_settings.get("projwfcTime", 3600),
                                        },
                             "dos": {"code": dos_code.uuid,
-                                        "nodes": data.computational_resources.get("dosNodes", 1),
-                                        "ntasks_per_node": data.computational_resources.get("dosCPUs", 1),
+                                        "nodes": basic_resource_settings.get("dosNodes", 1),
+                                        "ntasks_per_node": basic_resource_settings.get("dosCPUs", 1),
                                         "cpus_per_task": 1,
-                                        "max_wallclock_seconds": data.computational_resources.get("dosTime", 3600),
+                                        "max_wallclock_seconds": basic_resource_settings.get("dosTime", 3600),
                                         },
                             "projwfc": {"code": projwfc_code.uuid,
-                                       "nodes": data.computational_resources.get("projwfcNodes", 1),
-                                       "ntasks_per_node": data.computational_resources.get("projwfcCPUs", 1),
+                                       "nodes": basic_resource_settings.get("projwfcNodes", 1),
+                                       "ntasks_per_node": basic_resource_settings.get("projwfcCPUs", 1),
                                        "cpus_per_task": 1,
-                                       "max_wallclock_seconds": data.computational_resources.get("projwfcTime", 3600),
+                                       "max_wallclock_seconds": basic_resource_settings.get("projwfcTime", 3600),
                                        },
                            }
     return {
@@ -152,6 +153,8 @@ async def submit_calculation(data: CalculationData):
         # store the workchain name in extras, this will help to filter the workchain in the future
         process.base.extras.set("workchain", inputs["parameters"]["workchain"])
         process.base.extras.set("structure", inputs["structure"].get_formula())
+        process.label = data.computational_resources.get('Basic resource settings', {})["label"]
+        process.description = data.computational_resources.get('Basic resource settings', {})["description"]
         return {"status": "success", "job_id": process.pk}
     except Exception as e:
         traceback.print_exc()
