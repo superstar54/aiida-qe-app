@@ -4,7 +4,6 @@ from aiida.manage import manager
 from qeapp.backend.app.daemon import router as daemon_router
 from qeapp.backend.app.computer import router as computer_router
 from qeapp.backend.app.code import router as code_router
-from qeapp.backend.app.submit import router as submit_router
 from qeapp.backend.app.job_history import router as job_history_router
 from qeapp.backend.app.datanode import router as datanode_router
 from fastapi.staticfiles import StaticFiles
@@ -55,6 +54,9 @@ app.include_router(datanode_router)
 app.include_router(daemon_router)
 app.include_router(computer_router)
 app.include_router(code_router)
+
+# only import the submit router after loading the profile
+from qeapp.backend.app.submit import router as submit_router
 app.include_router(submit_router)
 
 

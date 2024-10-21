@@ -70,6 +70,16 @@ def get_advanced_setting_value(data):
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["lspinorb"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["noncolin"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["nspin"] = 4
+    # bands
+    bands_settings = data.workflow_settings.get('Bands', {})
+    parameters["bands"] = {"projwfc_bands": bands_settings["projwfcBands"]}
+    # pdos
+    pdos_settings = data.workflow_settings.get('PDOS', {})
+    parameters["pdos"] = {"nscf_kpoints_distance": pdos_settings["kPointsDistance"],
+                          "use_pdos_degauss": pdos_settings["usePdosDegauss"],
+                          "pdos_degauss": pdos_settings["pdosDegauss"],
+                          }
+
     return parameters
 
 def prepare_inputs(data: CalculationData):
@@ -91,8 +101,34 @@ def prepare_inputs(data: CalculationData):
     # workflow settings
     parameters = get_advanced_setting_value(data)
     # computational resources
-    pw_code = load_code(data.computational_resources.get("pw_code", "qe-7.2-pw@localhost"))
-    parameters["codes"] = {"pw": {"code": pw_code.uuid}}
+    pw_code = load_code(data.computational_resources.get("pwCode", "qe-7.2-pw@localhost"))
+    projwfc_code = load_code(data.computational_resources.get("projwfcCode", "qe-7.2-projwfc@localhost"))
+    dos_code = load_code(data.computational_resources.get("dosCode", "qe-7.2-dos@localhost"))
+    parameters["codes"] = {"pw": {"code": pw_code.uuid,
+                                  "nodes": data.computational_resources.get("pwNodes", 1),
+                                  "ntasks_per_node": data.computational_resources.get("pwCPUs", 1),
+                                  "cpus_per_task": 1,
+                                  "max_wallclock_seconds": data.computational_resources.get("pwTime", 3600),
+                                  },
+                           "projwfc_bands": {"code": projwfc_code.uuid,
+                                       "nodes": data.computational_resources.get("projwfcNodes", 1),
+                                       "ntasks_per_node": data.computational_resources.get("projwfcCPUs", 1),
+                                       "cpus_per_task": 1,
+                                       "max_wallclock_seconds": data.computational_resources.get("projwfcTime", 3600),
+                                       },
+                            "dos": {"code": dos_code.uuid,
+                                        "nodes": data.computational_resources.get("dosNodes", 1),
+                                        "ntasks_per_node": data.computational_resources.get("dosCPUs", 1),
+                                        "cpus_per_task": 1,
+                                        "max_wallclock_seconds": data.computational_resources.get("dosTime", 3600),
+                                        },
+                            "projwfc": {"code": projwfc_code.uuid,
+                                       "nodes": data.computational_resources.get("projwfcNodes", 1),
+                                       "ntasks_per_node": data.computational_resources.get("projwfcCPUs", 1),
+                                       "cpus_per_task": 1,
+                                       "max_wallclock_seconds": data.computational_resources.get("projwfcTime", 3600),
+                                       },
+                           }
     return {
         "structure": structure,
         "parameters": parameters,

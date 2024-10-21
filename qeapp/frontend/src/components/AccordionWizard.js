@@ -4,6 +4,9 @@ import Accordion from 'react-bootstrap/Accordion';
 import AccordionStep from './AccordionStep';
 import BasicSettingsTab from './BasicSettingsTab';
 import AdvancedSettingsTab from './AdvancedSettingsTab';
+import BandsStructureTab from './BandsStructureTab';
+import PDOSTab from './PDOSTab';
+import XPSTab from './XPSTab';
 import StructureSelection from './StructureSelection';
 import ChooseResourcesTab from './ChooseResourcesTab';
 import ReviewAndSubmit from './ReviewAndSubmit';
@@ -29,8 +32,11 @@ const initialStepsData = [
     title: 'Configure Workflow',
     id: "workflow_settings",
     tabs: [
-      { title: 'Basic workflow settings', content: <BasicSettingsTab /> }, // You can reuse components
-      { title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> }
+      { title: 'Basic workflow settings', content: <BasicSettingsTab /> },
+      { title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> },
+      { title: 'Bands', content: <BandsStructureTab /> },
+      { title: 'PDOS', content: <PDOSTab /> },
+      { title: 'XPS', content: <XPSTab /> },
     ],
     dependents: [2, 3],
     ButtonText: "Confirm",
