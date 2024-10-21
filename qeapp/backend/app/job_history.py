@@ -6,6 +6,32 @@ import time
 router = APIRouter()
 
 
+
+def export_xps_data(outputs):
+    """Export the data from the XPS workchain"""
+
+    chemical_shifts = {}
+    symmetry_analysis_data = outputs.symmetry_analysis_data.get_dict()
+    equivalent_sites_data = symmetry_analysis_data["equivalent_sites_data"]
+    if "chemical_shifts" in outputs:
+        for key, data in outputs.chemical_shifts.items():
+            ele = key[:-4]
+            chemical_shifts[ele] = data.get_dict()
+    binding_energies = {}
+    if "binding_energies" in outputs:
+        for key, data in outputs.binding_energies.items():
+            ele = key[:-3]
+            binding_energies[ele] = data.get_dict()
+
+    return (
+        chemical_shifts,
+        binding_energies,
+        equivalent_sites_data,
+    )
+
+
+
+
 @router.get("/api/jobs-data")
 async def read_job_data(search: str = Query(None)):
     from qeapp.workflows.qeapp_workchain import QeAppWorkChain
@@ -49,9 +75,16 @@ async def read_job(id: int):
         if "structure" in node.outputs:
             structure = node.outputs.structure.backend_entity.attributes
         else:
-            structure = {}
+            structure = None
+        # xps
+        if "xps" in node.outputs:
+            # get data
+            xps_data = export_xps_data(node.outputs.xps)
+        else:
+            xps_data = None
         return {"stepsData": content, "processStatus": process_status,
-                "structure": structure}
+                "structure": structure,
+                "xps": xps_data}
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
 

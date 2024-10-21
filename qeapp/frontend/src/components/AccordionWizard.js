@@ -13,6 +13,7 @@ import ReviewAndSubmit from './ReviewAndSubmit';
 import WorkflowSummaryTab from './WorkflowSummary';
 import JobStatusTab from './JobStatus';
 import FinalStructureTab from './FinalStructure';
+import XPSResultTab from './XPSResultTab';
 
 // Define steps and their dependent steps
 const initialStepsData = [
@@ -65,6 +66,8 @@ const initialStepsData = [
     tabs: [
       { title: 'Job status', content: <JobStatusTab /> },
       { title: 'Final structure', content: <FinalStructureTab /> },
+      { title: 'XPS results', content: <XPSResultTab /> },
+      // { title: 'Workflow summary', content: <WorkflowSummaryTab /> },
     ],
     dependents: [],
     ButtonText: null,

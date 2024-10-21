@@ -26,31 +26,45 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
-const FinalStructureTab = ({ allStepsData = []}) => {
+const FinalStructureTab = ({ allStepsData = [] }) => {
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [info, setInfo] = useState(null); // New state for informational messages
 
   useEffect(() => {
     let isComponentMounted = true;
 
     const fetchFinalStructure = async () => {
       const jobId = allStepsData[3]?.data?.['Review settings']?.jobId;
+
       if (!jobId) {
-        setLoading(false);
+        if (isComponentMounted) {
+          setInfo('Job ID is missing. Please ensure that the job has been properly configured.');
+          setLoading(false);
+        }
         return;
       }
+
       try {
         const response = await fetch(
           `http://localhost:8000/api/jobs-data/${jobId}`
         );
+
         if (!response.ok) {
-          throw new Error('Failed to fetch final structure');
+          throw new Error('Failed to fetch final structure.');
         }
+
         const data = await response.json();
+
         if (isComponentMounted) {
-          const structure = structureToAtomsData(data.structure);
-          setFinalStructure(structure);
+          if (data.structure) {
+            const structure = structureToAtomsData(data.structure);
+            setFinalStructure(structure);
+          } else {
+            // Structure data is null or undefined
+            setInfo('Relax structure is not available.');
+          }
           setLoading(false);
         }
       } catch (err) {
@@ -80,8 +94,13 @@ const FinalStructureTab = ({ allStepsData = []}) => {
     return <Alert variant="danger">Error: {error}</Alert>;
   }
 
+  if (info) {
+    return <Alert variant="info">{info}</Alert>;
+  }
+
   if (!finalStructure) {
-    return <Alert variant="warning">No final structure available.</Alert>;
+    // This case should rarely occur, but added as a safety net
+    return <Alert variant="warning">No final structure data available.</Alert>;
   }
 
   // Helper function to format the cell array
