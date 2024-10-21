@@ -1,10 +1,70 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 
-const XPSTab = ({ data = {}, onDataChange }) => {
+const XPSTab = ({ data = {}, structure, onDataChange }) => {
+  const [supportedElements, setSupportedElements] = useState([]);
+  const [notSupportedElements, setNotSupportedElements] = useState([]);
+
+  useEffect(() => {
+    const defaultData = {
+      structureType: 'crystal',
+      pseudoGroup: 'pseudo_demo_pbe',
+      coreLevels: {},  // Store the selected core levels here
+    };
+
+    const initialData = { ...defaultData, ...data };
+
+    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
+      onDataChange(initialData);
+    }
+  }, [data, onDataChange]);
+
+  useEffect(() => {
+    if (!structure) {
+      return;
+    }
+
+    const fetchCalculationData = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/calculation/get_supported_xps_core_level/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ structure }), // Send the structure data to the backend
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("result: ", result);
+
+        // Set supported and not supported elements
+        setSupportedElements(result.supported_elements);
+        setNotSupportedElements(result.not_supported_elements);
+        handleChange('correctionEnergies', result.correction_energies || {});
+      } catch (error) {
+        console.error('Failed to fetch calculation data:', error);
+      }
+    };
+
+    // Fetch the data when the structure changes
+    fetchCalculationData();
+  }, [structure]);
+
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);
+  };
+
+  const handleCoreLevelChange = (element, isChecked) => {
+    const newCoreLevels = {
+      ...data.coreLevels,
+      [element]: isChecked,
+    };
+    handleChange('coreLevels', newCoreLevels);
   };
 
   return (
@@ -36,20 +96,42 @@ const XPSTab = ({ data = {}, onDataChange }) => {
           onChange={(e) => handleChange('pseudoGroup', e.target.value)} 
         >
           <option value="pseudo_demo_pbe">pseudo_demo_pbe</option>
+          <option value="pseudo_demo_pbesol">pseudo_demo_pbesol</option>
           {/* Add more options as needed */}
         </Form.Control>
         <Form.Text className="text-muted">
-          The pseudopotentials are downloaded from this <a href="https://example.com">repository</a>.
+          The pseudopotentials are downloaded from this <a href="https://github.com/superstar54/xps-data/raw/main/pseudo_demo/">repository</a>.
         </Form.Text>
       </Form.Group>
 
       <h5>Select Core-Level</h5>
-      <Form.Check 
-        type="checkbox" 
-        label="Si_2p" 
-        checked={data.si2p || false} 
-        onChange={(e) => handleChange('si2p', e.target.checked)} 
-      />
+
+      {/* Supported core levels (render as checkboxes) */}
+      {supportedElements.length > 0 ? (
+        supportedElements.map((element) => (
+          <Form.Check 
+            key={element}
+            type="checkbox" 
+            label={element} 
+            checked={data.coreLevels?.[element] || false} 
+            onChange={(e) => handleCoreLevelChange(element, e.target.checked)} 
+          />
+        ))
+      ) : (
+        <p>No supported core levels available.</p>
+      )}
+
+      {/* Not supported elements (render as labels or text) */}
+      {notSupportedElements.length > 0 && (
+        <div>
+          <h6>Not Supported Core Levels</h6>
+          {notSupportedElements.map((element) => (
+            <p key={element} style={{ color: 'red' }}>
+              {element} (Not Supported)
+            </p>
+          ))}
+        </div>
+      )}
     </Form>
   );
 };

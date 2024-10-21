@@ -79,6 +79,13 @@ def get_advanced_setting_value(data):
                           "use_pdos_degauss": pdos_settings["usePdosDegauss"],
                           "pdos_degauss": pdos_settings["pdosDegauss"],
                           }
+    # xps
+    xps_settings = data.workflow_settings.get('XPS', {})
+    parameters["xps"] = {"structure_type": xps_settings["structureType"],
+                         "pseudo_group": xps_settings["pseudoGroup"],
+                         "correction_energies": xps_settings["correctionEnergies"],
+                         "core_level_list": [key for key, value in xps_settings["coreLevels"].items() if value],
+                         }
 
     return parameters
 

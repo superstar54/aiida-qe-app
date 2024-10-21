@@ -31,7 +31,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
     }
     const fetchCalculationData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/calculation/', {
+        const response = await fetch('http://localhost:8000/api/calculation/pw_parameters_from_protocol/', {
           method: 'POST', // Assuming POST method is required; you can adjust as needed
           headers: {
             'Content-Type': 'application/json',

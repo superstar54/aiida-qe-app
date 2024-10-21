@@ -6,6 +6,7 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
+  const [loading, setLoading] = useState(false); // New loading state
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
@@ -13,21 +14,16 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
     onDataChange(newData);
   };
 
-  // Function to handle editing data
   const handleEdit = () => {
     setIsEditing(true);
     const accumulatedData = accumulateData(false);
-    // Convert the accumulated data to YAML format
     const yamlData = yaml.dump(accumulatedData);
     setEditableData(yamlData);
   };
 
-  // Function to save the edited data
   const handleSave = () => {
     try {
       const updatedData = yaml.load(editableData);
-      // Update the allStepsData with edited data if necessary
-      // For now, we'll just log it
       setIsEditing(false);
     } catch (error) {
       console.error('Error parsing YAML:', error);
@@ -35,7 +31,6 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
     }
   };
 
-  // Function to accumulate data from all steps, with an option to include or exclude 'Select Structure'
   const accumulateData = (includeStructure = true) => {
     return Array.isArray(allStepsData)
       ? allStepsData.reduce((acc, step) => {
@@ -51,13 +46,13 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
       : {};
   };
 
-  // Function to submit the data to the backend
   const handleSubmit = async () => {
     try {
-      // Accumulate the data
+      setLoading(true); // Set loading state to true when submission starts
+
       const accumulatedData = accumulateData();
-  
-      // Normalize keys in accumulatedData
+
+      // Normalize keys in accumulatedData (as you have done in your existing code)
       if (accumulatedData['Select Structure']) {
         accumulatedData['structure'] = accumulatedData['Select Structure'];
         delete accumulatedData['Select Structure'];
@@ -78,6 +73,7 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
         accumulatedData['status_results'] = accumulatedData['Status & Results'];
         delete accumulatedData['Status & Results'];
       }
+
       // Send the data to the backend using fetch
       const response = await fetch('http://localhost:8000/api/submit', {
         method: 'POST',
@@ -86,20 +82,22 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
         },
         body: JSON.stringify(accumulatedData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         const errorMessage = errorData.detail || `Server responded with ${response.status}, ${response.statusText}`;
         throw new Error(errorMessage);
       }
-  
+
       const data = await response.json();
       console.log('Submission successful:', data);
       setSubmissionStatus('success');
+      setLoading(false); // Set loading to false after successful submission
       alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
       handleChange('jobId', data.job_id); // Update the job_id in the parent component
     } catch (error) {
       console.error('Error submitting data:', error);
+      setLoading(false); // Set loading to false if there's an error
       setSubmissionStatus('error');
       alert(`Error submitting data: ${error.message}`);
     }
@@ -129,12 +127,16 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
           <button
             className="btn btn-success mt-3"
             onClick={handleSubmit}
-            disabled={submissionStatus === 'success'} // Disable button after success
+            disabled={loading || submissionStatus === 'success'} // Disable the button while loading
           >
-            Submit
+            {loading ? 'Submitting...' : 'Submit'} {/* Show loading text if submitting */}
           </button>
         </div>
       )}
+
+      {/* Display loading spinner or message while waiting */}
+      {loading && <div className="alert alert-info mt-3">Submitting your data, please wait...</div>}
+
       {/* Optionally, display submission status */}
       {submissionStatus === 'success' && (
         <div className="alert alert-success mt-3">

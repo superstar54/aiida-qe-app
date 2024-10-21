@@ -8,6 +8,7 @@ const exampleFiles = [
   { name: "Bulk silicon (primitive cell)", path: '/example_structures/Si.cif', type: 'cif' },
   { name: "Silicon oxide (alpha quartz)", path: '/example_structures/SiO2.cif', type: 'cif' },
   { name: "Diamond (primitive cell)", path: '/example_structures/Diamond.cif', type: 'cif' },
+  { name: "ETFA molecule", path: '/example_structures/ETFA.xyz', type: 'xyz' },
   // { name: "Gallium arsenide (primitive cell)", path: '/example_structures/GaAs.cif', type: 'cif' },
   // { name: "Gold (conventional cell)", path: '/example_structures/Au.xyz', type: 'cif' },
   // { name: "Cobalt (primitive cell)", path: '/example_structures/Co.xyz', type: 'cif' },
@@ -32,6 +33,11 @@ const StructureSelection = ({ data = {}, onDataChange }) => {
         let parsedStructure = null;
         if (fileType === 'xyz') {
           parsedStructure = parseXYZ(content);
+          // if parsedStructure is a array of structures, we only take the first one
+          if (Array.isArray(parsedStructure)) {
+            console.log("Multiple structures found in the XYZ file. Using the first one.");
+            parsedStructure = parsedStructure[0];
+          }
         } else if (fileType === 'cif') {
           parsedStructure = parseCIF(content);
         } else if (fileType === 'cube') {
@@ -69,6 +75,10 @@ const StructureSelection = ({ data = {}, onDataChange }) => {
           let parsedStructure = null;
           if (example.type === 'xyz') {
             parsedStructure = parseXYZ(content);
+            if (Array.isArray(parsedStructure)) {
+              console.log("Multiple structures found in the XYZ file. Using the first one.");
+              parsedStructure = parsedStructure[0];
+            }
           } else if (example.type === 'cif') {
             parsedStructure = parseCIF(content);
           }
