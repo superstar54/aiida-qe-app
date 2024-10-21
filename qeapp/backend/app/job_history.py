@@ -46,7 +46,10 @@ async def read_job(id: int):
         content = deserialize_unsafe(node.base.extras.get("ui_parameters", ""))
         process_status = build_call_graph(node)
         # output structure
-        structure = node.outputs.structure.backend_entity.attributes
+        if "structure" in node.outputs:
+            structure = node.outputs.structure.backend_entity.attributes
+        else:
+            structure = {}
         return {"stepsData": content, "processStatus": process_status,
                 "structure": structure}
     except KeyError:

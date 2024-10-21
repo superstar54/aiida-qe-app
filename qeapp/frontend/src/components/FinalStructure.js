@@ -26,7 +26,7 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
-const FinalStructureTab = ({ allStepsData = [], data = {}, onDataChange }) => {
+const FinalStructureTab = ({ allStepsData = []}) => {
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

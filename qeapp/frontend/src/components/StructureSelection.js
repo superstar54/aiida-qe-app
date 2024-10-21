@@ -1,63 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs, Tab, Form, Button } from 'react-bootstrap';
 import StructureViewer from './StructureViewer';
 import { parseXYZ, parseCIF, parseCube } from 'weas';
 
+
+const exampleFiles = [
+  { name: "Bulk silicon (primitive cell)", path: '/example_structures/Si.cif', type: 'cif' },
+  { name: "Silicon oxide (alpha quartz)", path: '/example_structures/SiO2.cif', type: 'cif' },
+  { name: "Diamond (primitive cell)", path: '/example_structures/Diamond.cif', type: 'cif' },
+  // { name: "Gallium arsenide (primitive cell)", path: '/example_structures/GaAs.cif', type: 'cif' },
+  // { name: "Gold (conventional cell)", path: '/example_structures/Au.xyz', type: 'cif' },
+  // { name: "Cobalt (primitive cell)", path: '/example_structures/Co.xyz', type: 'cif' },
+];
+
 const StructureSelection = ({ data = {}, onDataChange }) => {
+  const [selectedExample, setSelectedExample] = useState(null); // State to store selected example
+
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);
   };
 
-  // Function to handle file upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    console.log("Selected file: ", file);
     if (file) {
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
         const content = e.target.result;
         const fileType = file.name.split('.').pop().toLowerCase();
 
-        // Determine file type and parse structure accordingly
         let parsedStructure = null;
         if (fileType === 'xyz') {
-          parsedStructure = parseXYZ(content);  // Parse XYZ file
+          parsedStructure = parseXYZ(content);
         } else if (fileType === 'cif') {
-          parsedStructure = parseCIF(content);  // Parse CIF file
+          parsedStructure = parseCIF(content);
         } else if (fileType === 'cube') {
-          parsedStructure = parseCube(content);  // Parse Cube file
+          parsedStructure = parseCube(content);
         } else {
           alert("Unsupported file format. Please upload an XYZ, CIF, or Cube file.");
           return;
         }
 
-        // Update data with parsed structure
-        console.log("parsedStructure: ", parsedStructure);
         handleChange('selectedStructure', parsedStructure);
       };
 
-      // Read file as text
       fileReader.readAsText(file);
     }
   };
 
   const handleOptimadeSelect = () => {
-    // Implement logic to select a structure from OPTIMADE
     const optimadeStructure = "Structure from OPTIMADE";
     handleChange('selectedStructure', optimadeStructure);
   };
 
   const handleAiiDaSelect = () => {
-    // Implement logic to select a structure from AiiDA database
     const aiidaStructure = "Structure from AiiDA database";
     handleChange('selectedStructure', aiidaStructure);
   };
 
-  const handleExampleSelect = () => {
-    // Implement logic to select a structure from examples
-    const exampleStructure = "Structure from example";
-    handleChange('selectedStructure', exampleStructure);
+  // Handle selecting an example structure
+  const handleExampleSelect = (selectedName) => {
+    const example = exampleFiles.find(file => file.name === selectedName);
+
+    if (example) {
+      fetch(example.path)
+        .then((response) => response.text())
+        .then((content) => {
+          let parsedStructure = null;
+          if (example.type === 'xyz') {
+            parsedStructure = parseXYZ(content);
+          } else if (example.type === 'cif') {
+            parsedStructure = parseCIF(content);
+          }
+
+          setSelectedExample(selectedName);
+          handleChange('selectedStructure', parsedStructure);
+        })
+        .catch((error) => {
+          console.error("Error fetching example file:", error);
+        });
+    }
   };
 
   return (
@@ -83,9 +105,21 @@ const StructureSelection = ({ data = {}, onDataChange }) => {
         </Tab>
 
         <Tab eventKey="examples" title="From Examples">
-          <Button variant="primary" onClick={handleExampleSelect}>
-            Select Structure from Examples
-          </Button>
+          <Form.Group controlId="exampleSelect" className="mb-3">
+            <Form.Label>Select an example structure:</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedExample || ''}
+              onChange={(e) => handleExampleSelect(e.target.value)}
+            >
+              <option value="" disabled>Select a structure</option>
+              {exampleFiles.map((file) => (
+                <option key={file.name} value={file.name}>
+                  {file.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
         </Tab>
       </Tabs>
 

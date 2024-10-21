@@ -20,6 +20,7 @@ function StructureViewer({ structure }) {
       weasContainerRef.current.innerHTML = ""; // Clear the container when unmounting
       const editor = new WEAS({ domElement: weasContainerRef.current });
       editor.avr.atoms = structure;
+      editor.avr.modelStyle = 1;
       editor.render();
 
       return () => {
