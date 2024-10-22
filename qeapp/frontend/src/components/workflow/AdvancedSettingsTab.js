@@ -70,7 +70,12 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
     }
   }, [protocol, structure]);
 
-  const handleChange = (field, value) => {
+  const handleChange = (field, value, type = 'string') => {
+    if (type === 'float' || type === 'number') {
+      value = parseFloat(value);
+    } else if (type === 'int') {
+      value = parseInt(value, 10);
+    }
     const newData = { ...data, [field]: value };
     onDataChange(newData);
   };
@@ -96,7 +101,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="0.0001"
             value={data.forceConvergence || 0.0001}
-            onChange={(e) => handleChange('forceConvergence', e.target.value)}
+            onChange={(e) => handleChange('forceConvergence', e.target.value, 'number')}
           />
         </Col>
         <Col md={4} sm={12}>
@@ -105,7 +110,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="0.00001"
             value={data.energyConvergence || 0.00001}
-            onChange={(e) => handleChange('energyConvergence', e.target.value)}
+            onChange={(e) => handleChange('energyConvergence', e.target.value, 'number')}
           />
         </Col>
         <Col md={4} sm={12}>
@@ -114,7 +119,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="2e-10"
             value={data.scfConvergence || 2e-10}
-            onChange={(e) => handleChange('scfConvergence', e.target.value)}
+            onChange={(e) => handleChange('scfConvergence', e.target.value, 'number')}
           />
         </Col>
       </Row>
@@ -126,7 +131,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="80"
             value={data.maxElectronSteps || 80}
-            onChange={(e) => handleChange('maxElectronSteps', e.target.value)}
+            onChange={(e) => handleChange('maxElectronSteps', e.target.value, 'int')}
           />
         </Col>
       </Row>
@@ -150,7 +155,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="0.01"
             value={data.smearingWidth || 0.01}
-            onChange={(e) => handleChange('smearingWidth', e.target.value)}
+            onChange={(e) => handleChange('smearingWidth', e.target.value, 'number')}
           />
         </Col>
       </Row>
@@ -163,7 +168,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
             type="number"
             placeholder="0.15"
             value={data.kPointsDistance || 0.15}
-            onChange={(e) => handleChange('kPointsDistance', e.target.value)}
+            onChange={(e) => handleChange('kPointsDistance', e.target.value, 'number')}
           />
         </Col>
       </Row>

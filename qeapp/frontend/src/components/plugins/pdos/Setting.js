@@ -58,9 +58,14 @@ const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
     }
   }, [protocol, structure]);
 
-  const handleChange = (field, value) => {
-      const newData = { ...data, [field]: value };
-      onDataChange(newData);
+  const handleChange = (field, value, type = 'string') => {
+    if (type === 'float' || type === 'number') {
+      value = parseFloat(value);
+    } else if (type === 'int') {
+      value = parseInt(value, 10);
+    }
+    const newData = { ...data, [field]: value };
+    onDataChange(newData);
   };
 
   return (
@@ -76,7 +81,7 @@ const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
         <Form.Control 
           type="number" 
           value={data.kPointsDistance || 0.1} 
-          onChange={(e) => handleChange('kPointsDistance', e.target.value)} 
+          onChange={(e) => handleChange('kPointsDistance', e.target.value, 'float')} 
           step="0.01" 
         />
       </Form.Group>
@@ -94,7 +99,7 @@ const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
           <Form.Control 
             type="number" 
             value={data.pdosDegauss || 0.005} 
-            onChange={(e) => handleChange('pdosDegauss', e.target.value)} 
+            onChange={(e) => handleChange('pdosDegauss', e.target.value, 'float')} 
             step="0.001" 
           />
         </Form.Group>
