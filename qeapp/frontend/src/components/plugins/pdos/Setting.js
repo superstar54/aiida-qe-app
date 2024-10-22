@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
-const PDOSTab = ({ data = {}, protocol, structure, onDataChange }) => {
+export const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
 
   useEffect(() => {
       const defaultData = {
@@ -103,4 +103,3 @@ const PDOSTab = ({ data = {}, protocol, structure, onDataChange }) => {
   );
 };
 
-export default PDOSTab;

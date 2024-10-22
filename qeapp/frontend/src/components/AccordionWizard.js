@@ -10,10 +10,10 @@ import ReviewAndSubmit from './review_submit/ReviewAndSubmit';
 import WorkflowSummaryTab from './results/WorkflowSummary';
 import JobStatusTab from './results/JobStatus';
 import FinalStructureTab from './results/FinalStructure';
-import BandsStructureTab from './plugins/bands/BandsStructureTab';
-import PDOSTab from './plugins/pdos/PDOSTab';
-import XPSTab from './plugins/xps/XPSTab';
-import XPSResultTab from './plugins/xps/XPSResultTab';
+import {SettingTab as BandsSettingTab} from './plugins/bands/Setting';
+import {SettingTab as PdosSettingTab} from './plugins/pdos/Setting';
+import {SettingTab as XpsSettingTab} from './plugins/xps/Setting';
+import {ResultTab as XpsResultTab} from './plugins/xps/Result';
 
 // Define steps and their dependent steps
 const initialStepsData = [
@@ -35,9 +35,9 @@ const initialStepsData = [
     tabs: [
       { title: 'Basic workflow settings', content: <BasicSettingsTab /> },
       { title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> },
-      { title: 'Bands', content: <BandsStructureTab /> },
-      { title: 'PDOS', content: <PDOSTab /> },
-      { title: 'XPS', content: <XPSTab /> },
+      { title: 'Bands', content: <BandsSettingTab /> },
+      { title: 'PDOS', content: <PdosSettingTab /> },
+      { title: 'XPS', content: <XpsSettingTab /> },
     ],
     dependents: [2, 3],
     ButtonText: "Confirm",
@@ -66,7 +66,7 @@ const initialStepsData = [
     tabs: [
       { title: 'Job status', content: <JobStatusTab /> },
       { title: 'Final structure', content: <FinalStructureTab /> },
-      { title: 'XPS results', content: <XPSResultTab /> },
+      { title: 'XPS results', content: <XpsResultTab /> },
       // { title: 'Workflow summary', content: <WorkflowSummaryTab /> },
     ],
     dependents: [],

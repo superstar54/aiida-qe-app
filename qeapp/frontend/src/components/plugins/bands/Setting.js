@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
-const BandsStructureTab = ({ data = {}, onDataChange }) => {
+export const SettingTab = ({ data = {}, onDataChange }) => {
 
     useEffect(() => {
         const defaultData = {
@@ -40,4 +40,3 @@ const BandsStructureTab = ({ data = {}, onDataChange }) => {
   );
 };
 
-export default BandsStructureTab;

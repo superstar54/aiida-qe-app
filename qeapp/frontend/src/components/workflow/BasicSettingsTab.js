@@ -92,32 +92,20 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       <Form.Group className="mb-3">
         <Form.Check 
           type="checkbox" 
-          label="Bader charge analysis" 
-          checked={data.bader || false} 
-          onChange={(e) => handleChange('bader', e.target.checked)} 
-        />
-        <Form.Check 
-          type="checkbox" 
           label="Electronic band structure" 
-          checked={data.bands || false} 
+          checked={data.bands || false}
           onChange={(e) => handleChange('bands', e.target.checked)} 
         />
         <Form.Check 
           type="checkbox" 
           label="Projected Density of States (PDOS)" 
-          checked={data.pdos || false} 
+          checked={data.pdos || false}
           onChange={(e) => handleChange('pdos', e.target.checked)} 
         />
         <Form.Check 
           type="checkbox" 
-          label="X-ray absorption spectroscopy (XAS)" 
-          checked={data.xas || false} 
-          onChange={(e) => handleChange('xas', e.target.checked)} 
-        />
-        <Form.Check 
-          type="checkbox" 
           label="X-ray photoelectron spectroscopy (XPS)" 
-          checked={data.xps || false} 
+          checked={data.xps || false}
           onChange={(e) => handleChange('xps', e.target.checked)} 
         />
       </Form.Group>

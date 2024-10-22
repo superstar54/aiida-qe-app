@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 
-const XPSTab = ({ data = {}, structure, onDataChange }) => {
+export const SettingTab = ({ data = {}, structure, onDataChange }) => {
   const [supportedElements, setSupportedElements] = useState([]);
   const [notSupportedElements, setNotSupportedElements] = useState([]);
 
@@ -135,5 +135,3 @@ const XPSTab = ({ data = {}, structure, onDataChange }) => {
     </Form>
   );
 };
-
-export default XPSTab;

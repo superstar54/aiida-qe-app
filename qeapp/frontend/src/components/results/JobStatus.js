@@ -42,7 +42,7 @@ const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
         setLoading(false);
         return;
       }
-      setLoading(true);
+      // setLoading(true);
 
       try {
         const response = await fetch(
