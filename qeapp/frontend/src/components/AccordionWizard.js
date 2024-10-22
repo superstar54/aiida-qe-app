@@ -5,7 +5,7 @@ import AccordionStep from './wizard/AccordionStep';
 import BasicSettingsTab from './workflow/BasicSettingsTab';
 import AdvancedSettingsTab from './workflow/AdvancedSettingsTab';
 import StructureSelection from './structure_selection/StructureSelection';
-import ChooseResourcesTab from './computational_resources/ChooseResourcesTab';
+import CodeResourcesTab from './computational_resources/CodeResourcesTab';
 import LabelGroupTab from './review_submit/LabelGroup';
 import ReviewAndSubmitTab from './review_submit/ReviewAndSubmit';
 import WorkflowSummaryTab from './results/WorkflowSummary';
@@ -53,7 +53,15 @@ const initialStepsData = [
     title: 'Choose Computational Resources',
     id: "computational_resources",
     tabs: [
-      { id: "basic", title: 'Basic resource settings', content: <ChooseResourcesTab /> },
+      { id: "basic", title: 'Basic resource settings', content: <CodeResourcesTab /> },
+      // Conditionally add plugin settings tabs
+      ...plugins
+      .filter(plugin => plugin.CodeResourcesTab) // Only include plugins with CodeResourcesTab
+      .map(plugin => ({
+        id: plugin.id,
+        title: `${plugin.title} Resource Settings`,
+        content: <plugin.CodeResourcesTab />
+      })),
     ],
     dependents: [3],
     ButtonText: "Confirm",

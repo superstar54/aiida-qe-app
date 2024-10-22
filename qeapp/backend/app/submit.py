@@ -78,35 +78,19 @@ def get_advanced_setting_value(data):
     return parameters
 
 def get_codes_values(data):
-    basic_resource_settings = data.computational_resources.get('Basic resource settings', {})
-    pw_code = load_code(basic_resource_settings.get("pwCode", "qe-7.2-pw@localhost"))
-    projwfc_code = load_code(basic_resource_settings.get("projwfcCode", "qe-7.2-projwfc@localhost"))
-    dos_code = load_code(basic_resource_settings.get("dosCode", "qe-7.2-dos@localhost"))
-    codes = {"pw": {"code": pw_code.uuid,
-                                  "nodes": basic_resource_settings.get("pwNodes", 1),
-                                  "ntasks_per_node": basic_resource_settings.get("pwCPUs", 1),
-                                  "cpus_per_task": 1,
-                                  "max_wallclock_seconds": basic_resource_settings.get("pwTime", 3600),
-                                  },
-                           "projwfc_bands": {"code": projwfc_code.uuid,
-                                       "nodes": basic_resource_settings.get("projwfcNodes", 1),
-                                       "ntasks_per_node": basic_resource_settings.get("projwfcCPUs", 1),
-                                       "cpus_per_task": 1,
-                                       "max_wallclock_seconds": basic_resource_settings.get("projwfcTime", 3600),
-                                       },
-                            "dos": {"code": dos_code.uuid,
-                                        "nodes": basic_resource_settings.get("dosNodes", 1),
-                                        "ntasks_per_node": basic_resource_settings.get("dosCPUs", 1),
-                                        "cpus_per_task": 1,
-                                        "max_wallclock_seconds": basic_resource_settings.get("dosTime", 3600),
-                                        },
-                            "projwfc": {"code": projwfc_code.uuid,
-                                       "nodes": basic_resource_settings.get("projwfcNodes", 1),
-                                       "ntasks_per_node": basic_resource_settings.get("projwfcCPUs", 1),
-                                       "cpus_per_task": 1,
-                                       "max_wallclock_seconds": basic_resource_settings.get("projwfcTime", 3600),
-                                       },
-                           }
+    codes = {}
+    for _, settings in data.computational_resources.items():
+        for code_name, data in settings["codes"].items():
+            label = data["label"]
+            aiida_code = load_code(label)
+            codes[code_name] = {
+                "code": aiida_code.uuid,
+                "nodes": data["nodes"],
+                "ntasks_per_node": data["cpus"],
+                "cpus_per_task": 1,
+                "max_wallclock_seconds": data.get("max_wallclock_seconds", 3600),
+            }
+    
     return codes
 
 def prepare_inputs(data: CalculationData):

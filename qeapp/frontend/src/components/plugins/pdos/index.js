@@ -1,5 +1,6 @@
 import SettingTab from './Setting';
 import ResultTab from './Result';
+import CodeResourcesTab from './CodeResources';
 
 const PdosPlugin = {
   id: 'pdos',
@@ -9,6 +10,7 @@ const PdosPlugin = {
   description: 'Handles PDOS calculations and visualizations',
   SettingTab: SettingTab,
   ResultTab: ResultTab,
+  CodeResourcesTab: CodeResourcesTab,
 };
 
 export default PdosPlugin;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Form, Button } from 'react-bootstrap';
-import StructureViewer from '../StructureViewer';
+import StructureViewer from '../widgets/StructureViewer';
 import { parseXYZ, parseCIF, parseCube } from 'weas';
 
 

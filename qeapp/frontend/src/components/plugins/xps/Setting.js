@@ -10,6 +10,7 @@ const SettingTab = ({ data = {}, structure, onDataChange }) => {
       structureType: 'crystal',
       pseudoGroup: 'pseudo_demo_pbe',
       coreLevels: {},  // Store the selected core levels here
+      correctionEnergies: {},  // Store the correction energies here
     };
 
     const initialData = { ...defaultData, ...data };

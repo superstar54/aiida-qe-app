@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner, Table, Alert, Row, Col, Card } from 'react-bootstrap';
-import StructureViewer from '../StructureViewer';
+import StructureViewer from '../widgets/StructureViewer';
 
 // Convert AiiDA structure data to the format expected by Atoms
 function structureToAtomsData(inputData) {
