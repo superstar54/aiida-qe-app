@@ -140,7 +140,7 @@ const XPSResultTab = ({ jobID = null, jobStatus = null }) => {
       <Row className="mb-4">
         <Col md={6}>
           <Form.Group controlId="shiftTypeToggle">
-            <Form.Label>Shift Type</Form.Label>
+            <Form.Label className="mb-2">Plot Type</Form.Label> {/* Added margin-bottom */}
             <ToggleButtonGroup
               type="radio"
               name="shiftType"

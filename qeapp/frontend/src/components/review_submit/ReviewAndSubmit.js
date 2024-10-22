@@ -141,7 +141,7 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
       {submissionStatus === 'success' && (
         <div className="alert alert-success mt-3">
           Calculation submitted successfully!{' '}
-          <Link to="/job-history">Go to Job History</Link>, or confirm and go to the job status and results step.
+          <Link to="/job-history">Go to Job History</Link>, or click the Confirm button and go to the job status and results step.
         </div>
       )}
       {submissionStatus === 'error' && (

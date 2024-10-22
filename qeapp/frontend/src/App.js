@@ -6,9 +6,9 @@ import Footer from './components/Footer';
 import AccordionWizard from './components/AccordionWizard';
 import GetStarted from './components/GetStarted';
 import JobHistory from './components/JobHistory';
-import Settings from './components/Settings';
-import AddComputer from './components/AiiDAComputerSetup';
-import AddCode from './components/AiiDACodeSetup';
+import Settings from './components/settings/Settings';
+import AddComputer from './components/settings/AiiDAComputerSetup';
+import AddCode from './components/settings/AiiDACodeSetup';
 import './App.css';
 
 function App() {
