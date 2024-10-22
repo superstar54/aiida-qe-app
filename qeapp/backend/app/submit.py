@@ -124,17 +124,30 @@ def prepare_inputs(data: CalculationData):
         "parameters": parameters,
     }
 
+def update_builder(builder, codes):
+    """Update the resources and parallelization of the ``relax`` builder."""
+    # this is hardcoded for now, but in the future, the relax should be a plugin
+    # update resources
+    from aiida import orm
+    builder.relax.base.pw.metadata.options.resources = {
+        "num_machines": codes.get("pw")["nodes"],
+        "num_mpiprocs_per_machine": codes.get("pw")["ntasks_per_node"],
+        "num_cores_per_mpiproc": codes.get("pw")["cpus_per_task"],
+    }
 
 @router.post("/api/submit")
 async def submit_calculation(data: CalculationData):
     from aiida.orm.utils.serialize import serialize
+    from copy import deepcopy
     try:
         # Process the data
         # For example, start the calculation using AiiDA
         # Return a success response with job details
         inputs = prepare_inputs(data)
+        codes = deepcopy(inputs["parameters"]["codes"])
         print("inputs: ", inputs)
         builder = QeAppWorkChain.get_builder_from_protocol(**inputs)
+        update_builder(builder, codes)
         print("builder: ", builder)
         process = submit(builder)
         data.review_submit["Label and Submit"]["jobId"] = process.pk
