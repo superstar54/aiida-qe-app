@@ -7,7 +7,7 @@ const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
   // Extract protocol from stepData, pass it to tabs
   const protocol = allStepsData[1].data["Basic workflow settings"]?.protocol || 'moderate';
   const structure = allStepsData[0].data["Structure Selection"]?.selectedStructure || null;
-  const jobID = allStepsData[3].data["Review settings"]?.jobId || null;
+  const JobId = allStepsData[3].data["Label and Submit"]?.jobId || null;
   const jobStatus = allStepsData[4].data["Job status"]?.jobStatus || null;
 
   return (
@@ -28,7 +28,7 @@ const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
               onDataChange(dataUpdater);
             },
             allStepsData, // Full steps data
-            jobID: jobID,
+            JobId: JobId,
             jobStatus: jobStatus,
           })}
         </Tab>

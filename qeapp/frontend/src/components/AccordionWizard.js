@@ -6,7 +6,8 @@ import BasicSettingsTab from './workflow/BasicSettingsTab';
 import AdvancedSettingsTab from './workflow/AdvancedSettingsTab';
 import StructureSelection from './structure_selection/StructureSelection';
 import ChooseResourcesTab from './computational_resources/ChooseResourcesTab';
-import ReviewAndSubmit from './review_submit/ReviewAndSubmit';
+import LabelGroupTab from './review_submit/LabelGroup';
+import ReviewAndSubmitTab from './review_submit/ReviewAndSubmit';
 import WorkflowSummaryTab from './results/WorkflowSummary';
 import JobStatusTab from './results/JobStatus';
 import FinalStructureTab from './results/FinalStructure';
@@ -55,7 +56,8 @@ const initialStepsData = [
     title: 'Review and Submit',
     id: "review_submit",
     tabs: [
-      { title: 'Review settings', content: <ReviewAndSubmit /> },  // The review step shows all data.
+      { title: 'Label and Submit', content: <LabelGroupTab /> },
+      { title: 'Review settings', content: <ReviewAndSubmitTab /> },  // The review step shows all data.
     ],
     dependents: [],
     ButtonText: "Confirm",

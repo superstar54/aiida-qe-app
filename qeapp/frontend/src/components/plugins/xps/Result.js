@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Alert, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Plot from 'react-plotly.js';
 
-export const ResultTab = ({ jobID = null, jobStatus = null }) => {
+export const ResultTab = ({ JobId = null, jobStatus = null }) => {
   const [selectedSpectrum, setSelectedSpectrum] = useState(null);
   const [lorentzian, setLorentzian] = useState(0.1);
   const [gaussian, setGaussian] = useState(0.1);
@@ -15,10 +15,10 @@ export const ResultTab = ({ jobID = null, jobStatus = null }) => {
   const [shiftType, setShiftType] = useState('chemicalShift');  // New state for toggle button
   const [info, setInfo] = useState(null); // New state for informational messages
 
-  // useEffect for fetching data when jobID changes
+  // useEffect for fetching data when JobId changes
   useEffect(() => {
     const fetchXpsData = async () => {
-      if (!jobID) {
+      if (!JobId) {
         setLoading(false);
         return;
       }
@@ -27,8 +27,8 @@ export const ResultTab = ({ jobID = null, jobStatus = null }) => {
       setError(null);
 
       try {
-        console.log('Fetching XPS data for Job ID:', jobID);
-        const response = await fetch(`http://localhost:8000/api/jobs-data/${jobID}`);
+        console.log('Fetching XPS data for Job ID:', JobId);
+        const response = await fetch(`http://localhost:8000/api/jobs-data/${JobId}`);
         if (!response.ok) {
           console.error('Fetch error:', response);
           throw new Error('Failed to fetch XPS data');
@@ -63,7 +63,7 @@ export const ResultTab = ({ jobID = null, jobStatus = null }) => {
     };
 
     fetchXpsData();
-  }, [jobID, jobStatus]); // Depend only on jobID
+  }, [JobId, jobStatus]); // Depend only on JobId
 
   // useEffect for processing data when rawXpsData or processing parameters change
   useEffect(() => {

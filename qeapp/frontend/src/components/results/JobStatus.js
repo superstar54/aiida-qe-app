@@ -26,7 +26,7 @@ const TreeNode = ({ node }) => {
   }
 };
 
-const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
+const JobStatusTab = ({ JobId = null, data = {}, onDataChange}) => {
   const [jobStatus, setJobStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +38,7 @@ const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
     const fetchJobStatus = async () => {
       if (!isComponentMounted) return; // Prevent fetching if component is unmounted
 
-      if (!jobID) {
+      if (!JobId) {
         setLoading(false);
         return;
       }
@@ -46,7 +46,7 @@ const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/jobs-data/${jobID}`
+          `http://localhost:8000/api/jobs-data/${JobId}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch job status');
@@ -83,7 +83,7 @@ const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
       isComponentMounted = false;
       clearInterval(intervalId);
     };
-  }, [jobID]);
+  }, [JobId]);
 
   // Function to determine if the job is finished
   const isJobFinished = (processStatus) => {

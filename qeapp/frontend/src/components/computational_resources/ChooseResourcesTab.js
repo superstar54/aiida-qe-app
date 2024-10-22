@@ -1,23 +1,6 @@
 import React, { useEffect } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 
-function getChemicalFormula(symbols) {
-  const elementCounts = {};
-
-  // Count occurrences of each element
-  symbols.forEach(symbol => {
-      elementCounts[symbol] = (elementCounts[symbol] || 0) + 1;
-  });
-
-  // Construct the chemical formula
-  let formula = '';
-  for (const [element, count] of Object.entries(elementCounts)) {
-      formula += element + (count > 1 ? count : '');
-  }
-
-  return formula;
-}
-
 // Reusable component for code selection
 const CodeSelector = ({ codeLabel, codeValue, onCodeChange, nodeValue, onNodeChange, cpuValue, onCpuChange, codeOptions }) => {
   return (
@@ -85,14 +68,6 @@ const ChooseResourcesTab = ({ data = {}, structure, onDataChange }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!structure) {
-      return;
-    }
-    const formula = getChemicalFormula(structure.symbols);
-    handleChange('label', `${formula}`);
-  }, [structure]);
-  
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);
@@ -139,28 +114,6 @@ const ChooseResourcesTab = ({ data = {}, structure, onDataChange }) => {
         codeOptions={['dos-7.2@localhost', 'dos-7.1@remote']}
       />
 
-      {/* Labeling Job Section */}
-      <h4>Labeling Your Job</h4>
-      <Form.Group className="mb-3">
-        <Form.Label>Label:</Form.Label>
-        <Form.Control
-          type="text"
-          value={data.label || ""}
-          onChange={(e) => handleChange('label', e.target.value)}
-          placeholder="Enter job label"
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>Description:</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          value={data.description || ""}
-          onChange={(e) => handleChange('description', e.target.value)}
-          placeholder="Enter job description"
-        />
-      </Form.Group>
     </Form>
   );
 };

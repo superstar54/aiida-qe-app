@@ -26,7 +26,7 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
-const FinalStructureTab = ({ jobID = null, jobStatus = null }) => {
+const FinalStructureTab = ({ JobId = null, jobStatus = null }) => {
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,14 +36,14 @@ const FinalStructureTab = ({ jobID = null, jobStatus = null }) => {
     let isComponentMounted = true;
 
     const fetchFinalStructure = async () => {
-      if (!jobID) {
+      if (!JobId) {
           setLoading(false);
         return;
       }
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8000/api/jobs-data/${jobID}`
+          `http://localhost:8000/api/jobs-data/${JobId}`
         );
 
         if (!response.ok) {
@@ -77,7 +77,7 @@ const FinalStructureTab = ({ jobID = null, jobStatus = null }) => {
     return () => {
       isComponentMounted = false;
     };
-  }, [jobID, jobStatus]);
+  }, [JobId, jobStatus]);
 
   if (loading) {
     return (
