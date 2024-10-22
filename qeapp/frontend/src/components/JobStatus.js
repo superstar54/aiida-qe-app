@@ -26,7 +26,7 @@ const TreeNode = ({ node }) => {
   }
 };
 
-const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
+const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
   const [jobStatus, setJobStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,16 +38,15 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
     const fetchJobStatus = async () => {
       if (!isComponentMounted) return; // Prevent fetching if component is unmounted
 
-      const jobId = allStepsData[3]?.data?.['Review settings']?.jobId;
-      if (!jobId) {
+      if (!jobID) {
         setLoading(false);
         return;
       }
-      // setLoading(true);
+      setLoading(true);
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/jobs-data/${jobId}`
+          `http://localhost:8000/api/jobs-data/${jobID}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch job status');
@@ -60,6 +59,7 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
 
         // Check if the job is finished
         if (isJobFinished(data.processStatus)) {
+          handleChange('jobStatus', 'finished'); // Update job status in parent component
           clearInterval(intervalId); // Stop polling when job is finished
         }
       } catch (err) {
@@ -67,7 +67,7 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
           setError(err.message);
           setLoading(false);
         }
-        clearInterval(intervalId); // Stop polling on error
+        // clearInterval(intervalId); // Stop polling on error
       }
     };
 
@@ -82,7 +82,7 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
       isComponentMounted = false;
       clearInterval(intervalId);
     };
-  }, [allStepsData]);
+  }, [jobID]);
 
   // Function to determine if the job is finished
   const isJobFinished = (processStatus) => {
@@ -104,6 +104,11 @@ const JobStatusTab = ({ allStepsData = [], data = {}, onDataChange }) => {
     };
 
     return traverse(processStatus);
+  };
+
+  const handleChange = (field, value) => {
+    const newData = { ...data, [field]: value };
+    onDataChange(newData);
   };
 
   if (loading) {

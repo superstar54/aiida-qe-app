@@ -93,7 +93,7 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
       console.log('Submission successful:', data);
       setSubmissionStatus('success');
       setLoading(false); // Set loading to false after successful submission
-      alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
+      // alert(`Calculation submitted successfully! Process PK: ${data.job_id}`);
       handleChange('jobId', data.job_id); // Update the job_id in the parent component
     } catch (error) {
       console.error('Error submitting data:', error);
@@ -141,7 +141,7 @@ const ReviewAndSubmit = ({ allStepsData = [], data = {}, onDataChange }) => {
       {submissionStatus === 'success' && (
         <div className="alert alert-success mt-3">
           Calculation submitted successfully!{' '}
-          <Link to="/job-history">Go to Job History</Link>
+          <Link to="/job-history">Go to Job History</Link>, or confirm and go to the job status and results step.
         </div>
       )}
       {submissionStatus === 'error' && (

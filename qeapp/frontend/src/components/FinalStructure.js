@@ -26,7 +26,7 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
-const FinalStructureTab = ({ allStepsData = [] }) => {
+const FinalStructureTab = ({ jobID = null, jobStatus = null }) => {
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,19 +36,14 @@ const FinalStructureTab = ({ allStepsData = [] }) => {
     let isComponentMounted = true;
 
     const fetchFinalStructure = async () => {
-      const jobId = allStepsData[3]?.data?.['Review settings']?.jobId;
-
-      if (!jobId) {
-        if (isComponentMounted) {
-          setInfo('Job ID is missing. Please ensure that the job has been properly configured.');
+      if (!jobID) {
           setLoading(false);
-        }
         return;
       }
-
+      setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8000/api/jobs-data/${jobId}`
+          `http://localhost:8000/api/jobs-data/${jobID}`
         );
 
         if (!response.ok) {
@@ -61,6 +56,8 @@ const FinalStructureTab = ({ allStepsData = [] }) => {
           if (data.structure) {
             const structure = structureToAtomsData(data.structure);
             setFinalStructure(structure);
+            setInfo(null);
+            setError(null);
           } else {
             // Structure data is null or undefined
             setInfo('Relax structure is not available.');
@@ -80,7 +77,7 @@ const FinalStructureTab = ({ allStepsData = [] }) => {
     return () => {
       isComponentMounted = false;
     };
-  }, [allStepsData]);
+  }, [jobID, jobStatus]);
 
   if (loading) {
     return (

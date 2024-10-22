@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Card, Button, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Form, Row, Col, Card, Alert, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Plot from 'react-plotly.js';
 
-const XPSResultTab = ({ allStepsData = [] }) => {
+const XPSResultTab = ({ jobID = null, jobStatus = null }) => {
   const [selectedSpectrum, setSelectedSpectrum] = useState(null);
   const [lorentzian, setLorentzian] = useState(0.1);
   const [gaussian, setGaussian] = useState(0.1);
@@ -13,14 +13,12 @@ const XPSResultTab = ({ allStepsData = [] }) => {
   const [error, setError] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [shiftType, setShiftType] = useState('chemicalShift');  // New state for toggle button
+  const [info, setInfo] = useState(null); // New state for informational messages
 
-  // Extract jobId from allStepsData
-  const jobId = allStepsData[3]?.data?.['Review settings']?.jobId;
-
-  // useEffect for fetching data when jobId changes
+  // useEffect for fetching data when jobID changes
   useEffect(() => {
     const fetchXpsData = async () => {
-      if (!jobId) {
+      if (!jobID) {
         setLoading(false);
         return;
       }
@@ -29,8 +27,8 @@ const XPSResultTab = ({ allStepsData = [] }) => {
       setError(null);
 
       try {
-        console.log('Fetching XPS data for Job ID:', jobId);
-        const response = await fetch(`http://localhost:8000/api/jobs-data/${jobId}`);
+        console.log('Fetching XPS data for Job ID:', jobID);
+        const response = await fetch(`http://localhost:8000/api/jobs-data/${jobID}`);
         if (!response.ok) {
           console.error('Fetch error:', response);
           throw new Error('Failed to fetch XPS data');
@@ -39,7 +37,8 @@ const XPSResultTab = ({ allStepsData = [] }) => {
         console.log('Fetched XPS data:', data.xps);
 
         if (!data.xps) {
-          throw new Error('No XPS data found');
+          // Structure data is null or undefined
+          setInfo('XPS data is not available.');
         }
 
         setRawXpsData(data.xps);
@@ -53,7 +52,8 @@ const XPSResultTab = ({ allStepsData = [] }) => {
         if (spectrumKeys.length > 0) {
           setSelectedSpectrum(spectrumKeys[0]);
         }
-
+        setError(null);
+        setInfo(null);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching XPS data:', err);
@@ -63,7 +63,7 @@ const XPSResultTab = ({ allStepsData = [] }) => {
     };
 
     fetchXpsData();
-  }, [jobId]); // Depend only on jobId
+  }, [jobID, jobStatus]); // Depend only on jobID
 
   // useEffect for processing data when rawXpsData or processing parameters change
   useEffect(() => {
@@ -103,6 +103,11 @@ const XPSResultTab = ({ allStepsData = [] }) => {
       </div>
     );
   }
+
+  if (info) {
+    return <Alert variant="info">{info}</Alert>;
+  }
+
 
   if (error) {
     return <div>Error: {error}</div>;
