@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Alert, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Plot from 'react-plotly.js';
 
-export const ResultTab = ({ JobId = null, jobStatus = null }) => {
+const ResultTab = ({ JobId = null, jobStatus = null }) => {
   const [selectedSpectrum, setSelectedSpectrum] = useState(null);
   const [lorentzian, setLorentzian] = useState(0.1);
   const [gaussian, setGaussian] = useState(0.1);
@@ -237,6 +237,8 @@ export const ResultTab = ({ JobId = null, jobStatus = null }) => {
     </div>
   );
 };
+
+export default ResultTab;
 
 
 

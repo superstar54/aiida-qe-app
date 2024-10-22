@@ -36,7 +36,7 @@ def get_advanced_setting_value(data):
         parameters["workchain"][key] = basic_settings.pop(value, None)
     parameters["workchain"]["properties"] = ["relax"] if parameters["workchain"]["relax_type"] != "none" else []
     # all the remaining settings, which are True will be considered as properties
-    for key, value in basic_settings.items():
+    for key, value in basic_settings["properties"].items():
         if value:
             parameters["workchain"]["properties"].append(key)
     # create the the initial_magnetic_moments as None (Default)
@@ -128,11 +128,11 @@ def prepare_inputs(data: CalculationData):
     # workflow settings
     parameters = get_advanced_setting_value(data)
     # bands
-    parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands', {}))
+    parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands Settings', {}))
     # pdos
-    parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS', {}))
+    parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS Settings', {}))
     # xps
-    parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS', {}))
+    parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS Settings', {}))
     # computational resources
     parameters["codes"] = get_codes_values(data)
     return {

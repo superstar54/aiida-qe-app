@@ -11,10 +11,8 @@ import ReviewAndSubmitTab from './review_submit/ReviewAndSubmit';
 import WorkflowSummaryTab from './results/WorkflowSummary';
 import JobStatusTab from './results/JobStatus';
 import FinalStructureTab from './results/FinalStructure';
-import {SettingTab as BandsSettingTab} from './plugins/bands/Setting';
-import {SettingTab as PdosSettingTab} from './plugins/pdos/Setting';
-import {SettingTab as XpsSettingTab} from './plugins/xps/Setting';
-import {ResultTab as XpsResultTab} from './plugins/xps/Result';
+// Import the dynamically discovered plugins
+import plugins from './plugins';
 
 // Define steps and their dependent steps
 const initialStepsData = [
@@ -23,56 +21,72 @@ const initialStepsData = [
     id: "structure",
     tabs: [
       {
-        "title": "Structure Selection", 
-        "content": <StructureSelection />
+        id: "structure",
+        title: "Structure Selection", 
+        content: <StructureSelection />
       },
     ],
     dependents: [1, 2, 3],
     ButtonText: "Confirm",
+    data: {}
   },
   {
     title: 'Configure Workflow',
     id: "workflow_settings",
     tabs: [
-      { title: 'Basic workflow settings', content: <BasicSettingsTab /> },
-      { title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> },
-      { title: 'Bands', content: <BandsSettingTab /> },
-      { title: 'PDOS', content: <PdosSettingTab /> },
-      { title: 'XPS', content: <XpsSettingTab /> },
+      { abc: "basic", title: 'Basic workflow settings', content: <BasicSettingsTab /> },
+      { id: "advanced", title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> },
+      // Dynamically add plugin settings tabs
+      ...plugins.map(plugin => ({
+        id: plugin.id,
+        title: `${plugin.title} Settings`,
+        content: <plugin.SettingTab />
+      })),
     ],
     dependents: [2, 3],
     ButtonText: "Confirm",
+    // retrieve the name and outlne of the plugins
+    data: {"Basic workflow settings": {"plugins": plugins.map(plugin => ({id: plugin.id, outline: plugin.outline})),
+                                       "properties": {}}}
   },
   {
     title: 'Choose Computational Resources',
     id: "computational_resources",
     tabs: [
-      { title: 'Basic resource settings', content: <ChooseResourcesTab /> },
+      { id: "basic", title: 'Basic resource settings', content: <ChooseResourcesTab /> },
     ],
     dependents: [3],
     ButtonText: "Confirm",
+    data: {}
   },
   {
     title: 'Review and Submit',
     id: "review_submit",
     tabs: [
-      { title: 'Label and Submit', content: <LabelGroupTab /> },
-      { title: 'Review settings', content: <ReviewAndSubmitTab /> },  // The review step shows all data.
+      { id: "submit", title: 'Label and Submit', content: <LabelGroupTab /> },
+      { id: "review", title: 'Review settings', content: <ReviewAndSubmitTab /> },  // The review step shows all data.
     ],
     dependents: [],
     ButtonText: "Confirm",
+    data: {}
   },
   {
     title: 'Status & Results',
     id: "status_results",
     tabs: [
-      { title: 'Job status', content: <JobStatusTab /> },
-      { title: 'Final structure', content: <FinalStructureTab /> },
-      { title: 'XPS results', content: <XpsResultTab /> },
+      { id: "status", title: 'Job status', content: <JobStatusTab /> },
+      { id: "structure", title: 'Final structure', content: <FinalStructureTab /> },
+      // Dynamically add plugin results tabs
+      ...plugins.map(plugin => ({
+        id: plugin.id,
+        title: `${plugin.title} Results`,
+        content: <plugin.ResultTab />
+      })),
       // { title: 'Workflow summary', content: <WorkflowSummaryTab /> },
     ],
     dependents: [],
     ButtonText: null,
+    data: {}
   }
 ];
 
@@ -82,9 +96,17 @@ const AccordionWizard = () => {
     ...step,
     confirmed: false,
     modified: false,
-    data: {} // Data for each step.
   })));
   const [activeStep, setActiveStep] = useState("0");
+  const [loadedPluginNames, setLoadedPluginNames] = useState([]);
+
+  useEffect(() => {
+    // Record the names of loaded plugins
+    const pluginNames = plugins.map(plugin => plugin.title);
+    setLoadedPluginNames(pluginNames);
+    console.log('Loaded Plugins:', pluginNames);
+  }, [plugins]);
+
 
   useEffect(() => {
     if (jobId) {

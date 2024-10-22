@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 
-export const SettingTab = ({ data = {}, structure, onDataChange }) => {
+const SettingTab = ({ data = {}, structure, onDataChange }) => {
   const [supportedElements, setSupportedElements] = useState([]);
   const [notSupportedElements, setNotSupportedElements] = useState([]);
 
@@ -135,3 +135,6 @@ export const SettingTab = ({ data = {}, structure, onDataChange }) => {
     </Form>
   );
 };
+
+
+export default SettingTab;

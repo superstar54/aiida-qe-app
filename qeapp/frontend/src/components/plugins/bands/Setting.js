@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
-export const SettingTab = ({ data = {}, onDataChange }) => {
+const SettingTab = ({ data = {}, onDataChange }) => {
 
     useEffect(() => {
         const defaultData = {
@@ -40,3 +40,4 @@ export const SettingTab = ({ data = {}, onDataChange }) => {
   );
 };
 
+export default SettingTab;

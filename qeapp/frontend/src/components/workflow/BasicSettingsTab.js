@@ -1,3 +1,4 @@
+// src/workflow/BasicSettingsTab.js
 import React, { useEffect } from 'react';
 import { Row, Col, ToggleButton, ToggleButtonGroup, Form } from 'react-bootstrap';
 
@@ -9,39 +10,70 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       spinType: 'none',
       protocol: 'moderate',
       bader: false,
-      bands: false,
-      pdos: false,
-      xas: false,
-      xps: false,
+      properties: {},
+      plugins: data.plugins || [],
     };
 
-    // Merge default data with any existing data
-    const initialData = { ...defaultData, ...data };
+    // Initialize properties based on plugins
+    if (data.plugins && Array.isArray(data.plugins)) {
+      data.plugins.forEach((plugin) => {
+        if (!(plugin.id in defaultData.properties)) {
+          defaultData.properties[plugin.id] = false;
+        }
+      });
+    }
 
-    // Update data if it doesn't already have all default values
+    const initialData = {
+      ...defaultData,
+      ...data,
+      properties: {
+        ...defaultData.properties,
+        ...(data.properties || {}),
+      },
+    };
+
     if (JSON.stringify(data) !== JSON.stringify(initialData)) {
       onDataChange(initialData);
     }
-  }, []);
-  
+  }, [data, onDataChange]);
+
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     onDataChange(newData);
   };
 
+  const handlePropertyChange = (pluginName, checked) => {
+    const newProperties = {
+      ...data.properties,
+      [pluginName]: checked,
+    };
+    const newData = { ...data, properties: newProperties };
+    onDataChange(newData);
+  };
+
+
   return (
     <Form>
       <h4>Structure</h4>
-      <p>You have three options:
-        (1) Structure as is: perform a self-consistent calculation using the structure provided as input.
-        (2) Atomic positions: perform a full relaxation of the internal atomic coordinates.
-        (3) Full geometry: perform a full relaxation for both the internal atomic coordinates and the cell vectors.
+      <p>
+        You have three options:
+        <ol>
+          <li>
+            <strong>Structure as is</strong>: Perform a self-consistent calculation using the structure provided as input.
+          </li>
+          <li>
+            <strong>Atomic positions</strong>: Perform a full relaxation of the internal atomic coordinates.
+          </li>
+          <li>
+            <strong>Full geometry</strong>: Perform a full relaxation for both the internal atomic coordinates and the cell vectors.
+          </li>
+        </ol>
       </p>
-      <ToggleButtonGroup 
-        type="radio" 
-        name="structureOptions" 
-        value={data.relaxType || 'none'} 
-        onChange={(value) => handleChange('relaxType', value)} 
+      <ToggleButtonGroup
+        type="radio"
+        name="structureOptions"
+        value={data.relaxType || 'none'}
+        onChange={(value) => handleChange('relaxType', value)}
         className="mb-3"
       >
         <ToggleButton id="structure-as-is" value="none" variant="outline-primary" className="px-3">
@@ -56,11 +88,11 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       </ToggleButtonGroup>
 
       <h5>Electronic Type</h5>
-      <ToggleButtonGroup 
-        type="radio" 
-        name="electronicType" 
-        value={data.electronicType || 'metal'} 
-        onChange={(value) => handleChange('electronicType', value)} 
+      <ToggleButtonGroup
+        type="radio"
+        name="electronicType"
+        value={data.electronicType || 'metal'}
+        onChange={(value) => handleChange('electronicType', value)}
         className="mb-3"
       >
         <ToggleButton id="metal" value="metal" variant="outline-primary" className="px-3">
@@ -72,11 +104,11 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       </ToggleButtonGroup>
 
       <h5>Magnetism</h5>
-      <ToggleButtonGroup 
-        type="radio" 
-        name="spinType" 
-        value={data.spinType || 'none'} 
-        onChange={(value) => handleChange('spinType', value)} 
+      <ToggleButtonGroup
+        type="radio"
+        name="spinType"
+        value={data.spinType || 'none'}
+        onChange={(value) => handleChange('spinType', value)}
         className="mb-3"
       >
         <ToggleButton id="spinType-off" value="none" variant="outline-secondary" className="px-4">
@@ -90,33 +122,26 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       <h4>Properties</h4>
       <p className="text-muted">Select which properties to calculate:</p>
       <Form.Group className="mb-3">
-        <Form.Check 
-          type="checkbox" 
-          label="Electronic band structure" 
-          checked={data.bands || false}
-          onChange={(e) => handleChange('bands', e.target.checked)} 
-        />
-        <Form.Check 
-          type="checkbox" 
-          label="Projected Density of States (PDOS)" 
-          checked={data.pdos || false}
-          onChange={(e) => handleChange('pdos', e.target.checked)} 
-        />
-        <Form.Check 
-          type="checkbox" 
-          label="X-ray photoelectron spectroscopy (XPS)" 
-          checked={data.xps || false}
-          onChange={(e) => handleChange('xps', e.target.checked)} 
-        />
+        {/* Dynamically render plugin checkboxes */}
+        {data.plugins &&
+          data.plugins.map((plugin) => (
+            <Form.Check
+              key={plugin.id}
+              type="checkbox"
+              label={plugin.outline}
+              checked={data.properties[plugin.id] || false}
+              onChange={(e) => handlePropertyChange(plugin.id, e.target.checked)}
+            />
+          ))}
       </Form.Group>
 
       <h4>Protocol</h4>
       <p className="text-muted">Select the protocol based on the trade-off between accuracy and speed.</p>
-      <ToggleButtonGroup 
-        type="radio" 
-        name="protocol" 
-        value={data.protocol || 'moderate'} 
-        onChange={(value) => handleChange('protocol', value)} 
+      <ToggleButtonGroup
+        type="radio"
+        name="protocol"
+        value={data.protocol || 'moderate'}
+        onChange={(value) => handleChange('protocol', value)}
         className="mb-3 w-100"
       >
         <ToggleButton id="protocol-fast" value="fast" variant="outline-success" className="w-100">
@@ -130,7 +155,11 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
         </ToggleButton>
       </ToggleButtonGroup>
 
-      <p className="text-muted">The "moderate" protocol represents a trade-off between accuracy and speed. Choose the "fast" protocol for a faster calculation with less precision and the "precise" protocol to aim at best accuracy (at the price of longer/costlier calculations).</p>
+      <p className="text-muted">
+        The "moderate" protocol represents a trade-off between accuracy and speed. Choose the "fast" protocol for a faster
+        calculation with less precision and the "precise" protocol to aim at best accuracy (at the price of longer/costlier
+        calculations).
+      </p>
     </Form>
   );
 };
