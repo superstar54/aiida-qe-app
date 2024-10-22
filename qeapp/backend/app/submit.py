@@ -6,7 +6,9 @@ from aiida.engine import submit
 from aiida.orm import StructureData, load_code
 import traceback
 from qeapp.workflows.qeapp_workchain import QeAppWorkChain
-
+from .plugins.bands.settings import get_tab_value as get_bands_tab_value
+from .plugins.pdos.settings import get_tab_value as get_pdos_tab_value
+from .plugins.xps.settings import get_tab_value as get_xps_tab_value
 router = APIRouter()
 
 
@@ -20,6 +22,7 @@ class CalculationData(BaseModel):
     review_submit: dict
 
 def get_advanced_setting_value(data):
+    
     # basic workflow settings
     parameters = {"workchain": {}, "advanced": {}}
     basic_settings = data.workflow_settings.get('Basic workflow settings', {})
@@ -70,49 +73,16 @@ def get_advanced_setting_value(data):
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["lspinorb"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["noncolin"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["nspin"] = 4
-    # bands
-    bands_settings = data.workflow_settings.get('Bands', {})
-    parameters["bands"] = {"projwfc_bands": bands_settings["projwfcBands"]}
-    # pdos
-    pdos_settings = data.workflow_settings.get('PDOS', {})
-    parameters["pdos"] = {"nscf_kpoints_distance": pdos_settings["kPointsDistance"],
-                          "use_pdos_degauss": pdos_settings["usePdosDegauss"],
-                          "pdos_degauss": pdos_settings["pdosDegauss"],
-                          }
-    # xps
-    xps_settings = data.workflow_settings.get('XPS', {})
-    parameters["xps"] = {"structure_type": xps_settings["structureType"],
-                         "pseudo_group": xps_settings["pseudoGroup"],
-                         "correction_energies": xps_settings["correctionEnergies"],
-                         "core_level_list": [key for key, value in xps_settings["coreLevels"].items() if value],
-                         }
+
 
     return parameters
 
-def prepare_inputs(data: CalculationData):
-    """
-    Prepare inputs for the calculation
-    """
-    from ase import Atoms
-    from copy import deepcopy
-    data = deepcopy(data)
-    print("data: ", data)
-    # structure
-    structure = data.structure["Structure Selection"]["selectedStructure"]
-    if isinstance(structure, list):
-        structure = structure[0]
-    atoms = Atoms(symbols=structure["symbols"], positions=structure["positions"],
-                    cell=structure["cell"], pbc=structure["pbc"])
-    structure=StructureData(ase=atoms)
-    structure.store()
-    # workflow settings
-    parameters = get_advanced_setting_value(data)
-    # computational resources
+def get_codes_values(data):
     basic_resource_settings = data.computational_resources.get('Basic resource settings', {})
     pw_code = load_code(basic_resource_settings.get("pwCode", "qe-7.2-pw@localhost"))
     projwfc_code = load_code(basic_resource_settings.get("projwfcCode", "qe-7.2-projwfc@localhost"))
     dos_code = load_code(basic_resource_settings.get("dosCode", "qe-7.2-dos@localhost"))
-    parameters["codes"] = {"pw": {"code": pw_code.uuid,
+    codes = {"pw": {"code": pw_code.uuid,
                                   "nodes": basic_resource_settings.get("pwNodes", 1),
                                   "ntasks_per_node": basic_resource_settings.get("pwCPUs", 1),
                                   "cpus_per_task": 1,
@@ -137,6 +107,34 @@ def prepare_inputs(data: CalculationData):
                                        "max_wallclock_seconds": basic_resource_settings.get("projwfcTime", 3600),
                                        },
                            }
+    return codes
+
+def prepare_inputs(data: CalculationData):
+    """
+    Prepare inputs for the calculation
+    """
+    from ase import Atoms
+    from copy import deepcopy
+    data = deepcopy(data)
+    print("data: ", data)
+    # structure
+    structure = data.structure["Structure Selection"]["selectedStructure"]
+    if isinstance(structure, list):
+        structure = structure[0]
+    atoms = Atoms(symbols=structure["symbols"], positions=structure["positions"],
+                    cell=structure["cell"], pbc=structure["pbc"])
+    structure=StructureData(ase=atoms)
+    structure.store()
+    # workflow settings
+    parameters = get_advanced_setting_value(data)
+    # bands
+    parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands', {}))
+    # pdos
+    parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS', {}))
+    # xps
+    parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS', {}))
+    # computational resources
+    parameters["codes"] = get_codes_values(data)
     return {
         "structure": structure,
         "parameters": parameters,

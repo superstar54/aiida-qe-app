@@ -55,6 +55,7 @@ const JobStatusTab = ({ jobID = null, data = {}, onDataChange}) => {
         if (isComponentMounted) {
           setJobStatus(data.processStatus);
           setLoading(false);
+          setError(null)
         }
 
         // Check if the job is finished

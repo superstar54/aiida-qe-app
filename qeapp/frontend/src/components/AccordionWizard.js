@@ -4,16 +4,16 @@ import Accordion from 'react-bootstrap/Accordion';
 import AccordionStep from './AccordionStep';
 import BasicSettingsTab from './BasicSettingsTab';
 import AdvancedSettingsTab from './AdvancedSettingsTab';
-import BandsStructureTab from './BandsStructureTab';
-import PDOSTab from './PDOSTab';
-import XPSTab from './XPSTab';
 import StructureSelection from './StructureSelection';
 import ChooseResourcesTab from './ChooseResourcesTab';
 import ReviewAndSubmit from './ReviewAndSubmit';
 import WorkflowSummaryTab from './WorkflowSummary';
 import JobStatusTab from './JobStatus';
 import FinalStructureTab from './FinalStructure';
-import XPSResultTab from './XPSResultTab';
+import BandsStructureTab from './plugins/bands/BandsStructureTab';
+import PDOSTab from './plugins/pdos/PDOSTab';
+import XPSTab from './plugins/xps/XPSTab';
+import XPSResultTab from './plugins/xps/XPSResultTab';
 
 // Define steps and their dependent steps
 const initialStepsData = [

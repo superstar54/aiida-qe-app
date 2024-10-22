@@ -6,32 +6,6 @@ import time
 router = APIRouter()
 
 
-
-def export_xps_data(outputs):
-    """Export the data from the XPS workchain"""
-
-    chemical_shifts = {}
-    symmetry_analysis_data = outputs.symmetry_analysis_data.get_dict()
-    equivalent_sites_data = symmetry_analysis_data["equivalent_sites_data"]
-    if "chemical_shifts" in outputs:
-        for key, data in outputs.chemical_shifts.items():
-            ele = key[:-4]
-            chemical_shifts[ele] = data.get_dict()
-    binding_energies = {}
-    if "binding_energies" in outputs:
-        for key, data in outputs.binding_energies.items():
-            ele = key[:-3]
-            binding_energies[ele] = data.get_dict()
-
-    return (
-        chemical_shifts,
-        binding_energies,
-        equivalent_sites_data,
-    )
-
-
-
-
 @router.get("/api/jobs-data")
 async def read_job_data(search: str = Query(None)):
     from qeapp.workflows.qeapp_workchain import QeAppWorkChain
@@ -66,6 +40,7 @@ async def read_job_data(search: str = Query(None)):
 async def read_job(id: int):
     from aiida.orm.utils.serialize import deserialize_unsafe
     from aiida.cmdline.utils.ascii_vis import build_call_graph
+    from .plugins.xps.results import export_xps_data
 
     try:
         node = orm.load_node(id)
