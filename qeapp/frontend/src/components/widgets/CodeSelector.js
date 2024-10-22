@@ -13,7 +13,7 @@ const CodeSelector = ({ codeLabel, codeValue, onCodeChange, nodeValue, onNodeCha
           >
             {codeOptions.map(option => (
               <option key={option.label} value={option.uuid}>
-                {option.label}@{option.extras.computer}
+                {option.label}@{option?.extras?.computer}
               </option>
             ))}
           </Form.Control>

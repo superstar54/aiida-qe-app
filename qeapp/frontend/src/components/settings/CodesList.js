@@ -48,8 +48,8 @@ const CodesList = () => {
           {codes.map((code) => (
             <tr key={code.id}>
               <td>{code.label}</td>
-              <td>{code.execPath}</td>
-              <td>{code.computer}</td>
+              <td>{code.attributes.filepath_executable}</td>
+              <td>{code.extras.computer}</td>
               <td>
                 <button
                   className="button button-delete"
