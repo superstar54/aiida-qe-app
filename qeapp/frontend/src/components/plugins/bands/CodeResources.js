@@ -2,16 +2,9 @@ import React from 'react';
 import BaseCodeResourcesTab from '../../widgets/CodeResourcesTab';
 
 const codesConfig = {
-  projwfc: {
+  projwfc_bands: {
     label: 'qe-7.2-projwfc@localhost',
-    input_plugin: "quantumespresso.projwfc",
-    nodes: 1,
-    cpus: 1,
-    codeOptions: [],
-  },
-  dos: {
-    label: 'qe-7.2-dos@localhost',
-    input_plugin: "quantumespresso.dos",
+    input_plugin: "quantumespresso.pw",
     nodes: 1,
     cpus: 1,
     codeOptions: [],

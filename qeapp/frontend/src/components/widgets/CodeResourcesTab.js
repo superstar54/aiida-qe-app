@@ -1,9 +1,23 @@
 // src/components/plugins/CodeResourcesTab.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import CodeSelector from './CodeSelector';
 
 const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
+  const [codes, setCodes] = useState([]);
+
+  // Fetch codes when the component mounts
+  useEffect(() => {
+    fetchCodes();
+  }, []);
+
+  const fetchCodes = () => {
+    // Replace with actual API call
+    fetch('http://localhost:8000/api/codes')
+      .then(response => response.json())
+      .then(data => setCodes(data))
+      .catch(error => console.error('Failed to fetch codes:', error));
+  };
 
   useEffect(() => {
     // Initialize codes with defaults and existing data
@@ -14,10 +28,14 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
       if (!initialCodes[codeKey]) {
         initialCodes[codeKey] = { ...codesConfig[codeKey] };
       } else {
+        // fliter out codeOptions using the `input_plugin` key
+        console.log('codes', codes);
+        const codeOptions = codes.filter((code) => code.attributes.input_plugin === codesConfig[codeKey].input_plugin);
+        console.log('codeOptions', codeOptions);
         initialCodes[codeKey] = {
           ...codesConfig[codeKey],
           ...initialCodes[codeKey],
-          codeOptions: codesConfig[codeKey].codeOptions, // Ensure codeOptions are present
+          codeOptions: codeOptions,
         };
       }
     });

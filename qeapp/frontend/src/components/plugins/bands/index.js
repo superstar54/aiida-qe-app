@@ -1,5 +1,6 @@
 import SettingTab from './Setting';
 import ResultTab from './Result';
+import CodeResourcesTab from './CodeResources';
 
 const BandsPlugin = {
   id: 'bands',
@@ -9,6 +10,7 @@ const BandsPlugin = {
   description: 'Handles band structure calculations and visualizations.',
   SettingTab: SettingTab,
   ResultTab: ResultTab,
+  CodeResourcesTab: CodeResourcesTab,
 };
 
 export default BandsPlugin;

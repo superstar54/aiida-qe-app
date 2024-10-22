@@ -4,9 +4,10 @@ import BaseCodeResourcesTab from '../widgets/CodeResourcesTab';
 const codesConfig = {
   pw: {
     label: 'qe-7.2-pw@localhost',
+    input_plugin: "quantumespresso.pw",
     nodes: 1,
     cpus: 1,
-    codeOptions: ['qe-7.2-pw@localhost', 'qe-7.1-pw@remote'],
+    codeOptions: [],
   },
   // Add more default codes here if necessary
 };

@@ -91,7 +91,7 @@ const JobStatusTab = ({ JobId = null, data = {}, onDataChange}) => {
     const traverse = (node) => {
       if (Array.isArray(node)) {
         const [nodeName, children] = node;
-        // Check if nodeName contains "Finished"
+        // Check if nodeName contains "Finished", "Killed" or "Failed"
         const isFinished = nodeName.includes('Finished');
         if (!isFinished) return false;
         if (children && Array.isArray(children)) {

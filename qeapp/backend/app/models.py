@@ -89,8 +89,15 @@ class Code(AiidaModel):
     uuid: Optional[str] = Field(description="Unique UUID for the code")
     label: str = Field(description="Label to identify the code. Must be unique")
     description: Optional[str] = Field(description="Description of the code")
-    # input_plugin: Optional[str] = Field(description="Default input plugin associated with the code")
-    # metadata: Optional[dict] = Field(description="Additional metadata for the code")
-    # filepath_executable: Optional[Dict[str, str]] = Field(
-        # description="Dictionary with 'computer' and 'filepath' for remote codes"
-    # )
+    dbcomputer_id: Optional[int] = Field(description="ID of the computer")
+    attributes: Optional[dict] = Field(description="Additional attributes for the code")
+    extras: Optional[dict] = Field(description="Additional extras for the code")
+
+    @classmethod
+    def get_entities(cls, **kwargs) -> List["Code"]:
+        """Return a list of codes."""
+        results = super().get_entities(**kwargs)
+        # load the computer for each code
+        for result in results:
+            result.extras["computer"] = orm.load_computer(result.dbcomputer_id).label
+        return results
