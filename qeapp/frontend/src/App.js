@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import AccordionWizard from './components/AccordionWizard';
+import CalculationWizard from './components/CalculationWizard';
 import GetStarted from './components/GetStarted';
 import JobHistory from './components/JobHistory';
 import Settings from './components/settings/Settings';
@@ -36,7 +36,7 @@ function App() {
         <div className="container mt-5">
           <Routes>
             <Route path="/" element={<GetStarted />} />
-            <Route path="/calculate/:jobId?" element={<AccordionWizard />} />
+            <Route path="/calculate/:jobId?" element={<CalculationWizard />} />
             <Route path="/job-history" element={<JobHistory />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/add-computer" element={<AddComputer />} />
