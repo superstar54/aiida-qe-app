@@ -54,16 +54,6 @@ const StructureSelection = ({ data = {}, onDataChange }) => {
     }
   };
 
-  const handleOptimadeSelect = () => {
-    const optimadeStructure = "Structure from OPTIMADE";
-    handleChange('selectedStructure', optimadeStructure);
-  };
-
-  const handleAiiDaSelect = () => {
-    const aiidaStructure = "Structure from AiiDA database";
-    handleChange('selectedStructure', aiidaStructure);
-  };
-
   // Handle selecting an example structure
   const handleExampleSelect = (selectedName) => {
     const example = exampleFiles.find(file => file.name === selectedName);
@@ -102,17 +92,6 @@ const StructureSelection = ({ data = {}, onDataChange }) => {
           </Form.Group>
         </Tab>
 
-        <Tab eventKey="optimade" title="OPTIMADE">
-          <Button variant="primary" onClick={handleOptimadeSelect}>
-            Select Structure from OPTIMADE
-          </Button>
-        </Tab>
-
-        <Tab eventKey="aiida" title="AiiDA database">
-          <Button variant="primary" onClick={handleAiiDaSelect}>
-            Select Structure from AiiDA database
-          </Button>
-        </Tab>
 
         <Tab eventKey="examples" title="From Examples">
           <Form.Group controlId="exampleSelect" className="mb-3">
