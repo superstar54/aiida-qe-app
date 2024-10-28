@@ -1,11 +1,9 @@
 // AccordionWizard.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import Accordion from 'react-bootstrap/Accordion';
 import AccordionStep from './AccordionStep';
 
-const AccordionWizard = ({ initialStepsData }) => {
-  const { jobId } = useParams();
+const AccordionWizard = ({ initialStepsData, jobData }) => {
   const [steps, setSteps] = useState(initialStepsData.map((step) => ({
     ...step,
     confirmed: false,
@@ -15,42 +13,27 @@ const AccordionWizard = ({ initialStepsData }) => {
 
 
   useEffect(() => {
-    if (jobId) {
-      const fetchJobData = async () => {
-        try {
-          const response = await fetch(`http://localhost:8000/api/jobs-data/${jobId}`);
-          if (!response.ok) {
-            throw new Error(`Server responded with ${response.status}`);
+    if (jobData) {
+      // Map jobData to steps, skipping the last step
+      setSteps((prevSteps) =>
+        prevSteps.map((step, index) => {
+          if (index === prevSteps.length - 1) {
+            // For the last step, do not confirm or set data
+            return step;
+          } else {
+            return {
+              ...step,
+              confirmed: true,
+              data: jobData.stepsData[step.id], // Adjust this if your data structure is different
+            };
           }
-          const jobData = await response.json();
-          console.log("jobData", jobData);
+        })
+      );
 
-          // Map jobData to steps, skipping the last step
-          setSteps((prevSteps) =>
-            prevSteps.map((step, index) => {
-              if (index === prevSteps.length - 1) {
-                // For the last step, do not confirm or set data
-                return step;
-              } else {
-                return {
-                  ...step,
-                  confirmed: true,
-                  data: jobData.stepsData[step.id], // Adjust this if your data structure is different
-                };
-              }
-            })
-          );
-
-          // Optionally set the active step to the last one
-          setActiveStep((steps.length - 1).toString());
-        } catch (err) {
-          console.error(`Error fetching job data: ${err.message}`);
-        }
-      };
-
-      fetchJobData();
+      // Optionally set the active step to the last one
+      setActiveStep((steps.length - 1).toString());
     }
-  }, [jobId, steps.length]);
+  }, [jobData, steps.length]);
 
   // Function to handle data change in a step
   const handleDataChange = (stepIndex, dataUpdater) => {
