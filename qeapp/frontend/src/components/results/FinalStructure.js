@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Spinner, Table, Alert, Row, Col, Card } from 'react-bootstrap';
 import StructureViewer from '../widgets/StructureViewer';
+import { WizardContext } from '../wizard/WizardContext';
 
 // Convert AiiDA structure data to the format expected by Atoms
 function structureToAtomsData(inputData) {
@@ -26,7 +27,11 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
-const FinalStructureTab = ({ JobId = null, jobStatus = null }) => {
+const FinalStructureTab = ({}) => {
+  const { steps } = useContext(WizardContext);
+  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
+
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

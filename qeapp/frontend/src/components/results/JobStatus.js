@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Spinner } from 'react-bootstrap';
+import { WizardContext } from '../wizard/WizardContext';
 
 const TreeNode = ({ node }) => {
   if (Array.isArray(node)) {
@@ -26,7 +27,10 @@ const TreeNode = ({ node }) => {
   }
 };
 
-const JobStatusTab = ({ JobId = null, data = {}, onDataChange}) => {
+const JobStatusTab = ({data = {}, onDataChange}) => {
+  const { steps } = useContext(WizardContext);
+  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+
   const [jobStatus, setJobStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

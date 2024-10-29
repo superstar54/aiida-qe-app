@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Form, Row, Col, Card, Alert, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Plot from 'react-plotly.js';
+import { WizardContext } from '../../wizard/WizardContext';
 
-const ResultTab = ({ JobId = null, jobStatus = null }) => {
+const ResultTab = ({}) => {
+  const { steps } = useContext(WizardContext);
+  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
+
   const [selectedSpectrum, setSelectedSpectrum] = useState(null);
   const [lorentzian, setLorentzian] = useState(0.1);
   const [gaussian, setGaussian] = useState(0.1);

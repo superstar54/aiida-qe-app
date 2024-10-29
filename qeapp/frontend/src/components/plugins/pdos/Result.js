@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Alert, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Plot from 'react-plotly.js';
 
-const ResultTab = ({ JobId = null, jobStatus = null }) => {
+const ResultTab = ({}) => {
   
   return (
     <div>

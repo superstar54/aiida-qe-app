@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Form } from 'react-bootstrap';
+import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
-
+const SettingTab = ({ data = {}, onDataChange }) => {
+  const { steps } = useContext(WizardContext);
+  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
+  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
+  
   const defaultData = {
       kPointsDistance: 0.1,
       usePdosDegauss: false,
       pdosDegauss: 0.005,
   };
-    
+  
   useEffect(() => {
     if (!protocol || !structure) {
       return;

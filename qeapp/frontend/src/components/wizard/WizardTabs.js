@@ -26,19 +26,12 @@ const WizardTabs = ({ stepIndex }) => {
     }
   }, [filteredTabs, key]);
 
-  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
-  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
-  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
-  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
-
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
       {filteredTabs.map((tab, index) => (
         <Tab eventKey={tab.title} title={tab.title} key={index}>
           {React.cloneElement(tab.content, {
             data: stepData[tab.title] || {},
-            protocol,
-            structure,
             onDataChange: (newData) => {
               const dataUpdater = (prevData) => ({
                 ...prevData,
@@ -46,8 +39,6 @@ const WizardTabs = ({ stepIndex }) => {
               });
               handleDataChange(stepIndex, dataUpdater);
             },
-            JobId,
-            jobStatus,
           })}
         </Tab>
       ))}

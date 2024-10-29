@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({ data = {}, structure, onDataChange }) => {
+const SettingTab = ({ data = {}, onDataChange }) => {
+  const { steps } = useContext(WizardContext);
+  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
+
   const [supportedElements, setSupportedElements] = useState([]);
   const [notSupportedElements, setNotSupportedElements] = useState([]);
 

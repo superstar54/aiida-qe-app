@@ -1,7 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Row, Col, Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { WizardContext } from '../wizard/WizardContext';
 
-const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) => {
+const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
+  const { steps } = useContext(WizardContext);
+  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
+  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
+
   const defaultData = {
     cleanUp: false,
     forceConvergence: 0.0001,

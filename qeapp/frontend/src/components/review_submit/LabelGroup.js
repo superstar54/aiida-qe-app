@@ -20,8 +20,10 @@ function getChemicalFormula(symbols) {
   return formula;
 }
 
-const LabelGroupTab = ({ data = {}, structure, onDataChange }) => {
+const LabelGroupTab = ({ data = {}, onDataChange }) => {
   const { steps } = useContext(WizardContext);
+  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
+
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
   const [loading, setLoading] = useState(false); // New loading state
 
