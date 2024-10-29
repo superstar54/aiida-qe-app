@@ -8,6 +8,7 @@ from aiida_quantumespresso.common.types import ElectronicType, RelaxType, SpinTy
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.utils.mapping import prepare_process_inputs
 from aiida_quantumespresso.workflows.pw.relax import PwRelaxWorkChain
+import sys
 
 XyData = DataFactory("core.array.xy")
 StructureData = DataFactory("core.structure")
@@ -25,7 +26,12 @@ def get_entries(entry_point_name="aiidalab_qe.property"):
     from importlib.metadata import entry_points
 
     entries = {}
-    for entry_point in entry_points().get(entry_point_name, []):
+    eps = entry_points()
+    if sys.version_info >= (3, 10):
+        group = eps.select(group=entry_point_name)
+    else:
+        group = eps.get(entry_point_name, [])
+    for entry_point in group:
         try:
             # Attempt to load the entry point
             loaded_entry_point = entry_point.load()
