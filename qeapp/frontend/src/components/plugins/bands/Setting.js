@@ -8,24 +8,23 @@ const SettingTab = ({}) => {
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
   
-    useEffect(() => {
-        const defaultData = {
-          projwfcBands: false,
-        };
+  const defaultData = {
+    projwfcBands: false,
+  };
+  useEffect(() => {
+      // Merge default data with any existing data
+      const initialData = { ...defaultData, ...data };
+  
+      // Update data if it doesn't already have all default values
+      if (JSON.stringify(data) !== JSON.stringify(initialData)) {
+        handleDataChange(stepIndex, tabTitle, initialData);
+    }
+    }, []);
     
-        // Merge default data with any existing data
-        const initialData = { ...defaultData, ...data };
-    
-        // Update data if it doesn't already have all default values
-        if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-          handleDataChange(stepIndex, tabTitle, initialData);
-      }
-      }, []);
-      
-      const handleChange = (field, value) => {
-        const newData = { ...data, [field]: value };
-        handleDataChange(stepIndex, tabTitle, newData);
-    };
+    const handleChange = (field, value) => {
+      const newData = { ...data, [field]: value };
+      handleDataChange(stepIndex, tabTitle, newData);
+  };
 
   return (
     <Form>

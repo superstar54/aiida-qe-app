@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { Form } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
 
@@ -15,8 +15,16 @@ const SettingTab = ({}) => {
       usePdosDegauss: false,
       pdosDegauss: 0.005,
   };
+
+  // Use useRef to track if it's the initial mount
+  const isInitialMount = useRef(true);
   
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return; // Skip the effect on the initial mount
+    }
+
     if (!protocol || !structure) {
       return;
     }
@@ -48,10 +56,7 @@ const SettingTab = ({}) => {
       }
     };
 
-    // Call the fetch function when protocol or structure changes
-    if (protocol || structure) {
-      fetchCalculationData();
-    }
+    fetchCalculationData();
   }, [protocol, structure]);
 
   const handleChange = (field, value, type = 'string') => {

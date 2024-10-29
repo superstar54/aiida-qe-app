@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
 import { WizardContext } from '../wizard/WizardContext';
@@ -35,6 +35,8 @@ const LabelGroupTab = ({}) => {
     label: '',
     description: '',
   };
+  // Use useRef to track if it's the initial mount
+  const isInitialMount = useRef(true);
 
   const handleSubmit = async () => {
     try {
@@ -72,6 +74,10 @@ const LabelGroupTab = ({}) => {
   };
 
   useEffect(() => {
+    if (isInitialMount.current && data?.label !== undefined) {
+      isInitialMount.current = false;
+      return; // Skip the effect on the initial mount
+    }
     if (!structure) {
       return;
     }

@@ -1,14 +1,13 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { Row, Col, Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { WizardContext } from '../wizard/WizardContext';
 
 const AdvancedSettingsTab = ({}) => {
-
   const stepIndex = 1;
   const tabTitle = 'Advanced Settings';
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
-  
+
   const protocol = steps[1]?.data?.['Basic Settings']?.protocol || 'moderate';
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
 
@@ -25,19 +24,31 @@ const AdvancedSettingsTab = ({}) => {
     spinOrbit: 'off',
   };
 
+  // Use useRef to track if it's the initial mount
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return; // Skip the effect on the initial mount
+    }
+
     if (!protocol || !structure) {
       return;
     }
+
     const fetchCalculationData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/calculation/pw_parameters_from_protocol/', {
-          method: 'POST', // Assuming POST method is required; you can adjust as needed
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ protocol, structure }), // Send protocol and structure as part of the request
-        });
+        const response = await fetch(
+          'http://localhost:8000/api/calculation/pw_parameters_from_protocol/',
+          {
+            method: 'POST', // Assuming POST method is required; you can adjust as needed
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ protocol, structure }), // Send protocol and structure as part of the request
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error fetching data: ${response.statusText}`);
@@ -64,12 +75,8 @@ const AdvancedSettingsTab = ({}) => {
       }
     };
 
-    // Call the fetch function when protocol or structure changes
-    if (protocol || structure) {
-      fetchCalculationData();
-    }
+    fetchCalculationData();
   }, [protocol, structure]);
-
 
   const handleChange = (field, value, type = 'string') => {
     if (type === 'float' || type === 'number') {
