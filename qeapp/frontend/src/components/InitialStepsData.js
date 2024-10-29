@@ -28,7 +28,7 @@ const initialStepsData = [
     },
     {
       title: 'Configure Workflow',
-      id: "workflowSettings",
+      id: "workflow_settings",
       tabs: [
         { id: "basic", title: 'Basic Settings', content: <BasicSettingsTab /> },
         { id: "advanced", title: 'Advanced Settings', content: <AdvancedSettingsTab /> },
@@ -47,7 +47,7 @@ const initialStepsData = [
     },
     {
       title: 'Choose Computational Resources',
-      id: "computationalResources",
+      id: "computational_resources",
       tabs: [
         { id: "basic", title: 'Basic Resource Settings', content: <CodeResourcesTab /> },
         // Conditionally add plugin settings tabs

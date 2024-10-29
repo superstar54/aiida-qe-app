@@ -34,13 +34,13 @@ export const WizardProvider = ({ children, initialStepsData, jobData }) => {
       // Set active step to the last one
       setActiveStep((initialStepsData.length - 1).toString());
     }
-  }, [jobData, initialStepsData.length]);
+  }, [jobData]);
 
   const handleDataChange = (stepIndex, tabTitle, newData) => {
     setSteps((prevSteps) => {
       const updatedSteps = [...prevSteps];
       const existingData = updatedSteps[stepIndex].data || {};
-      updatedSteps[stepIndex].data = {...existingData, [tabTitle]: newData};;
+      updatedSteps[stepIndex].data = {...existingData, [tabTitle]: newData};
       return updatedSteps;
     });
   };

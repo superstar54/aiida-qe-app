@@ -1,40 +1,20 @@
 import React, { useState, useContext } from 'react';
 import * as yaml from 'js-yaml';
 import { WizardContext } from '../wizard/WizardContext';
+import { accumulateData } from './utils';
 
 const ReviewAndSubmitTab = ({}) => {
   const stepIndex = 3;
   const tabTitle = 'Review Settings';
-  const { steps, handleDataChange } = useContext(WizardContext);
+  const { steps } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
   
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  const accumulateData = (includeStructure = true) => {
-    return Array.isArray(steps)
-      ? steps.reduce((acc, step) => {
-          if (step.title === 'Select Structure') {
-            if (includeStructure) {
-              acc[step.title] = step.data;
-            }
-          } else {
-            acc[step.title] = step.data;
-          }
-          return acc;
-        }, {})
-      : {};
-  };
-  
-  const handleChange = (field, value) => {
-    const newData = { ...data, [field]: value };
-    console.log('New data:', newData);
-    handleDataChange(stepIndex, tabTitle, newData);
-  };
-
   const handleEdit = () => {
     setIsEditing(true);
-    const accumulatedData = accumulateData(false);
+    const accumulatedData = accumulateData(steps, false, false);
     const yamlData = yaml.dump(accumulatedData);
     setEditableData(yamlData);
   };
@@ -49,7 +29,6 @@ const ReviewAndSubmitTab = ({}) => {
     }
   };
 
-  
 
   return (
     <div>
@@ -68,7 +47,7 @@ const ReviewAndSubmitTab = ({}) => {
         </div>
       ) : (
         <div>
-          <pre>{yaml.dump(accumulateData(false))}</pre>
+          <pre>{yaml.dump(accumulateData(steps, false, false))}</pre>
           <button className="btn btn-primary mt-3 me-2" onClick={handleEdit}>
             Edit
           </button>

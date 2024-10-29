@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
 import { WizardContext } from '../wizard/WizardContext';
+import { accumulateData } from './utils';
 
 function getChemicalFormula(symbols) {
   const elementCounts = {};
@@ -35,48 +36,11 @@ const LabelGroupTab = ({}) => {
     description: '',
   };
 
-  const accumulateData = (includeStructure = true) => {
-    return Array.isArray(steps)
-      ? steps.reduce((acc, step) => {
-          if (step.title === 'Select Structure') {
-            if (includeStructure) {
-              acc[step.title] = step.data;
-            }
-          } else {
-            acc[step.title] = step.data;
-          }
-          return acc;
-        }, {})
-      : {};
-  };
-
   const handleSubmit = async () => {
     try {
       setLoading(true); // Set loading state to true when submission starts
 
-      const accumulatedData = accumulateData();
-
-      // Normalize keys in accumulatedData (as you have done in your existing code)
-      if (accumulatedData['Select Structure']) {
-        accumulatedData['structure'] = accumulatedData['Select Structure'];
-        delete accumulatedData['Select Structure'];
-      }
-      if (accumulatedData['Configure Workflow']) {
-        accumulatedData['workflow_settings'] = accumulatedData['Configure Workflow'];
-        delete accumulatedData['Configure Workflow'];
-      }
-      if (accumulatedData['Choose Computational Resources']) {
-        accumulatedData['computational_resources'] = accumulatedData['Choose Computational Resources'];
-        delete accumulatedData['Choose Computational Resources'];
-      }
-      if (accumulatedData['Review and Submit']) {
-        accumulatedData['review_submit'] = accumulatedData['Review and Submit'];
-        delete accumulatedData['Review and Submit'];
-      }
-      if (accumulatedData['Status & Results']) {
-        accumulatedData['status_results'] = accumulatedData['Status & Results'];
-        delete accumulatedData['Status & Results'];
-      }
+      const accumulatedData = accumulateData(steps);
 
       // Send the data to the backend using fetch
       const response = await fetch('http://localhost:8000/api/submit', {
