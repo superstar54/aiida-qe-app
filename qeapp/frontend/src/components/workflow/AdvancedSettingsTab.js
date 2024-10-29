@@ -23,7 +23,7 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
     if (JSON.stringify(data) !== JSON.stringify(initialData)) {
       onDataChange(initialData);
     }
-  }, []);
+  }, [structure]);
 
   useEffect(() => {
     if (!protocol || !structure) {

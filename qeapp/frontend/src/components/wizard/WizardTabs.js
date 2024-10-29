@@ -1,37 +1,35 @@
-import React, { useState, useEffect } from 'react';
+// WizardTabs.jsx
+import React, { useState, useEffect, useContext } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
+import { WizardContext } from './WizardContext';
 
-const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
-  // Extract properties from allStepsData
-  const properties = allStepsData[1]?.data?.["Basic workflow settings"]?.properties || {};
-  // Filter tabs based on properties
+const WizardTabs = ({ stepIndex }) => {
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const step = steps[stepIndex];
+  const { tabs, data: stepData } = step;
+
+  const properties = steps[1]?.data?.['Basic workflow settings']?.properties || {};
+
   const filteredTabs = tabs.filter((tab) => {
-    // If the tab has an id and it's in properties, check its value
     if (tab.id && properties.hasOwnProperty(tab.id)) {
       return properties[tab.id];
     }
-    // If no property is associated, keep the tab
     return true;
   });
 
-  // State to manage the active tab key
   const [key, setKey] = useState(filteredTabs.length > 0 ? filteredTabs[0].title : '');
 
-  // Effect to handle changes in filteredTabs and ensure active tab is valid
   useEffect(() => {
-    // If the current active key is not in filteredTabs, set it to the first tab
     const isActiveKeyValid = filteredTabs.some((tab) => tab.title === key);
     if (!isActiveKeyValid) {
       setKey(filteredTabs.length > 0 ? filteredTabs[0].title : '');
     }
   }, [filteredTabs, key]);
 
-
-  // Extract other necessary data
-  const protocol = allStepsData[1]?.data?.["Basic workflow settings"]?.protocol || 'moderate';
-  const structure = allStepsData[0]?.data?.["Structure Selection"]?.selectedStructure || null;
-  const JobId = allStepsData[3]?.data?.["Label and Submit"]?.jobId || null;
-  const jobStatus = allStepsData[4]?.data?.["Job status"]?.jobStatus || null;
+  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
+  const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
+  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
 
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
@@ -42,21 +40,18 @@ const WizardTabs = ({ tabs, stepData, allStepsData, onDataChange }) => {
             protocol,
             structure,
             onDataChange: (newData) => {
-              // Define dataUpdater inline
               const dataUpdater = (prevData) => ({
                 ...prevData,
                 [tab.title]: newData,
               });
-              // Pass dataUpdater to onDataChange from AccordionStep
-              onDataChange(dataUpdater);
+              handleDataChange(stepIndex, dataUpdater);
             },
-            allStepsData, // Full steps data
-            JobId: JobId,
-            jobStatus: jobStatus,
+            allStepsData: steps,
+            JobId,
+            jobStatus,
           })}
         </Tab>
       ))}
-      {/* Optionally, handle the case when no tabs are available */}
       {filteredTabs.length === 0 && (
         <div className="text-center p-3">
           <p>No available tabs based on the selected properties.</p>
