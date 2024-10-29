@@ -1,8 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Form } from 'react-bootstrap';
+import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({ data = {}, onDataChange }) => {
-
+const SettingTab = ({}) => {
+  const stepIndex = 1;
+  const tabTitle = 'Bands Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
     useEffect(() => {
         const defaultData = {
           projwfcBands: false,
@@ -13,13 +18,13 @@ const SettingTab = ({ data = {}, onDataChange }) => {
     
         // Update data if it doesn't already have all default values
         if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-          onDataChange(initialData);
-        }
+          handleDataChange(stepIndex, tabTitle, initialData);
+      }
       }, []);
       
       const handleChange = (field, value) => {
         const newData = { ...data, [field]: value };
-        onDataChange(newData);
+        handleDataChange(stepIndex, tabTitle, newData);
     };
 
   return (

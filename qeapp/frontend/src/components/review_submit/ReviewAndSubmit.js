@@ -2,8 +2,12 @@ import React, { useState, useContext } from 'react';
 import * as yaml from 'js-yaml';
 import { WizardContext } from '../wizard/WizardContext';
 
-const ReviewAndSubmitTab = ({data = {}, onDataChange }) => {
-  const { steps } = useContext(WizardContext);
+const ReviewAndSubmitTab = ({}) => {
+  const stepIndex = 3;
+  const tabTitle = 'Review Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,7 +29,7 @@ const ReviewAndSubmitTab = ({data = {}, onDataChange }) => {
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     console.log('New data:', newData);
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   const handleEdit = () => {

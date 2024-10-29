@@ -55,8 +55,8 @@ const AccordionWizard = () => {
     {
       title: 'Configure Workflow',
       tabs: [
-        { title: 'Basic workflow settings', content: <div>Basic workflow settings content here...</div> },
-        { title: 'Advanced workflow settings', content: <div>Advanced workflow settings content here...</div> }
+        { title: 'Basic Settings', content: <div>Basic Settings content here...</div> },
+        { title: 'Advanced Settings', content: <div>Advanced Settings content here...</div> }
       ],
       dependents: [2, 3]
     },

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Tabs, Tab, Form, Button } from 'react-bootstrap';
 import StructureViewer from '../widgets/StructureViewer';
 import { parseXYZ, parseCIF, parseCube } from 'weas';
+import { WizardContext } from '../wizard/WizardContext';
 
 
 const exampleFiles = [
@@ -14,12 +15,17 @@ const exampleFiles = [
   // { name: "Cobalt (primitive cell)", path: '/example_structures/Co.xyz', type: 'cif' },
 ];
 
-const StructureSelection = ({ data = {}, onDataChange }) => {
+const StructureSelection = ({}) => {
+  const stepIndex = 0;
+  const tabTitle = 'Structure Selection';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+
   const [selectedExample, setSelectedExample] = useState(null); // State to store selected example
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   const handleFileUpload = (event) => {

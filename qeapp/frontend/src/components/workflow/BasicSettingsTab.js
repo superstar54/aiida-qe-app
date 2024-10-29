@@ -1,8 +1,16 @@
 // src/workflow/BasicSettingsTab.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Row, Col, ToggleButton, ToggleButtonGroup, Form } from 'react-bootstrap';
+import { WizardContext } from '../wizard/WizardContext';
 
-const BasicSettingsTab = ({ data = {}, onDataChange }) => {
+const BasicSettingsTab = ({}) => {
+  const stepIndex = 1;
+  const tabTitle = 'Basic Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+
+  console.log("data: ", data);
+
   useEffect(() => {
     const defaultData = {
       relaxType: 'positions',
@@ -33,13 +41,13 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
     };
 
     if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-      onDataChange(initialData);
-    }
-  }, [data, onDataChange]);
+      handleDataChange(stepIndex, tabTitle, initialData);
+  }
+  }, [data]);
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   const handlePropertyChange = (pluginName, checked) => {
@@ -48,7 +56,7 @@ const BasicSettingsTab = ({ data = {}, onDataChange }) => {
       [pluginName]: checked,
     };
     const newData = { ...data, properties: newProperties };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
 

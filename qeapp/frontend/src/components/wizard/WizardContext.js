@@ -36,11 +36,11 @@ export const WizardProvider = ({ children, initialStepsData, jobData }) => {
     }
   }, [jobData, initialStepsData.length]);
 
-  const handleDataChange = (stepIndex, dataUpdater) => {
+  const handleDataChange = (stepIndex, tabTitle, newData) => {
     setSteps((prevSteps) => {
       const updatedSteps = [...prevSteps];
       const existingData = updatedSteps[stepIndex].data || {};
-      updatedSteps[stepIndex].data = dataUpdater(existingData);
+      updatedSteps[stepIndex].data = {...existingData, [tabTitle]: newData};;
       return updatedSteps;
     });
   };

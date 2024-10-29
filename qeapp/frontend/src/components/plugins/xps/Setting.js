@@ -2,8 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({ data = {}, onDataChange }) => {
-  const { steps } = useContext(WizardContext);
+const SettingTab = ({}) => {
+  const stepIndex = 1;
+  const tabTitle = 'XPS Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
 
   const [supportedElements, setSupportedElements] = useState([]);
@@ -43,7 +47,7 @@ const SettingTab = ({ data = {}, onDataChange }) => {
         setNotSupportedElements(result.not_supported_elements);
         const initialData = { ...defaultData, ...data };
         const newData = { ...initialData, ['correctionEnergies']: result.correction_energies || {} };
-        onDataChange(newData); // Update the data with the new values from the API
+        handleDataChange(stepIndex, tabTitle, newData);
       } catch (error) {
         console.error('Failed to fetch calculation data:', error);
       }
@@ -54,7 +58,7 @@ const SettingTab = ({ data = {}, onDataChange }) => {
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   const handleCoreLevelChange = (element, isChecked) => {

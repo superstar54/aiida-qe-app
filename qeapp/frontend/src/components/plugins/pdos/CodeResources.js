@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import BaseCodeResourcesTab from '../../widgets/CodeResourcesTab';
+import { WizardContext } from '../../wizard/WizardContext';
 
 const codesConfig = {
   projwfc: {
@@ -20,6 +21,11 @@ const codesConfig = {
 };
 
 const CodeResourcesTab = (props) => {
+  const stepIndex = 2;
+  const tabTitle = 'PDOS Resource Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
   const [codes, setCodes] = useState([]);
 
   // Fetch codes when the component mounts
@@ -38,7 +44,8 @@ const CodeResourcesTab = (props) => {
     <BaseCodeResourcesTab 
       codesConfig={codesConfig} 
       codes={codes} 
-      {...props} 
+      data={data}
+      onDataChange={(newData) => handleDataChange(stepIndex, tabTitle, newData)}
     />
   );
 };

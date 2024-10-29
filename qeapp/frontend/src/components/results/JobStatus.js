@@ -27,8 +27,12 @@ const TreeNode = ({ node }) => {
   }
 };
 
-const JobStatusTab = ({data = {}, onDataChange}) => {
-  const { steps } = useContext(WizardContext);
+const JobStatusTab = ({}) => {
+  const stepIndex = 4;
+  const tabTitle = 'Job Status';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
   const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
 
   const [jobStatus, setJobStatus] = useState(null);
@@ -113,7 +117,7 @@ const JobStatusTab = ({data = {}, onDataChange}) => {
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   if (loading) {

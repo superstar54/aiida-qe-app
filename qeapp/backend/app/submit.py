@@ -25,7 +25,7 @@ def get_advanced_setting_value(data):
     
     # basic workflow settings
     parameters = {"workchain": {}, "advanced": {}}
-    basic_settings = data.workflow_settings.get('Basic workflow settings', {})
+    basic_settings = data.workflow_settings.get('Basic Settings', {})
     mapping = {
         "relax_type": "relaxType",
         "electronic_type": "electronicType",
@@ -41,7 +41,7 @@ def get_advanced_setting_value(data):
             parameters["workchain"]["properties"].append(key)
     # create the the initial_magnetic_moments as None (Default)
     # advanced settings
-    advanced_settings = data.workflow_settings.get('Advanced workflow settings', {})
+    advanced_settings = data.workflow_settings.get('Advanced Settings', {})
     parameters["advanced"] = {
         "initial_magnetic_moments": None,
         "pw": {

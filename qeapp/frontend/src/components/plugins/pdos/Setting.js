@@ -2,9 +2,12 @@ import React, { useEffect, useContext } from 'react';
 import { Form } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({ data = {}, onDataChange }) => {
-  const { steps } = useContext(WizardContext);
-  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
+const SettingTab = ({}) => {
+  const stepIndex = 1;
+  const tabTitle = 'PDOS Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  const protocol = steps[1]?.data?.['Basic Settings']?.protocol || 'moderate';
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
   
   const defaultData = {
@@ -39,8 +42,7 @@ const SettingTab = ({ data = {}, onDataChange }) => {
           ...initialData,
           kPointsDistance: result.kPointsDistance || data.kPointsDistance,
         };
-
-        onDataChange(updatedData); // Update the data with the new values from the API
+        handleDataChange(stepIndex, tabTitle, updatedData); // Update the data with the new values from the API
       } catch (error) {
         console.error('Failed to fetch calculation data:', error);
       }
@@ -59,7 +61,7 @@ const SettingTab = ({ data = {}, onDataChange }) => {
       value = parseInt(value, 10);
     }
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   return (

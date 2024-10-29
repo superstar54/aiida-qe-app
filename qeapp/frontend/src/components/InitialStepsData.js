@@ -28,10 +28,10 @@ const initialStepsData = [
     },
     {
       title: 'Configure Workflow',
-      id: "workflow_settings",
+      id: "workflowSettings",
       tabs: [
-        { abc: "basic", title: 'Basic workflow settings', content: <BasicSettingsTab /> },
-        { id: "advanced", title: 'Advanced workflow settings', content: <AdvancedSettingsTab /> },
+        { id: "basic", title: 'Basic Settings', content: <BasicSettingsTab /> },
+        { id: "advanced", title: 'Advanced Settings', content: <AdvancedSettingsTab /> },
         // Dynamically add plugin settings tabs
         ...plugins.map(plugin => ({
           id: plugin.id,
@@ -42,14 +42,14 @@ const initialStepsData = [
       dependents: [2, 3],
       ButtonText: "Confirm",
       // retrieve the name and outlne of the plugins
-      data: {"Basic workflow settings": {"plugins": plugins.map(plugin => ({id: plugin.id, outline: plugin.outline})),
+      data: {"Basic Settings": {"plugins": plugins.map(plugin => ({id: plugin.id, outline: plugin.outline})),
                                          "properties": {}}}
     },
     {
       title: 'Choose Computational Resources',
-      id: "computational_resources",
+      id: "computationalResources",
       tabs: [
-        { id: "basic", title: 'Basic resource settings', content: <CodeResourcesTab /> },
+        { id: "basic", title: 'Basic Resource Settings', content: <CodeResourcesTab /> },
         // Conditionally add plugin settings tabs
         ...plugins
         .filter(plugin => plugin.CodeResourcesTab) // Only include plugins with CodeResourcesTab
@@ -68,7 +68,7 @@ const initialStepsData = [
       id: "review_submit",
       tabs: [
         { id: "submit", title: 'Label and Submit', content: <LabelGroupTab /> },
-        { id: "review", title: 'Review settings', content: <ReviewAndSubmitTab /> },  // The review step shows all data.
+        { id: "review", title: 'Review Settings', content: <ReviewAndSubmitTab /> },  // The review step shows all data.
       ],
       dependents: [],
       ButtonText: "Confirm",
@@ -78,8 +78,8 @@ const initialStepsData = [
       title: 'Status & Results',
       id: "status_results",
       tabs: [
-        { id: "status", title: 'Job status', content: <JobStatusTab /> },
-        { id: "structure", title: 'Final structure', content: <FinalStructureTab /> },
+        { id: "status", title: 'Job Status', content: <JobStatusTab /> },
+        { id: "structure", title: 'Final Structure', content: <FinalStructureTab /> },
         // Dynamically add plugin results tabs
         ...plugins.map(plugin => ({
           id: plugin.id,

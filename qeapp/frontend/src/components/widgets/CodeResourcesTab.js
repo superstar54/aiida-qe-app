@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import CodeSelector from './CodeSelector';
 
-const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange, codes }) => {
+const BaseCodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange, codes }) => {
 
   useEffect(() => {
     // Initialize codes with defaults and existing data
@@ -75,4 +75,4 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange, codes }) 
   );
 };
 
-export default CodeResourcesTab;
+export default BaseCodeResourcesTab;

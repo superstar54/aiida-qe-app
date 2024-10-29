@@ -2,9 +2,14 @@ import React, { useEffect, useContext } from 'react';
 import { Row, Col, Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { WizardContext } from '../wizard/WizardContext';
 
-const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
-  const { steps } = useContext(WizardContext);
-  const protocol = steps[1]?.data?.['Basic workflow settings']?.protocol || 'moderate';
+const AdvancedSettingsTab = ({}) => {
+
+  const stepIndex = 1;
+  const tabTitle = 'Advanced Settings';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
+  
+  const protocol = steps[1]?.data?.['Basic Settings']?.protocol || 'moderate';
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
 
   const defaultData = {
@@ -53,7 +58,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
           kPointsDistance: result.kPointsDistance || data.kPointsDistance,
         };
 
-        onDataChange(updatedData); // Update the data with the new values from the API
+        handleDataChange(stepIndex, tabTitle, updatedData); // Update the data with the new values from the API
       } catch (error) {
         console.error('Failed to fetch calculation data:', error);
       }
@@ -65,6 +70,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
     }
   }, [protocol, structure]);
 
+
   const handleChange = (field, value, type = 'string') => {
     if (type === 'float' || type === 'number') {
       value = parseFloat(value);
@@ -72,7 +78,7 @@ const AdvancedSettingsTab = ({ data = {}, onDataChange }) => {
       value = parseInt(value, 10);
     }
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   return (

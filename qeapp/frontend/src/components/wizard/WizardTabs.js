@@ -4,13 +4,12 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { WizardContext } from './WizardContext';
 
 const WizardTabs = ({ stepIndex }) => {
-  const { steps, handleDataChange } = useContext(WizardContext);
+  const { steps } = useContext(WizardContext);
   const step = steps[stepIndex];
-  const { tabs, data: stepData } = step;
 
-  const properties = steps[1]?.data?.['Basic workflow settings']?.properties || {};
+  const properties = steps[1]?.data?.['Basic Settings']?.properties || {};
 
-  const filteredTabs = tabs.filter((tab) => {
+  const filteredTabs = step.tabs.filter((tab) => {
     if (tab.id && properties.hasOwnProperty(tab.id)) {
       return properties[tab.id];
     }
@@ -30,16 +29,7 @@ const WizardTabs = ({ stepIndex }) => {
     <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
       {filteredTabs.map((tab, index) => (
         <Tab eventKey={tab.title} title={tab.title} key={index}>
-          {React.cloneElement(tab.content, {
-            data: stepData[tab.title] || {},
-            onDataChange: (newData) => {
-              const dataUpdater = (prevData) => ({
-                ...prevData,
-                [tab.title]: newData,
-              });
-              handleDataChange(stepIndex, dataUpdater);
-            },
-          })}
+          {React.cloneElement(tab.content, {})}
         </Tab>
       ))}
       {filteredTabs.length === 0 && (

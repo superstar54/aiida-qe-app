@@ -20,8 +20,11 @@ function getChemicalFormula(symbols) {
   return formula;
 }
 
-const LabelGroupTab = ({ data = {}, onDataChange }) => {
-  const { steps } = useContext(WizardContext);
+const LabelGroupTab = ({}) => {
+  const stepIndex = 3;
+  const tabTitle = 'Label and Submit';
+  const { steps, handleDataChange } = useContext(WizardContext);
+  const data = steps[stepIndex]?.data?.[tabTitle] || {};
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
 
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
@@ -111,12 +114,12 @@ const LabelGroupTab = ({ data = {}, onDataChange }) => {
     const formula = getChemicalFormula(structure.symbols);
     const initialData = { ...defaultData, ...data };
     const newData = { ...initialData, label: formula };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   }, [structure]);
   
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
-    onDataChange(newData);
+    handleDataChange(stepIndex, tabTitle, newData);
   };
 
   return (
