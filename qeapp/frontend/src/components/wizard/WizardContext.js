@@ -63,7 +63,7 @@ export const WizardProvider = ({ children, initialStepsData, jobData }) => {
         if (index === stepIndex) {
           return { ...step, confirmed: false, modified: true };
         } else if (index > stepIndex) {
-          return { ...step, confirmed: false, modified: true, data: {} };
+          return { ...step, confirmed: false, modified: true, data: initialStepsData[index].data || {} };
         }
         return step;
       });

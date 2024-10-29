@@ -63,8 +63,8 @@ const BasicSettingsTab = ({}) => {
   return (
     <Form>
       <h4>Structure</h4>
-      <p>
-        You have three options:
+      <div>
+        <p>You have three options:</p>
         <ol>
           <li>
             <strong>Structure as is</strong>: Perform a self-consistent calculation using the structure provided as input.
@@ -76,7 +76,7 @@ const BasicSettingsTab = ({}) => {
             <strong>Full geometry</strong>: Perform a full relaxation for both the internal atomic coordinates and the cell vectors.
           </li>
         </ol>
-      </p>
+      </div>
       <ToggleButtonGroup
         type="radio"
         name="structureOptions"

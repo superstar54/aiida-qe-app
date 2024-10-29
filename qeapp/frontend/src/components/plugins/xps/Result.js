@@ -234,7 +234,6 @@ const ResultTab = ({}) => {
               type="file"
               label={uploadedFile ? uploadedFile.name : 'Choose File'}
               onChange={handleFileUpload}
-              custom
             />
           </Form.Group>
         </Col>
