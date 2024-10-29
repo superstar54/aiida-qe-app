@@ -1,5 +1,6 @@
 import BasicSettingsTab from './workflow/BasicSettingsTab';
 import AdvancedSettingsTab from './workflow/AdvancedSettingsTab';
+import PseudopotentialSetting from './workflow/Pseudo';
 import StructureSelection from './structure_selection/StructureSelection';
 import CodeResourcesTab from './computational_resources/CodeResourcesTab';
 import LabelGroupTab from './review_submit/LabelGroup';
@@ -32,6 +33,7 @@ const initialStepsData = [
       tabs: [
         { id: "basic", title: 'Basic Settings', content: <BasicSettingsTab /> },
         { id: "advanced", title: 'Advanced Settings', content: <AdvancedSettingsTab /> },
+        { id: "pseudo", title: 'Pseudopotential Settings', content: <PseudopotentialSetting /> },
         // Dynamically add plugin settings tabs
         ...plugins.map(plugin => ({
           id: plugin.id,

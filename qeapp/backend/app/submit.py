@@ -21,6 +21,16 @@ class CalculationData(BaseModel):
     computational_resources: dict
     review_submit: dict
 
+def get_pseudos(data):
+    pseudos_settings = data.workflow_settings.get('Pseudopotential Settings', {})
+    pseudo_family = pseudos_settings.get("pseudo_family", "SSSP/1.3/PBEsol/efficiency")
+    pseudos = {}
+    for symbol, pseudo_data in pseudos_settings["pseudos"].items():
+        pseudos[symbol] = pseudo_data["uuid"]
+    cutoffs = {"cutoff_wfc": pseudos_settings.get("wavefunctionCutoff", 30),
+               "cutoff_rho": pseudos_settings.get("chargeDensityCutoff", 240)}
+    return {"pseudo_family": pseudo_family, "pseudos": pseudos, "cutoffs": cutoffs}
+
 def get_advanced_setting_value(data):
     
     # basic workflow settings
@@ -73,7 +83,12 @@ def get_advanced_setting_value(data):
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["lspinorb"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["noncolin"] = True
         parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["nspin"] = 4
-
+    # pseudos
+    pseudos_data = get_pseudos(data)
+    parameters["advanced"]["pseudo_family"] = pseudos_data["pseudo_family"]
+    parameters["advanced"]["pw"]["pseudos"] = pseudos_data["pseudos"]
+    parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["ecutwfc"] = pseudos_data["cutoffs"]["cutoff_wfc"]
+    parameters["advanced"]["pw"]["parameters"]["SYSTEM"]["ecutrho"] = pseudos_data["cutoffs"]["cutoff_rho"]
 
     return parameters
 
@@ -112,11 +127,14 @@ def prepare_inputs(data: CalculationData):
     # workflow settings
     parameters = get_advanced_setting_value(data)
     # bands
-    parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands Settings', {}))
+    if "bands" in parameters["workchain"]["properties"]:
+        parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands Settings', {}))
     # pdos
-    parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS Settings', {}))
+    if "pdos" in parameters["workchain"]["properties"]:
+        parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS Settings', {}))
     # xps
-    parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS Settings', {}))
+    if "xps" in parameters["workchain"]["properties"]:
+        parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS Settings', {}))
     # computational resources
     parameters["codes"] = get_codes_values(data)
     return {
