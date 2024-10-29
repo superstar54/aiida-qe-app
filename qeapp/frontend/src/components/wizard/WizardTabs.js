@@ -46,7 +46,6 @@ const WizardTabs = ({ stepIndex }) => {
               });
               handleDataChange(stepIndex, dataUpdater);
             },
-            allStepsData: steps,
             JobId,
             jobStatus,
           })}

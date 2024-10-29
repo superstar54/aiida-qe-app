@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
+import { WizardContext } from '../wizard/WizardContext';
 
 function getChemicalFormula(symbols) {
   const elementCounts = {};
@@ -19,7 +20,8 @@ function getChemicalFormula(symbols) {
   return formula;
 }
 
-const LabelGroupTab = ({ allStepsData = [], data = {}, structure, onDataChange }) => {
+const LabelGroupTab = ({ data = {}, structure, onDataChange }) => {
+  const { steps } = useContext(WizardContext);
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
   const [loading, setLoading] = useState(false); // New loading state
 
@@ -29,8 +31,8 @@ const LabelGroupTab = ({ allStepsData = [], data = {}, structure, onDataChange }
   };
 
   const accumulateData = (includeStructure = true) => {
-    return Array.isArray(allStepsData)
-      ? allStepsData.reduce((acc, step) => {
+    return Array.isArray(steps)
+      ? steps.reduce((acc, step) => {
           if (step.title === 'Select Structure') {
             if (includeStructure) {
               acc[step.title] = step.data;

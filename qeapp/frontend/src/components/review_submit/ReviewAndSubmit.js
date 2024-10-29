@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import * as yaml from 'js-yaml';
+import { WizardContext } from '../wizard/WizardContext';
 
-const ReviewAndSubmitTab = ({ allStepsData = [], data = {}, onDataChange }) => {
+const ReviewAndSubmitTab = ({data = {}, onDataChange }) => {
+  const { steps } = useContext(WizardContext);
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const accumulateData = (includeStructure = true) => {
-    return Array.isArray(allStepsData)
-      ? allStepsData.reduce((acc, step) => {
+    return Array.isArray(steps)
+      ? steps.reduce((acc, step) => {
           if (step.title === 'Select Structure') {
             if (includeStructure) {
               acc[step.title] = step.data;
