@@ -3,21 +3,11 @@ import { Form } from 'react-bootstrap';
 
 const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
 
-  useEffect(() => {
-      const defaultData = {
-          kPointsDistance: 0.1,
-          usePdosDegauss: false,
-          pdosDegauss: 0.005,
-      };
-  
-      // Merge default data with any existing data
-      const initialData = { ...defaultData, ...data };
-  
-      // Update data if it doesn't already have all default values
-      if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-        onDataChange(initialData);
-      }
-    }, []);
+  const defaultData = {
+      kPointsDistance: 0.1,
+      usePdosDegauss: false,
+      pdosDegauss: 0.005,
+  };
     
   useEffect(() => {
     if (!protocol || !structure) {
@@ -40,9 +30,9 @@ const SettingTab = ({ data = {}, protocol, structure, onDataChange }) => {
         const result = await response.json();
 
         // Assuming result contains the updated data
-        console.log("result: ", result)
+        const initialData = { ...defaultData, ...data };
         const updatedData = {
-          ...data,
+          ...initialData,
           kPointsDistance: result.kPointsDistance || data.kPointsDistance,
         };
 

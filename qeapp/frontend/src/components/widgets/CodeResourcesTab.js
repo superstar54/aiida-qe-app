@@ -1,23 +1,8 @@
-// src/components/plugins/CodeResourcesTab.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import CodeSelector from './CodeSelector';
 
-const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
-  const [codes, setCodes] = useState([]);
-
-  // Fetch codes when the component mounts
-  useEffect(() => {
-    fetchCodes();
-  }, []);
-
-  const fetchCodes = () => {
-    // Replace with actual API call
-    fetch('http://localhost:8000/api/codes')
-      .then(response => response.json())
-      .then(data => setCodes(data))
-      .catch(error => console.error('Failed to fetch codes:', error));
-  };
+const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange, codes }) => {
 
   useEffect(() => {
     // Initialize codes with defaults and existing data
@@ -28,10 +13,13 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
       if (!initialCodes[codeKey]) {
         initialCodes[codeKey] = { ...codesConfig[codeKey] };
       } else {
-        // fliter out codeOptions using the `input_plugin` key
-        console.log('codes', codes);
-        const codeOptions = codes.filter((code) => code.attributes.input_plugin === codesConfig[codeKey].input_plugin);
-        console.log('codeOptions', codeOptions);
+        // Filter out codeOptions using the `input_plugin` key
+        let codeOptions;
+        if (codes) {
+          codeOptions = codes.filter((code) => code.attributes.input_plugin === codesConfig[codeKey].input_plugin);
+        } else {
+          codeOptions = [];
+        }
         initialCodes[codeKey] = {
           ...codesConfig[codeKey],
           ...initialCodes[codeKey],
@@ -45,21 +33,14 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
     if (JSON.stringify(data.codes || {}) !== JSON.stringify(initialCodes)) {
       onDataChange(newData);
     }
-  }, [codesConfig, data, onDataChange]);
+  }, [codesConfig, data, onDataChange, codes]);
 
-  // Handler for updating specific fields within a code
   const handleCodeChange = (codeKey, field, value) => {
     let updatedValue = value;
 
-    // Convert to number if the field is 'nodes' or 'cpus'
     if (field === 'nodes' || field === 'cpus') {
       const parsedValue = parseInt(value, 10);
-      if (!isNaN(parsedValue) && parsedValue > 0) {
-        updatedValue = parsedValue;
-      } else {
-        // Handle invalid input by setting a default value (e.g., 1)
-        updatedValue = 1;
-      }
+      updatedValue = !isNaN(parsedValue) && parsedValue > 0 ? parsedValue : 1;
     }
 
     const updatedCodes = {
@@ -70,7 +51,6 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
       },
     };
     const newData = { ...data, codes: updatedCodes };
-    console.log('newData', newData);
     onDataChange(newData);
   };
 
@@ -94,6 +74,5 @@ const CodeResourcesTab = ({ codesConfig = {}, data = {}, onDataChange }) => {
     </Form>
   );
 };
-
 
 export default CodeResourcesTab;

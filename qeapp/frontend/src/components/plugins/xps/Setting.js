@@ -5,20 +5,12 @@ const SettingTab = ({ data = {}, structure, onDataChange }) => {
   const [supportedElements, setSupportedElements] = useState([]);
   const [notSupportedElements, setNotSupportedElements] = useState([]);
 
-  useEffect(() => {
-    const defaultData = {
-      structureType: 'crystal',
-      pseudoGroup: 'pseudo_demo_pbe',
-      coreLevels: {},  // Store the selected core levels here
-      correctionEnergies: {},  // Store the correction energies here
-    };
-
-    const initialData = { ...defaultData, ...data };
-
-    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-      onDataChange(initialData);
-    }
-  }, [data, onDataChange]);
+  const defaultData = {
+    structureType: 'crystal',
+    pseudoGroup: 'pseudo_demo_pbe',
+    coreLevels: {},  // Store the selected core levels here
+    correctionEnergies: {},  // Store the correction energies here
+  };
 
   useEffect(() => {
     if (!structure) {
@@ -45,12 +37,13 @@ const SettingTab = ({ data = {}, structure, onDataChange }) => {
         // Set supported and not supported elements
         setSupportedElements(result.supported_elements);
         setNotSupportedElements(result.not_supported_elements);
-        handleChange('correctionEnergies', result.correction_energies || {});
+        const initialData = { ...defaultData, ...data };
+        const newData = { ...initialData, ['correctionEnergies']: result.correction_energies || {} };
+        onDataChange(newData); // Update the data with the new values from the API
       } catch (error) {
         console.error('Failed to fetch calculation data:', error);
       }
     };
-
     // Fetch the data when the structure changes
     fetchCalculationData();
   }, [structure]);

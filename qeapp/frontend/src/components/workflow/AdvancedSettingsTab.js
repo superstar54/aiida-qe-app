@@ -2,28 +2,18 @@ import React, { useEffect } from 'react';
 import { Row, Col, Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) => {
-  useEffect(() => {
-    const defaultData = {
-      cleanUp: false,
-      forceConvergence: 0.0001,
-      energyConvergence: 0.00001,
-      scfConvergence: 2e-10,
-      maxElectronSteps: 80,
-      smearingType: 'cold',
-      smearingWidth: 0.01,
-      kPointsDistance: 0.15,
-      hubbard: 'off',
-      spinOrbit: 'off',
-    };
-
-    // Merge default data with any existing data
-    const initialData = { ...defaultData, ...data };
-
-    // Update data if it doesn't already have all default values
-    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-      onDataChange(initialData);
-    }
-  }, [structure]);
+  const defaultData = {
+    cleanUp: false,
+    forceConvergence: 0.0001,
+    energyConvergence: 0.00001,
+    scfConvergence: 2e-10,
+    maxElectronSteps: 80,
+    smearingType: 'cold',
+    smearingWidth: 0.01,
+    kPointsDistance: 0.15,
+    hubbard: 'off',
+    spinOrbit: 'off',
+  };
 
   useEffect(() => {
     if (!protocol || !structure) {
@@ -46,9 +36,9 @@ const AdvancedSettingsTab = ({ data = {}, protocol, structure, onDataChange }) =
         const result = await response.json();
 
         // Assuming result contains the updated data
-        console.log("result: ", result)
+        const initialData = { ...defaultData, ...data };
         const updatedData = {
-          ...data,
+          ...initialData,
           forceConvergence: result.forceConvergence || data.forceConvergence,
           energyConvergence: result.energyConvergence || data.energyConvergence,
           scfConvergence: result.scfConvergence || data.scfConvergence,

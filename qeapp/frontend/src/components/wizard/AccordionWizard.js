@@ -30,6 +30,7 @@ const AccordionWizard = () => {
           onConfirm={handleConfirm}
           onModify={handleModify}
           disabled={index > 0 && !steps[index - 1].confirmed}
+          previousStepConfirmed={index === 0 || steps[index - 1].confirmed}
         />
       ))}
     </Accordion>

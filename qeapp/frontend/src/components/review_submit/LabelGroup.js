@@ -23,18 +23,10 @@ const LabelGroupTab = ({ allStepsData = [], data = {}, structure, onDataChange }
   const [submissionStatus, setSubmissionStatus] = useState(null); // New state for submission status
   const [loading, setLoading] = useState(false); // New loading state
 
-  useEffect(() => {
-    const defaultData = {
-      label: '',
-      description: '',
-    };
-
-    const initialData = { ...defaultData, ...data };
-
-    if (JSON.stringify(data) !== JSON.stringify(initialData)) {
-      onDataChange(initialData);
-    }
-  }, []);
+  const defaultData = {
+    label: '',
+    description: '',
+  };
 
   const accumulateData = (includeStructure = true) => {
     return Array.isArray(allStepsData)
@@ -113,7 +105,9 @@ const LabelGroupTab = ({ allStepsData = [], data = {}, structure, onDataChange }
       return;
     }
     const formula = getChemicalFormula(structure.symbols);
-    handleChange('label', `${formula}`);
+    const initialData = { ...defaultData, ...data };
+    const newData = { ...initialData, label: formula };
+    onDataChange(newData);
   }, [structure]);
   
   const handleChange = (field, value) => {
