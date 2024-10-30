@@ -94,7 +94,9 @@ const BasicSettingsTab = ({}) => {
           Full geometry
         </ToggleButton>
       </ToggleButtonGroup>
-
+      <div className="mb-4">
+        Below you can indicate both if the material should be treated as an insulator or a metal (if in doubt, choose "Metal"), and if it should be studied with magnetization/spin polarization, switch magnetism On or Off (On is at least twice more costly).
+      </div>
       <h5>Electronic Type</h5>
       <ToggleButtonGroup
         type="radio"

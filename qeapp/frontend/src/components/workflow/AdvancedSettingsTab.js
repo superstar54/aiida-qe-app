@@ -22,6 +22,8 @@ const AdvancedSettingsTab = ({}) => {
     kPointsDistance: 0.15,
     hubbard: 'off',
     spinOrbit: 'off',
+    totalCharge: 0,
+    vdWCorrection: 'none',
   };
 
   // Use useRef to track if it's the initial mount
@@ -30,7 +32,7 @@ const AdvancedSettingsTab = ({}) => {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      return; // Skip the effect on the initial mount
+      return;
     }
 
     if (!protocol || !structure) {
@@ -42,11 +44,11 @@ const AdvancedSettingsTab = ({}) => {
         const response = await fetch(
           'http://localhost:8000/api/calculation/pw_parameters_from_protocol/',
           {
-            method: 'POST', // Assuming POST method is required; you can adjust as needed
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ protocol, structure }), // Send protocol and structure as part of the request
+            body: JSON.stringify({ protocol, structure }),
           }
         );
 
@@ -56,7 +58,6 @@ const AdvancedSettingsTab = ({}) => {
 
         const result = await response.json();
 
-        // Assuming result contains the updated data
         const initialData = { ...defaultData, ...data };
         const updatedData = {
           ...initialData,
@@ -69,7 +70,7 @@ const AdvancedSettingsTab = ({}) => {
           kPointsDistance: result.kPointsDistance || data.kPointsDistance,
         };
 
-        handleDataChange(stepIndex, tabTitle, updatedData); // Update the data with the new values from the API
+        handleDataChange(stepIndex, tabTitle, updatedData);
       } catch (error) {
         console.error('Failed to fetch calculation data:', error);
       }
@@ -90,7 +91,7 @@ const AdvancedSettingsTab = ({}) => {
 
   return (
     <Form>
-      <h4 className="mt-3">Advanced Settings for Workflow</h4>
+      <h4 className="mt-3">Advanced Settings</h4>
 
       <Form.Group controlId="cleanUp" className="mb-3">
         <Form.Check
@@ -99,6 +100,31 @@ const AdvancedSettingsTab = ({}) => {
           checked={data.cleanUp || false}
           onChange={(e) => handleChange('cleanUp', e.target.checked)}
         />
+      </Form.Group>
+
+      <Form.Group controlId="totalCharge" className="mb-3">
+        <Form.Label>Total Charge</Form.Label>
+        <Form.Control
+          type="number"
+          placeholder="0"
+          value={data.totalCharge || 0}
+          onChange={(e) => handleChange('totalCharge', e.target.value, 'number')}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="vdWCorrection" className="mb-3">
+        <Form.Label>Van der Waals Correction</Form.Label>
+        <Form.Select
+          value={data.vdWCorrection || 'none'}
+          onChange={(e) => handleChange('vdWCorrection', e.target.value)}
+        >
+          <option value="none">None</option>
+          <option value="dft-d3">Grimme-D3</option>
+          <option value="dft-d3bj">Grimme-D3BJ</option>
+          <option value="dft-d3m">Grimme-D3M</option>
+          <option value="dft-d3mbj">Grimme-D3MBJ</option>
+          <option value="ts-vdw">Tkatchenko-Scheffler</option>
+        </Form.Select>
       </Form.Group>
 
       <h4>Convergence Thresholds</h4>
@@ -145,6 +171,10 @@ const AdvancedSettingsTab = ({}) => {
       </Row>
 
       <h4>Smearing</h4>
+      <p className="text-muted">
+        The smearing type and width is set by the chosen protocol. Tick the box to override the default, not advised unless you've mastered smearing effects 
+        (<a href="http://theossrv1.epfl.ch/Main/ElectronicTemperature" target="_blank" rel="noopener noreferrer">click here for a discussion</a>).
+      </p>
       <Row className="mb-3">
         <Col md={6} sm={12}>
           <Form.Label>Smearing Type</Form.Label>
@@ -154,7 +184,8 @@ const AdvancedSettingsTab = ({}) => {
           >
             <option value="cold">Cold</option>
             <option value="gaussian">Gaussian</option>
-            <option value="fermi">Fermi-Dirac</option>
+            <option value="fermi-dirac">Fermi-Dirac</option>
+            <option value="methfessel-paxton">Methfessel-Paxton</option>
           </Form.Select>
         </Col>
         <Col md={6} sm={12}>
@@ -169,6 +200,7 @@ const AdvancedSettingsTab = ({}) => {
       </Row>
 
       <h4>K-Points</h4>
+      <p className="text-muted">The k-points mesh density of the SCF calculation is set by the protocol. The value below represents the maximum distance between the k-points in each direction of reciprocal space. Smaller is more accurate and costly.</p>
       <Row className="mb-3">
         <Col md={6} sm={12}>
           <Form.Label>K-points Distance (1/A)</Form.Label>

@@ -8,11 +8,9 @@ function StructureViewer({ structure }) {
     if (!structure) {
         return;
     }
-    // if structure is a object, convert it to Atoms object
-    if (typeof structure === 'object') {
-      console.log("structure", structure);
+    // if structure is not an Atoms object, convert it to one
+    if (!(structure instanceof Atoms)) {
       // remove species from structure
-      delete structure.species;
       structure = new Atoms(structure);
     }
     if (weasContainerRef.current) {

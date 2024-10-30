@@ -127,7 +127,7 @@ const PseudopotentialSetting = () => {
       </div>
   
       <div className="mb-4">
-        <label htmlFor="librarySelection" className="form-label fw-bold">Pseudopotential Family</label>
+        <div htmlFor="librarySelection" className="form-label fw-bold">Pseudopotential Family</div>
         <div className="btn-group" role="group">
           {Object.entries(pseudopotentialOptions).map(([label, value]) => (
             (spinOrbit === 'off' || value.startsWith('PseudoDojo')) && (
