@@ -10,7 +10,9 @@ function StructureViewer({ structure }) {
     }
     // if structure is not an Atoms object, convert it to one
     if (!(structure instanceof Atoms)) {
-      // remove species from structure
+      // copy the object, and remove species from structure
+      // structure = JSON.parse(JSON.stringify(structure));
+      // delete structure.species;
       structure = new Atoms(structure);
     }
     if (weasContainerRef.current) {

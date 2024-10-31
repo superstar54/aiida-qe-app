@@ -53,7 +53,7 @@ const StructureSelection = ({}) => {
           return;
         }
 
-        handleChange('selectedStructure', parsedStructure);
+        handleChange('selectedStructure', parsedStructure.toDict());
       };
 
       fileReader.readAsText(file);
@@ -80,7 +80,7 @@ const StructureSelection = ({}) => {
           }
 
           setSelectedExample(selectedName);
-          handleChange('selectedStructure', parsedStructure);
+          handleChange('selectedStructure', parsedStructure.toDict());
         })
         .catch((error) => {
           console.error("Error fetching example file:", error);

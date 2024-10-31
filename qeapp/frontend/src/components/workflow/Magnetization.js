@@ -1,33 +1,92 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton, Table } from 'react-bootstrap';
 import { WizardContext } from '../wizard/WizardContext';
 
-const MagnetizationSettingsTab = ({}) => {
+const MagnetizationSettingsTab = () => {
   const stepIndex = 1;
   const tabTitle = 'Magnetization Settings';
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
 
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
-  const [kindLabels, setKindLabels] = useState([]);
-  const [magnetizationType, setMagnetizationType] = useState('starting_magnetization');
+  const electronicType = steps[1]?.data?.['Basic Settings']?.electronicType || 'metal';
+  const isInitialMount = useRef(true); // Track initial mount
+
+  // Initialize kindLabels from data or structure
+  const initialKindLabels = data.startingMagnetization 
+    ? Object.keys(data.startingMagnetization) 
+    : structure ? Object.keys(structure.species) : [];
+
+  const [kindLabels, setKindLabels] = useState(initialKindLabels);
+  const [magnetizationType, setMagnetizationType] = useState(data.magnetizationType || 'starting_magnetization');
   const [totalMagnetization, setTotalMagnetization] = useState(data.totalMagnetization || 0);
 
-  const defaultData = {
-    totalMagnetization: 0,
-    startingMagnetization: {},
-  };
-
+  // Update kindLabels and startingMagnetization based on structure, but only after initial mount
   useEffect(() => {
-    if (!structure) {
+    if (isInitialMount.current) return;
+
+    if (structure) {
+      const newKindLabels = Object.keys(structure.species);
+      setKindLabels(newKindLabels);
+
+      const newStartingMagnetization = newKindLabels.reduce((acc, kind) => {
+        acc[kind] = 0;
+        return acc;
+      }, {});
+
+      handleDataChange(stepIndex, tabTitle, { 
+        ...data, 
+        startingMagnetization: newStartingMagnetization 
+      });
+    }
+  }, [structure]);
+
+  // Effect to handle changes in electronicType, except on initial mount
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false; // Mark the initial mount complete
       return;
     }
-    setKindLabels(Object.keys(structure.species));
-  }, [structure]);
+
+    if (electronicType === 'insulator') {
+      // Set to Total Magnetization and disable Starting Magnetization
+      setMagnetizationType('tot_magnetization');
+      setTotalMagnetization(0);
+      handleDataChange(stepIndex, tabTitle, {
+        magnetizationType: 'tot_magnetization',
+        totalMagnetization: 0,
+        startingMagnetization: {}, // clear starting magnetization for insulator
+      });
+    } else if (electronicType === 'metal') {
+      // Reset all states when switching back to metal
+      const resetData = {
+        magnetizationType: 'starting_magnetization',
+        totalMagnetization: 0,
+        startingMagnetization: kindLabels.reduce((acc, kind) => {
+          acc[kind] = 0;
+          return acc;
+        }, {}),
+      };
+      setMagnetizationType('starting_magnetization');
+      setTotalMagnetization(0);
+      handleDataChange(stepIndex, tabTitle, resetData);
+    }
+  }, [electronicType, kindLabels]);
 
   const handleMagnetizationTypeChange = (value) => {
     setMagnetizationType(value);
-    handleDataChange(stepIndex, tabTitle, { ...data, magnetizationType: value });
+
+    const resetData = {
+      magnetizationType: value,
+      totalMagnetization: 0,
+      startingMagnetization: kindLabels.reduce((acc, kind) => {
+        acc[kind] = 0;
+        return acc;
+      }, {}),
+    };
+
+    setTotalMagnetization(0);
+    handleDataChange(stepIndex, tabTitle, resetData);
   };
 
   const handleTotalMagnetizationChange = (value) => {
@@ -47,7 +106,7 @@ const MagnetizationSettingsTab = ({}) => {
     <Form>
       <Form.Group controlId="magnetizationType">
         <Form.Label>Magnetization Type</Form.Label>
-        <div className="mb-2" /> {/* Adds vertical spacing between the label and toggle buttons */}
+        <div className="mb-2" />
         <ToggleButtonGroup 
           type="radio" 
           name="magnetizationType" 
@@ -55,25 +114,34 @@ const MagnetizationSettingsTab = ({}) => {
           onChange={handleMagnetizationTypeChange} 
           className="mb-3"
         >
-          <ToggleButton id="startingMagnetization" value="starting_magnetization" variant="outline-primary">
+          <ToggleButton 
+            id="startingMagnetization" 
+            value="starting_magnetization" 
+            variant="outline-primary"
+            disabled={electronicType === 'insulator'}
+          >
             Starting Magnetization
           </ToggleButton>
-          <ToggleButton id="totalMagnetization" value="tot_magnetization" variant="outline-primary">
+          <ToggleButton 
+            id="totalMagnetization" 
+            value="tot_magnetization" 
+            variant="outline-primary"
+          >
             Total Magnetization
           </ToggleButton>
         </ToggleButtonGroup>
       </Form.Group>
 
-      {magnetizationType === 'tot_magnetization' ? (
+      {magnetizationType === 'tot_magnetization' || electronicType === 'insulator' ? (
         <Form.Group controlId="totalMagnetization">
           <Form.Label>Total Magnetization</Form.Label>
           <Form.Control
             type="number"
-            min="0"
-            max="100"
-            step="1"
+            min="-10000"
+            max="10000"
+            step="0.1"
             value={totalMagnetization}
-            onChange={(e) => handleTotalMagnetizationChange(parseInt(e.target.value))}
+            onChange={(e) => handleTotalMagnetizationChange(parseFloat(e.target.value))}
           />
         </Form.Group>
       ) : (
