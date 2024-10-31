@@ -1,4 +1,4 @@
-from typing import ClassVar, Dict, List, Optional, Type, TypeVar
+from typing import ClassVar, Dict, List, Optional, Type, TypeVar, Tuple
 from pydantic import BaseModel, Field
 from aiida import orm
 
@@ -101,3 +101,8 @@ class Code(AiidaModel):
         for result in results:
             result.extras["computer"] = orm.load_computer(result.dbcomputer_id).label
         return results
+    
+
+class StructureModel(BaseModel):
+    symbols: List[str]
+    pbc: Optional[Tuple[bool, bool, bool]] = (True, True, True)  # Periodic boundary conditions

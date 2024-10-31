@@ -61,7 +61,7 @@ const HubbardSettingsTab = () => {
   };
 
   return (
-    <Form>
+    <div>
       <Form.Group controlId="activateHubbard">
         <Form.Label style={{ marginRight: '20px' }}><b>Activate Hubbard (DFT+U)</b></Form.Label>
         <ToggleButtonGroup
@@ -172,7 +172,7 @@ const HubbardSettingsTab = () => {
           )}
         </>
       )}
-    </Form>
+    </div>
   );
 };
 

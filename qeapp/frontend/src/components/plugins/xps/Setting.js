@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
 
-const SettingTab = ({}) => {
+const SettingTab = () => {
   const stepIndex = 1;
   const tabTitle = 'XPS Settings';
   const { steps, handleDataChange } = useContext(WizardContext);
@@ -20,41 +20,44 @@ const SettingTab = ({}) => {
     correctionEnergies: {},  // Store the correction energies here
   };
 
-  useEffect(() => {
-    if (!structure) {
-      return;
-    }
+  const fetchCalculationData = async () => {
+    if (!structure) return;
 
-    const fetchCalculationData = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/calculation/get_supported_xps_core_level/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ structure }), // Send the structure data to the backend
-        });
+    try {
+      const response = await fetch('http://localhost:8000/api/xps/get_supported_xps_core_level/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ structure, pseudo_group: data.pseudoGroup }), // Send structure and pseudoGroup to the backend
+      });
 
-        if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        console.log("result: ", result);
-
-        // Set supported and not supported elements
-        setSupportedElements(result.supported_elements);
-        setNotSupportedElements(result.not_supported_elements);
-        const initialData = { ...defaultData, ...data };
-        const newData = { ...initialData, ['correctionEnergies']: result.correction_energies || {} };
-        handleDataChange(stepIndex, tabTitle, newData);
-      } catch (error) {
-        console.error('Failed to fetch calculation data:', error);
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
       }
-    };
-    // Fetch the data when the structure changes
+
+      const result = await response.json();
+      console.log("result: ", result);
+
+      // Set supported and not supported elements
+      setSupportedElements(result.supported_elements);
+      setNotSupportedElements(result.not_supported_elements);
+
+      // Update correction energies and core levels in WizardContext
+      const initialData = { ...defaultData, ...data };
+      const newData = { 
+        ...initialData, 
+        correctionEnergies: result.correction_energies || {}, 
+      };
+      handleDataChange(stepIndex, tabTitle, newData);
+    } catch (error) {
+      console.error('Failed to fetch calculation data:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchCalculationData();
-  }, [structure]);
+  }, [structure, data.pseudoGroup]);
 
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
@@ -107,8 +110,6 @@ const SettingTab = ({}) => {
       </Form.Group>
 
       <h5>Select Core-Level</h5>
-
-      {/* Supported core levels (render as checkboxes) */}
       {supportedElements.length > 0 ? (
         supportedElements.map((element) => (
           <Form.Check 
@@ -123,7 +124,6 @@ const SettingTab = ({}) => {
         <p>No supported core levels available.</p>
       )}
 
-      {/* Not supported elements (render as labels or text) */}
       {notSupportedElements.length > 0 && (
         <div>
           <h6>Not Supported Core Levels</h6>
@@ -137,6 +137,5 @@ const SettingTab = ({}) => {
     </Form>
   );
 };
-
 
 export default SettingTab;

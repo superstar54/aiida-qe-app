@@ -134,7 +134,7 @@ def prepare_inputs(data: CalculationData):
         parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS Settings', {}))
     # xps
     if "xps" in parameters["workchain"]["properties"]:
-        parameters["xps"] = get_xps_tab_value(data.workflow_settings.get('XPS Settings', {}))
+        parameters["xps"] = get_xps_tab_value(data)
     # computational resources
     parameters["codes"] = get_codes_values(data)
     return {

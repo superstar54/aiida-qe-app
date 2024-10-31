@@ -33,7 +33,7 @@ const ResultTab = ({}) => {
 
       try {
         console.log('Fetching XPS data for Job ID:', JobId);
-        const response = await fetch(`http://localhost:8000/api/jobs-data/${JobId}`);
+        const response = await fetch(`http://localhost:8000/api/xps/${JobId}`);
         if (!response.ok) {
           console.error('Fetch error:', response);
           throw new Error('Failed to fetch XPS data');

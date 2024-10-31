@@ -103,7 +103,7 @@ const MagnetizationSettingsTab = () => {
   };
 
   return (
-    <Form>
+    <div>
       <Form.Group controlId="magnetizationType">
         <Form.Label>Magnetization Type</Form.Label>
         <div className="mb-2" />
@@ -174,7 +174,7 @@ const MagnetizationSettingsTab = () => {
           </Table>
         </div>
       )}
-    </Form>
+    </div>
   );
 };
 

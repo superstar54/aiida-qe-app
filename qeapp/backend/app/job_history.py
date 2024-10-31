@@ -40,7 +40,6 @@ async def read_job_data(search: str = Query(None)):
 async def read_job(id: int):
     from aiida.orm.utils.serialize import deserialize_unsafe
     from aiida.cmdline.utils.ascii_vis import build_call_graph
-    from .plugins.xps.results import export_xps_data
 
     try:
         node = orm.load_node(id)
@@ -51,15 +50,10 @@ async def read_job(id: int):
             structure = node.outputs.structure.backend_entity.attributes
         else:
             structure = None
-        # xps
-        if "xps" in node.outputs:
-            # get data
-            xps_data = export_xps_data(node.outputs.xps)
-        else:
-            xps_data = None
+        
         return {"stepsData": content, "processStatus": process_status,
-                "structure": structure,
-                "xps": xps_data}
+                "structure": structure
+                }
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
 
