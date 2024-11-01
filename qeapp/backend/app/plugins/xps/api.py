@@ -40,16 +40,17 @@ async def read_job(id: int):
     try:
         node = orm.load_node(id)
         # output structure
-        if "structure" in node.outputs:
-            structure = node.outputs.structure.backend_entity.attributes
-        else:
-            structure = node.inputs.structure.backend_entity.attributes
+        structure = None
+        if "relax" in node.base.links.get_outgoing().all_link_labels():
+            relax_node = node.base.links.get_outgoing().get_node_by_label("relax")
+            if "output_structure" in relax_node.outputs:
+                structure = relax_node.outputs.output_structure.backend_entity.attributes
         # xps
-        if "xps" in node.outputs:
-            # get data
-            xps_data = export_xps_data(node.outputs.xps)
-        else:
-            xps_data = None
+        xps_data = None
+        if "xps" in node.base.links.get_outgoing().all_link_labels():
+            xps_node = node.base.links.get_outgoing().get_node_by_label("xps")
+            if "chemical_shifts" in xps_node.outputs:
+                xps_data = export_xps_data(xps_node.outputs)
         return {
                 "structure": structure,
                 "xps": xps_data}

@@ -9,6 +9,7 @@ router = APIRouter()
 @router.get("/api/jobs-data")
 async def read_job_data(search: str = Query(None)):
     from qeapp.workflows.qeapp_workchain import QeAppWorkChain
+    from aiida_workgraph.engine.workgraph import WorkGraphEngine
     from aiida.orm import QueryBuilder
     
     try:
@@ -29,7 +30,14 @@ async def read_job_data(search: str = Query(None)):
         data = []
         for p in results:
             data.append({projections[i]: p[i] for i in range(len(projections))})
-        print(data)
+        # query WorkGraphEngine with label WorkGraph<QeAppWorkGraph>
+        qb = QueryBuilder()
+        qb.append(WorkGraphEngine, project=projections, tag="process",
+                filters={orm.WorkChainNode.fields.process_label: "WorkGraph<QeAppWorkGraph>"})
+        qb.order_by({"process": {"ctime": "desc"}})
+        results = qb.all()
+        for p in results:
+            data.append({projections[i]: p[i] for i in range(len(projections))})
         return {"jobs": data}
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Workgraph {id} not found")
@@ -46,11 +54,11 @@ async def read_job(id: int):
         content = deserialize_unsafe(node.base.extras.get("ui_parameters", ""))
         process_status = build_call_graph(node)
         # output structure
-        if "structure" in node.outputs:
-            structure = node.outputs.structure.backend_entity.attributes
-        else:
-            structure = None
-        
+        structure = None
+        if "relax" in node.base.links.get_outgoing().all_link_labels():
+            relax_node = node.base.links.get_outgoing().get_node_by_label("relax")
+            if "output_structure" in relax_node.outputs:
+                structure = relax_node.outputs.output_structure.backend_entity.attributes
         return {"stepsData": content, "processStatus": process_status,
                 "structure": structure
                 }
