@@ -12,7 +12,7 @@ const ComputersList = () => {
 
   const fetchComputers = () => {
     // Replace with actual API call
-    fetch('http://localhost:8000/api/computers')
+    fetch(`${process.env.REACT_APP_API_URL}/api/computers`)
       .then(response => response.json())
       .then(data => setComputers(data))
       .catch(error => console.error('Failed to fetch computers:', error));
@@ -21,7 +21,7 @@ const ComputersList = () => {
   // Function to handle deleting a computer
   const handleDelete = (id) => {
     // Implement the API call to delete the computer
-    fetch(`http://localhost:8000/api/computers/${id}`, { method: 'DELETE' })
+    fetch(`${process.env.REACT_APP_API_URL}/api/computers/${id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete computer');

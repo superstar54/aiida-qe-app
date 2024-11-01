@@ -5,8 +5,6 @@ from pydantic import BaseModel
 from aiida.engine import submit
 from aiida.orm import StructureData, load_code
 import traceback
-from qeapp.workflows.qeapp_workchain import QeAppWorkChain
-from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
 from .plugins.bands.settings import get_tab_value as get_bands_tab_value
 from .plugins.pdos.settings import get_tab_value as get_pdos_tab_value
 from .plugins.xps.settings import get_tab_value as get_xps_tab_value
@@ -156,6 +154,7 @@ def update_builder(builder, codes):
 
 @router.post("/api/submit_workchain")
 async def submit_calculation(data: CalculationData):
+    from qeapp.workflows.qeapp_workchain import QeAppWorkChain
     from aiida.orm.utils.serialize import serialize
     from copy import deepcopy
     try:
@@ -184,6 +183,7 @@ async def submit_calculation(data: CalculationData):
 
 @router.post("/api/submit_workgraph")
 async def submit_calculation(data: CalculationData):
+    from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
     from aiida.orm.utils.serialize import serialize
     from copy import deepcopy
     try:

@@ -44,7 +44,7 @@ const PseudopotentialSetting = () => {
     const fetchCutoffs = async () => {
       try {
         const body = { structure, exchange_functional: exchangeFunctional, library_selection: librarySelection, spin_orbit: spinOrbit };
-        const response = await fetch('http://localhost:8000/api/calculation/get_pseudos/', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/calculation/get_pseudos/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),

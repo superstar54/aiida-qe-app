@@ -34,7 +34,7 @@ const CodeResourcesTab = (props) => {
   }, []);
 
   const fetchCodes = () => {
-    fetch('http://localhost:8000/api/codes')
+    fetch(`${process.env.REACT_APP_API_URL}/api/codes`)
       .then(response => response.json())
       .then(data => setCodes(data))
       .catch(error => console.error('Failed to fetch codes:', error));

@@ -54,7 +54,7 @@ const JobStatusTab = ({}) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/jobs-data/${JobId}`
+          `${process.env.REACT_APP_API_URL}/api/jobs-data/${JobId}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch job status');

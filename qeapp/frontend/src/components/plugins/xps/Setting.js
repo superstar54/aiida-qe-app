@@ -24,7 +24,7 @@ const SettingTab = () => {
     if (!structure) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/xps/get_supported_xps_core_level/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/xps/get_supported_xps_core_level/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

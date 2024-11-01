@@ -14,7 +14,7 @@ const CalculationWizard = () => {
     if (jobId) {
       const fetchJobData = async () => {
         try {
-          const response = await fetch(`http://localhost:8000/api/jobs-data/${jobId}`);
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`);
           if (!response.ok) {
             throw new Error(`Server responded with ${response.status}`);
           }

@@ -69,7 +69,7 @@ const JobHistory = () => {
           }
         });
 
-        const response = await fetch(`http://localhost:8000/api/jobs-data?${queryParams.toString()}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/jobs-data?${queryParams.toString()}`);
         console.log("response", response)
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
@@ -125,7 +125,7 @@ const JobHistory = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm(`Are you sure you want to delete job ${jobId}?`)) {
       try {
-        const response = await fetch(`http://localhost:8000/api/jobs-data/${jobId}`, { method: 'DELETE' });
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`, { method: 'DELETE' });
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
         }

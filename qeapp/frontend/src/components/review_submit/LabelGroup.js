@@ -45,7 +45,7 @@ const LabelGroupTab = ({}) => {
       const accumulatedData = accumulateData(steps);
 
       // Send the data to the backend using fetch
-      const response = await fetch('http://localhost:8000/api/submit_workgraph', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submit_workgraph`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
