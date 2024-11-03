@@ -14,7 +14,7 @@ def prepare_data(data):
         return data
 
 
-def get_bands_data(bands_node, fermi_energy=None):
+def get_bands_data_from_node(bands_node, fermi_energy=None):
     """Extract the band structure data from a bands node."""
     if not bands_node.is_finished_ok:
         return None
@@ -30,12 +30,21 @@ def get_bands_data(bands_node, fermi_energy=None):
         bands_data["fermi_energy"] = (
             outputs.bands.band_parameters["fermi_energy"] or fermi_energy
         )
+    if "projwfc" in outputs:
+        if "projections" in outputs.projwfc:
+            pdos_data = outputs.projwfc.projections.get_pdos()
+            bands_data["projections"] =  get_raw_pdos_data(pdos_data)
+        else:
+            pdos_data_up = outputs.projwfc.projections_up.get_pdos()
+            pdos_data_down = outputs.projwfc.projections_down.get_pdos()
+            bands_data["projections_up"] = get_raw_pdos_data(pdos_data_up)
+            bands_data["projections_down"] = get_raw_pdos_data(pdos_data_down)
 
     bands_data["pathlabels"] = get_bands_labeling(bands_data)
     bands_data = prepare_data(bands_data)
     return bands_data
 
-def get_raw_pdos_data(proj_data, data_type="pdos"):
+def get_raw_pdos_data(proj_data, data_type="pdos", spin=0):
     data = []
     for orb_proj in proj_data:
         if data_type == "pdos":
@@ -44,12 +53,13 @@ def get_raw_pdos_data(proj_data, data_type="pdos"):
             orbital, proj_pdos = orb_proj
             energy = None
         orbital = orbital.get_orbital_dict()
+        orbital["spin"] = spin
         proj_pdos = proj_pdos.tolist()
         energy = energy.tolist() if energy is not None else None
         data.append({"orbital": orbital, "pdos": proj_pdos, "energy": energy})
     return data
 
-def get_pdos_data(pdos_node):
+def get_pdos_data_from_node(pdos_node):
     """Extract the PDOS data from a PDOS node."""
     print("pdos_node", pdos_node)
     if not pdos_node.is_finished_ok:
@@ -62,21 +72,12 @@ def get_pdos_data(pdos_node):
     data["tdos"] = tdos_values
     if "projections" in outputs.projwfc:
         pdos_data = outputs.projwfc.projections.get_pdos()
-        proj_data = outputs.projwfc.projections.get_projections()
-        data["projections"] = {"pdos": get_raw_pdos_data(pdos_data),
-                                "projections": get_raw_pdos_data(proj_data, data_type="projections")
-                                }
+        data["projections"] =  get_raw_pdos_data(pdos_data)
     else:
         pdos_data_up = outputs.projwfc.projections_up.get_pdos()
-        proj_data_up = outputs.projwfc.projections_up.get_projections()
         pdos_data_down = outputs.projwfc.projections_down.get_pdos()
-        proj_data_down = outputs.projwfc.projections_down.get_projections()
-        data["projections_up"] = {"pdos": get_raw_pdos_data(pdos_data_up),
-                                        "projections": get_raw_pdos_data(proj_data_up, data_type="projections")
-                                    }
-        data["projections_down"] = {"pdos": get_raw_pdos_data(pdos_data_down),
-                                        "projections": get_raw_pdos_data(proj_data_down, data_type="projections")
-                                    }
+        data["projections"] = get_raw_pdos_data(pdos_data_up, spin=1)
+        data["projections"] += get_raw_pdos_data(pdos_data_down, spin=-1)
     if "fermi_energy_up" in outputs.nscf.output_parameters:
         data["fermi_energy_up"] = outputs.nscf.output_parameters["fermi_energy_up"]
         data["fermi_energy_down"] = outputs.nscf.output_parameters[

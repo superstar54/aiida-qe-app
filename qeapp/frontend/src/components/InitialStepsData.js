@@ -33,7 +33,9 @@ const initialStepsData = [
         { id: "basic", title: 'Basic Settings', content: <BasicSettingsTab /> },
         { id: "advanced", title: 'Advanced Settings', content: <AdvancedSettingsTab /> },
         // Dynamically add plugin settings tabs
-        ...plugins.map(plugin => ({
+        ...plugins
+        .filter(plugin => plugin.SettingTab) // Only include plugins with SettingTab
+        .map(plugin => ({
           id: plugin.id,
           title: `${plugin.title} Settings`,
           content: <plugin.SettingTab />
@@ -42,8 +44,10 @@ const initialStepsData = [
       dependents: [2, 3],
       ButtonText: "Confirm",
       // retrieve the name and outlne of the plugins
-      data: {"Basic Settings": {"plugins": plugins.map(plugin => ({id: plugin.id, outline: plugin.outline})),
-                                         "properties": {}}}
+      data: {"Basic Settings": {"plugins": plugins
+                                          .filter(plugin => plugin.SettingTab) // Only include plugins with SettingTab
+                                          .map(plugin => ({id: plugin.id, outline: plugin.outline})),
+                                "properties": {}}}
     },
     {
       title: 'Choose Computational Resources',

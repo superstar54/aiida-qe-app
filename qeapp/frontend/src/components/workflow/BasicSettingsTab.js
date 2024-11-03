@@ -9,6 +9,8 @@ const BasicSettingsTab = ({}) => {
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
 
+  console.log("data: ", data);
+
   useEffect(() => {
     const defaultData = {
       relaxType: 'positions',

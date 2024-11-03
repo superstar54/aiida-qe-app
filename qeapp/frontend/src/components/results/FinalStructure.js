@@ -136,11 +136,14 @@ const FinalStructureTab = ({}) => {
     <div>
       <h4 className="mb-4">Final Structure</h4>
       <Row>
-        <Col md={6}>
+      <Col md={6}>
           <Card>
             <Card.Body>
               <Card.Title>Structure Viewer</Card.Title>
-              <StructureViewer structure={finalStructure} />
+              {/* Add a wrapper with fixed size and overflow control */}
+              <div style={{ maxHeight: '400px', overflow: 'hidden', position: 'relative' }}>
+                <StructureViewer structure={finalStructure} />
+              </div>
               <div className="mt-3">
                 <DropdownButton title="Download Structure" variant="primary">
                   <Dropdown.Item onClick={() => downloadFile(generateXYZ(finalStructure), 'structure.xyz', 'text/plain')}>

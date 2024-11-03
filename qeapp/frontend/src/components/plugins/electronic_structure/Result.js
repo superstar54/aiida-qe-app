@@ -24,13 +24,13 @@ const BandsPdosContainer = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/pdos/${jobId}`);
-      console.log("pdos response: ", response);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electronic_structure/${jobId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
 
       const data = await response.json();
+      console.log("electronic_structure data: ", data);
       setBandsData(data.bands_data);
       setPdosData(data.pdos_data);
       setLoading(false);
