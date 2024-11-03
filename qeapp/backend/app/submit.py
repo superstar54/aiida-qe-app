@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from aiida.engine import submit
 from aiida.orm import StructureData, load_code
 import traceback
+from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
 from .plugins.bands.settings import get_tab_value as get_bands_tab_value
 from .plugins.pdos.settings import get_tab_value as get_pdos_tab_value
 from .plugins.xps.settings import get_tab_value as get_xps_tab_value
@@ -163,10 +164,8 @@ async def submit_calculation(data: CalculationData):
         # Return a success response with job details
         inputs = prepare_inputs(data)
         codes = deepcopy(inputs["parameters"]["codes"])
-        print("inputs: ", inputs)
         builder = QeAppWorkChain.get_builder_from_protocol(**inputs)
         update_builder(builder, codes)
-        print("builder: ", builder)
         process = submit(builder)
         data.review_submit["Label and Submit"]["jobId"] = process.pk
         process.base.extras.set("ui_parameters", serialize(data))
@@ -183,7 +182,6 @@ async def submit_calculation(data: CalculationData):
 
 @router.post("/api/submit_workgraph")
 async def submit_calculation(data: CalculationData):
-    from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
     from aiida.orm.utils.serialize import serialize
     from copy import deepcopy
     try:
@@ -194,12 +192,13 @@ async def submit_calculation(data: CalculationData):
         codes = deepcopy(inputs["parameters"]["codes"])
         print("inputs: ", inputs)
         wg = qeapp_workgraph(**inputs)
-        wg.tasks["relax"].set({"base.pw.metadata.options.resources": {
+        if "relax" in wg.tasks.keys():
+            wg.tasks["relax"].set({"base.pw.metadata.options.resources": {
                                 "num_machines": codes.get("pw")["nodes"],
                                 "num_mpiprocs_per_machine": codes.get("pw")["ntasks_per_node"],
                                 "num_cores_per_mpiproc": codes.get("pw")["cpus_per_task"],
                             }
-        })
+            })
         process = wg.submit()
         data.review_submit["Label and Submit"]["jobId"] = process.pk
         process.base.extras.set("ui_parameters", serialize(data))

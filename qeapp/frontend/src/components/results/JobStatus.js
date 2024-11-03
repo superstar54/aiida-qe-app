@@ -33,7 +33,7 @@ const JobStatusTab = ({}) => {
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
   
-  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
 
   const [jobStatus, setJobStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const JobStatusTab = ({}) => {
     const fetchJobStatus = async () => {
       if (!isComponentMounted) return; // Prevent fetching if component is unmounted
 
-      if (!JobId) {
+      if (!jobId) {
         setLoading(false);
         return;
       }
@@ -54,7 +54,7 @@ const JobStatusTab = ({}) => {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${JobId}`
+          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch job status');
@@ -91,7 +91,7 @@ const JobStatusTab = ({}) => {
       isComponentMounted = false;
       clearInterval(intervalId);
     };
-  }, [JobId]);
+  }, [jobId]);
 
   // Function to determine if the job is finished
   const isJobFinished = (processStatus) => {

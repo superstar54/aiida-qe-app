@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Spinner, Table, Alert, Row, Col, Card } from 'react-bootstrap';
+import { Spinner, Table, Alert, Row, Col, Card, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import StructureViewer from '../widgets/StructureViewer';
 import { WizardContext } from '../wizard/WizardContext';
 
@@ -13,12 +13,10 @@ function structureToAtomsData(inputData) {
     positions: [],
   };
 
-  // Process kinds to fill species information
   inputData.kinds.forEach((kind) => {
     data.species[kind.name] = kind.symbols[0];
   });
 
-  // Process sites to fill positions and symbols
   inputData.sites.forEach((site) => {
     data.symbols.push(site.kind_name);
     data.positions.push(site.position);
@@ -27,28 +25,53 @@ function structureToAtomsData(inputData) {
   return data;
 }
 
+// Generate XYZ file content
+function generateXYZ(structure) {
+  const { symbols, positions } = structure;
+  const numAtoms = symbols.length;
+  let xyzContent = `${numAtoms}\nGenerated structure\n`;
+
+  for (let i = 0; i < numAtoms; i++) {
+    const [x, y, z] = positions[i];
+    xyzContent += `${symbols[i]} ${x.toFixed(5)} ${y.toFixed(5)} ${z.toFixed(5)}\n`;
+  }
+
+  return xyzContent;
+}
+
+// Trigger file download
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 const FinalStructureTab = ({}) => {
   const { steps } = useContext(WizardContext);
-  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
-  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
+  const jobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobStatus = steps[4]?.data?.['Job Status']?.jobStatus || null;
 
   const [finalStructure, setFinalStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [info, setInfo] = useState(null); // New state for informational messages
+  const [info, setInfo] = useState(null);
 
   useEffect(() => {
     let isComponentMounted = true;
 
     const fetchFinalStructure = async () => {
-      if (!JobId) {
-          setLoading(false);
+      if (!jobId) {
+        setLoading(false);
         return;
       }
       setLoading(true);
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${JobId}`
+          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
         );
 
         if (!response.ok) {
@@ -64,7 +87,6 @@ const FinalStructureTab = ({}) => {
             setInfo(null);
             setError(null);
           } else {
-            // Structure data is null or undefined
             setInfo('Relax structure is not available.');
           }
           setLoading(false);
@@ -82,7 +104,7 @@ const FinalStructureTab = ({}) => {
     return () => {
       isComponentMounted = false;
     };
-  }, [JobId, jobStatus]);
+  }, [jobId, jobStatus]);
 
   if (loading) {
     return (
@@ -101,11 +123,9 @@ const FinalStructureTab = ({}) => {
   }
 
   if (!finalStructure) {
-    // This case should rarely occur, but added as a safety net
     return <Alert variant="warning">No final structure data available.</Alert>;
   }
 
-  // Helper function to format the cell array
   const formatCell = (cell) => {
     return cell.map((vector) => vector.map((v) => v.toFixed(3)));
   };
@@ -115,49 +135,61 @@ const FinalStructureTab = ({}) => {
   return (
     <div>
       <h4 className="mb-4">Final Structure</h4>
-      
       <Row>
-        <Col md={6} sm={12} className="mb-4">
+        <Col md={6}>
           <Card>
             <Card.Body>
-              <Card.Title>Cell Parameters</Card.Title>
-              <div className="table-responsive">
-                <Table striped bordered hover size="sm" className="mb-0">
-                  <thead>
-                    <tr>
-                      <th>Vector</th>
-                      <th>x (Å)</th>
-                      <th>y (Å)</th>
-                      <th>z (Å)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>a₁</strong></td>
-                      <td>{formattedCell[0][0]}</td>
-                      <td>{formattedCell[0][1]}</td>
-                      <td>{formattedCell[0][2]}</td>
-                    </tr>
-                    <tr>
-                      <td><strong>a₂</strong></td>
-                      <td>{formattedCell[1][0]}</td>
-                      <td>{formattedCell[1][1]}</td>
-                      <td>{formattedCell[1][2]}</td>
-                    </tr>
-                    <tr>
-                      <td><strong>a₃</strong></td>
-                      <td>{formattedCell[2][0]}</td>
-                      <td>{formattedCell[2][1]}</td>
-                      <td>{formattedCell[2][2]}</td>
-                    </tr>
-                  </tbody>
-                </Table>
+              <Card.Title>Structure Viewer</Card.Title>
+              <StructureViewer structure={finalStructure} />
+              <div className="mt-3">
+                <DropdownButton title="Download Structure" variant="primary">
+                  <Dropdown.Item onClick={() => downloadFile(generateXYZ(finalStructure), 'structure.xyz', 'text/plain')}>
+                    Download as XYZ
+                  </Dropdown.Item>
+                  <Dropdown.Item disabled>
+                    Download as CIF (coming soon)
+                  </Dropdown.Item>
+                </DropdownButton>
               </div>
             </Card.Body>
           </Card>
         </Col>
-
-        <Col md={6} sm={12} className="mb-4">
+        <Col md={6}>
+          <Card className="mb-4">
+            <Card.Body>
+              <Card.Title>Cell Parameters</Card.Title>
+              <Table striped bordered hover size="sm" className="mb-0">
+                <thead>
+                  <tr>
+                    <th>Vector</th>
+                    <th>x (Å)</th>
+                    <th>y (Å)</th>
+                    <th>z (Å)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>a₁</strong></td>
+                    <td>{formattedCell[0][0]}</td>
+                    <td>{formattedCell[0][1]}</td>
+                    <td>{formattedCell[0][2]}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>a₂</strong></td>
+                    <td>{formattedCell[1][0]}</td>
+                    <td>{formattedCell[1][1]}</td>
+                    <td>{formattedCell[1][2]}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>a₃</strong></td>
+                    <td>{formattedCell[2][0]}</td>
+                    <td>{formattedCell[2][1]}</td>
+                    <td>{formattedCell[2][2]}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
           <Card>
             <Card.Body>
               <Card.Title>Periodic Boundary Conditions (PBC)</Card.Title>
@@ -177,12 +209,12 @@ const FinalStructureTab = ({}) => {
         </Col>
       </Row>
 
-      <Row>
+      <Row className="mt-4">
         <Col>
           <Card>
             <Card.Body>
               <Card.Title>Atomic Positions</Card.Title>
-              <div className="table-responsive">
+              <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <Table striped bordered hover size="sm" className="mb-0">
                   <thead>
                     <tr>
@@ -194,7 +226,7 @@ const FinalStructureTab = ({}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {finalStructure.positions.map((pos, index) => (
+                    {finalStructure.positions.slice(0, 20).map((pos, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{finalStructure.symbols[index]}</td>
@@ -206,17 +238,6 @@ const FinalStructureTab = ({}) => {
                   </tbody>
                 </Table>
               </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row className="mt-4">
-        <Col>
-          <Card>
-            <Card.Body>
-              <Card.Title>Structure Viewer</Card.Title>
-              <StructureViewer structure={finalStructure} />
             </Card.Body>
           </Card>
         </Col>

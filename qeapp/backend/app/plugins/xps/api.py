@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 from aiida import orm
-from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Tuple
 from qeapp.backend.app.models import StructureModel

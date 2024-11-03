@@ -5,8 +5,8 @@ import { WizardContext } from '../../wizard/WizardContext';
 
 const ResultTab = ({}) => {
   const { steps } = useContext(WizardContext);
-  const JobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
-  const jobStatus = steps[4]?.data?.['Job status']?.jobStatus || null;
+  const jobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
+  const jobStatus = steps[4]?.data?.['Job Status']?.jobStatus || null;
 
   const [selectedSpectrum, setSelectedSpectrum] = useState(null);
   const [lorentzian, setLorentzian] = useState(0.1);
@@ -20,10 +20,10 @@ const ResultTab = ({}) => {
   const [shiftType, setShiftType] = useState('chemicalShift');  // New state for toggle button
   const [info, setInfo] = useState(null); // New state for informational messages
 
-  // useEffect for fetching data when JobId changes
+  // useEffect for fetching data when jobId changes
   useEffect(() => {
     const fetchXpsData = async () => {
-      if (!JobId) {
+      if (!jobId) {
         setLoading(false);
         return;
       }
@@ -32,8 +32,8 @@ const ResultTab = ({}) => {
       setError(null);
 
       try {
-        console.log('Fetching XPS data for Job ID:', JobId);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/xps/${JobId}`);
+        console.log('Fetching XPS data for Job ID:', jobId);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/xps/${jobId}`);
         if (!response.ok) {
           console.error('Fetch error:', response);
           throw new Error('Failed to fetch XPS data');
@@ -68,7 +68,7 @@ const ResultTab = ({}) => {
     };
 
     fetchXpsData();
-  }, [JobId, jobStatus]); // Depend only on JobId
+  }, [jobId, jobStatus]); // Depend only on jobId
 
   // useEffect for processing data when rawXpsData or processing parameters change
   useEffect(() => {

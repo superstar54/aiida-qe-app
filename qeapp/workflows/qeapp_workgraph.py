@@ -84,7 +84,6 @@ def get_inputs_from_builder(builder):
                 inputs[key] = get_inputs_from_builder(value)
         else:
             inputs[key] = value
-    print("inputs: ", inputs)
     return inputs
 
 @task.graph_builder()
@@ -139,7 +138,8 @@ def qeapp_workgraph(structure: orm.StructureData = None,
                     codes, structure, copy.deepcopy(parameters)
                 )
             plugin_task = wg.add_task(entry_point["workchain"], name=name)
-            plugin_task.waiting_on.add(["inspect_relax"])
+            if "inspect_relax" in wg.tasks.keys():
+                plugin_task.waiting_on.add(["inspect_relax"])
             # this is hard coded for now, but we can make it more general
             # in the plugin, we can define a prepare_inputs function
             plugin_task.set(get_inputs_from_builder(plugin_builder))
