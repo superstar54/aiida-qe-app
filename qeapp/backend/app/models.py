@@ -1,5 +1,5 @@
 from typing import ClassVar, Dict, List, Optional, Type, TypeVar, Tuple
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from aiida import orm
 
 ModelType = TypeVar("ModelType", bound="AiidaModel")
@@ -80,6 +80,29 @@ class Computer(AiidaModel):
 
     description: Optional[str] = Field(description="Description of node")
 
+
+class ComputerCreateModel(BaseModel):
+    label: str = Field(..., example="my_computer")
+    hostname: str = Field(..., example="localhost")
+    description: Optional[str] = Field("", example="Description of the computer")
+    transport: str = Field(..., example="ssh")
+    scheduler: str = Field(..., example="slurm")
+    workdir: str = Field(..., example="/scratch/{username}/aiida_run")
+    shebang: Optional[str] = Field("#!/bin/bash", example="#!/bin/bash")
+    mpirun_command: Optional[List[str]] = Field(
+        ["mpirun", "-np", "{tot_num_mpiprocs}"], example=["mpirun", "-np", "{tot_num_mpiprocs}"]
+    )
+    mpiprocs_per_machine: Optional[int] = Field(None, example=16)
+    default_memory_per_machine: Optional[float] = Field(None, example=64.0)
+    prepend_text: Optional[str] = Field("", example="module load mpi")
+    append_text: Optional[str] = Field("", example="echo 'Done'")
+    
+    @validator('mpirun_command')
+    def check_mpirun_command(cls, v):
+        if not isinstance(v, list):
+            raise ValueError('mpirun_command must be a list of strings')
+        return v
+    
 class Code(AiidaModel):
     """AiiDA Code Model."""
 

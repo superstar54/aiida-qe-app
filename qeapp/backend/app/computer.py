@@ -5,8 +5,9 @@ from typing import List, Optional
 from aiida import orm
 from aiida.cmdline.utils.decorators import with_dbenv
 from aiida.orm.querybuilder import QueryBuilder
-from fastapi import APIRouter, Depends
-from .models import Computer
+from fastapi import APIRouter, HTTPException
+from .models import Computer, ComputerCreateModel
+from aiida.common.exceptions import ValidationError
 
 
 router = APIRouter()
@@ -41,13 +42,22 @@ async def read_computer(comp_id: int) -> Optional[Computer]:
     return qbobj.dict()[0]["computer"]
 
 
-@router.post("/api/computers", response_model=Computer)
-@with_dbenv()
-async def create_computer(
-    computer: Computer,
-    
-) -> Computer:
-    """Create new AiiDA computer."""
-    orm_computer = orm.Computer(**computer.dict(exclude_unset=True)).store()
 
-    return Computer.from_orm(orm_computer)
+@router.post("/api/computers", status_code=201)
+async def add_computer(computer_data: dict):
+    # Check if the computer already exists
+    from aiida.orm.utils.builders.computer import ComputerBuilder
+    from aiida import orm
+    from aiida.orm.querybuilder import QueryBuilder
+    qb = QueryBuilder()
+    qb.append(orm.Computer, filters={"label": computer_data["label"]})
+    if qb.count() > 0:
+        raise HTTPException(status_code=400, detail=f"A computer with label '{computer_data.label}' already exists.")
+    
+    # Create the computer
+    computer_builder = ComputerBuilder(**computer_data)     
+    # Validate and store the computer
+    computer = computer_builder.new()  
+    computer.store()
+    return {"message": "Computer added successfully!", "computer_id": computer.id}
+    

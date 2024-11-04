@@ -62,12 +62,12 @@ const CodesList = () => {
           ))}
         </tbody>
       </table>
-      <button
+      {/* <button
         className="button button-add"
         onClick={() => navigate('/settings/add-code')}
       >
         Add Code
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ComputersList = () => {
   const navigate = useNavigate();
@@ -11,16 +13,17 @@ const ComputersList = () => {
   }, []);
 
   const fetchComputers = () => {
-    // Replace with actual API call
     fetch(`${process.env.REACT_APP_API_URL}/api/computers`)
       .then(response => response.json())
       .then(data => setComputers(data))
-      .catch(error => console.error('Failed to fetch computers:', error));
+      .catch(error => {
+        console.error('Failed to fetch computers:', error);
+        toast.error('Failed to fetch computers. Please try again later.');
+      });
   };
 
   // Function to handle deleting a computer
   const handleDelete = (id) => {
-    // Implement the API call to delete the computer
     fetch(`${process.env.REACT_APP_API_URL}/api/computers/${id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) {
@@ -28,13 +31,19 @@ const ComputersList = () => {
         }
         // Update the state to remove the deleted computer
         setComputers(computers.filter(computer => computer.id !== id));
+        // Show a success message
+        toast.success('Computer deleted successfully.');
       })
-      .catch(error => console.error('Failed to delete computer:', error));
+      .catch(error => {
+        console.error('Failed to delete computer:', error);
+        toast.error('Failed to delete computer. Please try again later.');
+      });
   };
 
   return (
     <div className="mt-4">
       <h3>Available Computers</h3>
+      <ToastContainer />
       <table className="table">
         <thead>
           <tr>
@@ -64,12 +73,12 @@ const ComputersList = () => {
           ))}
         </tbody>
       </table>
-      <button
+      {/* <button
         className="button button-add"
         onClick={() => navigate('/settings/add-computer')}
       >
         Add Computer
-      </button>
+      </button> */}
     </div>
   );
 };
