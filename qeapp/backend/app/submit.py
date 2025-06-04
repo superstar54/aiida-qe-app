@@ -6,10 +6,8 @@ from aiida.engine import submit
 from aiida.orm import StructureData, load_code
 import traceback
 from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
-from .plugins.bands.settings import get_tab_value as get_bands_tab_value
-from .plugins.pdos.settings import get_tab_value as get_pdos_tab_value
-from .plugins.xps.settings import get_tab_value as get_xps_tab_value
 router = APIRouter()
+from .utils import get_plugins
 
 
 
@@ -127,14 +125,10 @@ def prepare_inputs(data: CalculationData):
     # workflow settings
     parameters = get_advanced_setting_value(data)
     # bands
-    if "bands" in parameters["workchain"]["properties"]:
-        parameters["bands"] = get_bands_tab_value(data.workflow_settings.get('Bands Settings', {}))
-    # pdos
-    if "pdos" in parameters["workchain"]["properties"]:
-        parameters["pdos"] = get_pdos_tab_value(data.workflow_settings.get('PDOS Settings', {}))
-    # xps
-    if "xps" in parameters["workchain"]["properties"]:
-        parameters["xps"] = get_xps_tab_value(data)
+    plugins = get_plugins()
+    for prop in parameters["workchain"]["properties"]:
+        if prop in plugins:
+            parameters[prop] = plugins[prop]["get_tab_value"](data.workflow_settings.get(prop.capitalize() + ' Settings', {}))
     # computational resources
     parameters["codes"] = get_codes_values(data)
     return {

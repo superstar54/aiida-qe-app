@@ -19,16 +19,16 @@ def get_bands_data_from_node(bands_node, fermi_energy=None):
     if not bands_node.is_finished_ok:
         return None
     outputs = bands_node.outputs
-    bands_data = outputs.bands.band_structure._get_bandplot_data(
+    bands_data = outputs.bands_projwfc.band_structure._get_bandplot_data(
         cartesian=True, prettify_format=None, join_symbol=None, get_segments=True
     )
     # The fermi energy from band calculation is not robust.
-    if "fermi_energy_up" in outputs.bands.band_parameters:
-        bands_data["fermi_energy_up"] = outputs.bands.band_parameters["fermi_energy_up"]
-        bands_data["fermi_energy_down"] = outputs.bands.band_parameters["fermi_energy_down"]
+    if "fermi_energy_up" in outputs.bands_projwfc.band_parameters:
+        bands_data["fermi_energy_up"] = outputs.bands_projwfc.band_parameters["fermi_energy_up"]
+        bands_data["fermi_energy_down"] = outputs.bands_projwfc.band_parameters["fermi_energy_down"]
     else:
         bands_data["fermi_energy"] = (
-            outputs.bands.band_parameters["fermi_energy"] or fermi_energy
+            outputs.bands_projwfc.band_parameters["fermi_energy"] or fermi_energy
         )
     if "projwfc" in outputs:
         if "projections" in outputs.projwfc:

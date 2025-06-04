@@ -1,57 +1,67 @@
-// WizardContext.js
+
 import React, { createContext, useState, useEffect } from 'react';
 
 export const WizardContext = createContext();
 
+// Whenever initialStepsData prop changes, re‐initialize the internal steps.
 export const WizardProvider = ({ children, initialStepsData, jobData }) => {
-  const [steps, setSteps] = useState(
-    initialStepsData.map((step) => ({
+  // Start with an empty array; we’ll fill it in an effect below.
+  const [steps, setSteps] = useState([]);
+  const [activeStep, setActiveStep] = useState('0');
+
+  useEffect(() => {
+    if (!initialStepsData || initialStepsData.length === 0) {
+      setSteps([]); 
+      return;
+    }
+    const seeded = initialStepsData.map((step) => ({
       ...step,
       confirmed: false,
       modified: false,
-    }))
-  );
-  const [activeStep, setActiveStep] = useState('0');
+    }));
+    setSteps(seeded);
 
-  // Update steps when jobData is available
+    // Reset activeStep back to 0 whenever the list of steps changes.
+    setActiveStep('0');
+  }, [initialStepsData]);
+
   useEffect(() => {
-    if (jobData) {
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) => {
-          if (index === prevSteps.length - 1) {
-            // Skip the last step
-            return step;
-          } else {
-            return {
-              ...step,
-              confirmed: true,
-              data: jobData.stepsData[step.id] || {}, // Use jobData to set step data
-            };
-          }
-        })
-      );
+    if (!jobData || steps.length === 0) return;
 
-      // Set active step to the last one
-      setActiveStep((initialStepsData.length - 1).toString());
-    }
-  }, [jobData]);
+    setSteps((prevSteps) =>
+      prevSteps.map((step, index) => {
+        if (index === prevSteps.length - 1) {
+          // Skip the last step
+          return step;
+        } else {
+          return {
+            ...step,
+            confirmed: true,
+            data: jobData.stepsData[step.id] || {},
+          };
+        }
+      })
+    );
+
+    // Jump to the last step after loading job data
+    setActiveStep((initialStepsData.length - 1).toString());
+  }, [jobData, initialStepsData.length, steps.length]);
 
   const handleDataChange = (stepIndex, tabTitle, newData) => {
     setSteps((prevSteps) => {
-      const updatedSteps = [...prevSteps];
-      const existingData = updatedSteps[stepIndex].data || {};
-      updatedSteps[stepIndex].data = {...existingData, [tabTitle]: newData};
-      return updatedSteps;
+      const updated = [...prevSteps];
+      const existingData = updated[stepIndex].data || {};
+      updated[stepIndex].data = { ...existingData, [tabTitle]: newData };
+      return updated;
     });
   };
 
   const handleConfirm = (stepIndex) => {
     setSteps((prevSteps) => {
-      const updatedSteps = [...prevSteps];
-      updatedSteps[stepIndex].confirmed = true;
-      return updatedSteps;
+      const updated = [...prevSteps];
+      updated[stepIndex].confirmed = true;
+      return updated;
     });
-
     if (stepIndex < steps.length - 1) {
       setActiveStep((stepIndex + 1).toString());
     }
@@ -59,17 +69,20 @@ export const WizardProvider = ({ children, initialStepsData, jobData }) => {
 
   const handleModify = (stepIndex) => {
     setSteps((prevSteps) => {
-      const updatedSteps = prevSteps.map((step, index) => {
+      return prevSteps.map((step, index) => {
         if (index === stepIndex) {
           return { ...step, confirmed: false, modified: true };
         } else if (index > stepIndex) {
-          return { ...step, confirmed: false, modified: true, data: initialStepsData[index].data || {} };
+          return {
+            ...step,
+            confirmed: false,
+            modified: true,
+            data: initialStepsData[index].data || {},
+          };
         }
         return step;
       });
-      return updatedSteps;
     });
-
     setActiveStep(stepIndex.toString());
   };
 
