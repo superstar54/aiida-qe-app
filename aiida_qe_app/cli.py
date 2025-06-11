@@ -5,11 +5,11 @@ import sys
 import subprocess
 import signal
 
-PID_FILE = 'qeapp.pid'
+PID_FILE = 'aiida_qe_app.pid'
 
 @click.group()
 def cli():
-    """Command-line interface for managing the qeapp server."""
+    """Command-line interface for managing the aiida_qe_app server."""
     pass
 
 @cli.command()
@@ -21,7 +21,7 @@ def start(port):
     # Start uvicorn in a subprocess
     process = subprocess.Popen(
         [
-            sys.executable, "-m", "uvicorn", "qeapp.backend.app.api:app",
+            sys.executable, "-m", "uvicorn", "aiida_qe_app.backend.app.api:app",
             "--host", "0.0.0.0",
             "--port", str(port),
             "--reload",

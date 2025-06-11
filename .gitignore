@@ -136,4 +136,4 @@ tests/work
 /tests/**/*.png
 /tests/**/*txt
 
-qeapp/static/
+aiida_qe_app/static/

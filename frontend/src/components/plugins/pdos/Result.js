@@ -3,6 +3,8 @@ import { Spinner, Alert } from 'react-bootstrap';
 import BandsPdosPlot from '../../widgets/BandsPdosPlot';
 import { WizardContext } from '../../wizard/WizardContext';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
 const BandsPdosContainer = () => {
   const { steps } = useContext(WizardContext);
   const jobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
@@ -24,7 +26,7 @@ const BandsPdosContainer = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`./api/pdos/${jobId}`);
+      const response = await fetch(`${baseURL}/api/pdos/${jobId}`);
       console.log("pdos response: ", response);
       if (!response.ok) {
         throw new Error('Failed to fetch data');

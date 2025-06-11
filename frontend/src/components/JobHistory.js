@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Form, Row, Col, Button, Pagination, Spinner, Alert } from 'react-bootstrap';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
+
 function parseDateString(dateStr) {
   try {
     const fixedDateStr = dateStr.replace(/\.(\d{3})\d+/, '.$1');
@@ -68,7 +71,7 @@ const JobHistory = () => {
           }
         });
 
-        const response = await fetch(`./api/jobs-data?${queryParams.toString()}`);
+        const response = await fetch(`${baseURL}/api/jobs-data?${queryParams.toString()}`);
         console.log("response", response)
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
@@ -124,7 +127,7 @@ const JobHistory = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm(`Are you sure you want to delete job ${jobId}?`)) {
       try {
-        const response = await fetch(`./api/jobs-data/${jobId}`, { method: 'DELETE' });
+        const response = await fetch(`${baseURL}/api/jobs-data/${jobId}`, { method: 'DELETE' });
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
         }

@@ -3,8 +3,8 @@ requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "qeapp"
-dynamic = ["version"]  # read from qeapp/__init__.py
+name = "aiida-qe-app"
+dynamic = ["version"]  # read from aiida_qe_app/__init__.py
 description = "Design flexible node-based workflow for AiiDA calculation."
 authors = [{name = "Xing Wang", email = "xingwang1991@gmail.com"}]
 readme = "README.md"
@@ -33,8 +33,8 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://qeapp.readthedocs.io"
-Source = "https://github.com/aiidateam/qeapp"
+Documentation = "https://aiida-qe-app.readthedocs.io"
+Source = "https://github.com/superstar54/aiida-qe-app"
 
 [project.optional-dependencies]
 widget = [
@@ -65,19 +65,19 @@ tests = [
 ]
 
 [project.entry-points."aiida_gui_apps.plugins"]
-qeapp = "qeapp:qeapp"
+qeapp = "aiida_qe_app:qeapp"
 
 [project.scripts]
-qeapp = "qeapp.cli:cli"
+qeapp = "aiida_qe_app.cli:cli"
 
 [project.entry-points.'aiida.workflows']
-"qeapp.workchain" = "qeapp.workflows.qeapp_workchain:QeAppWorkChain"
+"qeapp.workchain" = "aiida_qe_app.workflows.qeapp_workchain:QeAppWorkChain"
 
 [tool.flit.sdist]
 exclude = [
     "docs/",
     "tests/",
-    "qeapp/frontend/node_modules/",
+    "frontend/node_modules/",
 ]
 
 

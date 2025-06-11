@@ -1,5 +1,5 @@
 {
-  "name": "qeapp-react",
+  "name": "aiida_qe_app",
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false && react-scripts build && mkdir -p ../qeapp/static && rm -rf ../qeapp/static/* && cp -r build/* ../qeapp/static/",
+    "build": "CI=false && react-scripts build && mkdir -p ../aiida_qe_app/static && rm -rf ../aiida_qe_app/static/* && cp -r build/* ../aiida_qe_app/static/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

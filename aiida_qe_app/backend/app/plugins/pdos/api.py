@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from aiida import orm
-from qeapp.backend.app.plugins.electronic_structure.utils import get_pdos_data_from_node
+from aiida_qe_app.backend.app.plugins.electronic_structure.utils import get_pdos_data_from_node
 
 router = APIRouter()
 

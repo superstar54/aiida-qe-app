@@ -1,16 +1,16 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from aiida.manage import manager
-from qeapp.backend.app.daemon import router as daemon_router
-from qeapp.backend.app.computer import router as computer_router
-from qeapp.backend.app.code import router as code_router
-from qeapp.backend.app.job_history import router as job_history_router
-from qeapp.backend.app.datanode import router as datanode_router
-from qeapp.backend.app.calculation import router as calculation_router
-# from qeapp.backend.app.plugins.bands.api import router as bands_router
-# from qeapp.backend.app.plugins.pdos.api import router as pdos_router
-# from qeapp.backend.app.plugins.electronic_structure.api import router as electronic_structure_router
-# from qeapp.backend.app.plugins.xps.api import router as xps_router
+from aiida_qe_app.backend.app.daemon import router as daemon_router
+from aiida_qe_app.backend.app.computer import router as computer_router
+from aiida_qe_app.backend.app.code import router as code_router
+from aiida_qe_app.backend.app.job_history import router as job_history_router
+from aiida_qe_app.backend.app.datanode import router as datanode_router
+from aiida_qe_app.backend.app.calculation import router as calculation_router
+# from aiida_qe_app.backend.app.plugins.bands.api import router as bands_router
+# from aiida_qe_app.backend.app.plugins.pdos.api import router as pdos_router
+# from aiida_qe_app.backend.app.plugins.electronic_structure.api import router as electronic_structure_router
+# from aiida_qe_app.backend.app.plugins.xps.api import router as xps_router
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import os
@@ -92,7 +92,7 @@ mount_plugins()
 # app.include_router(xps_router)
 
 # only import the submit router after loading the profile
-from qeapp.backend.app.submit import router as submit_router
+from aiida_qe_app.backend.app.submit import router as submit_router
 app.include_router(submit_router)
 app.include_router(calculation_router)
 
@@ -141,6 +141,11 @@ if os.path.isdir(static_dir):
         "/example_structures/",
         StaticFiles(directory=static_dir / "example_structures"),
         name="example_structures",
+    )
+    app.mount(
+        "/images/",
+        StaticFiles(directory=static_dir / "images"),
+        name="images",
     )
     assert (static_dir / "react-shim.js").is_file(), f"react-shim.js missing in {static_dir}"
 

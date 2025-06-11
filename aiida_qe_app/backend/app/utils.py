@@ -9,7 +9,7 @@ def get_plugins():
 
     plugins = {}
     # Discover & mount installed plugins
-    for entry in importlib.metadata.entry_points().get("qeapp.plugins", []):
+    for entry in importlib.metadata.entry_points().get("aiida_qe_app.plugins", []):
         plugin_name = entry.name
         try:
             plugin_module = entry.load()

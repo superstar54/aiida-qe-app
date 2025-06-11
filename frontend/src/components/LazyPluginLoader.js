@@ -1,4 +1,5 @@
 import React from "react";
+const baseURL = process.env.PUBLIC_URL || '';
 
 /**
  * Given a plugin ID (e.g. "bands") and a component name
@@ -7,7 +8,7 @@ import React from "react";
  */
 export function lazyPluginComponent(pluginId, exportName) {
   return React.lazy(() =>
-    import(/* webpackIgnore: true */ `/plugins/${pluginId}/static/${pluginId}.esm.js`).then(
+    import(/* webpackIgnore: true */ `${baseURL}/plugins/${pluginId}/static/${pluginId}.esm.js`).then(
       (mod) => {
         if (!mod.default || !mod.default[exportName]) {
           throw new Error(`Plugin ${pluginId} did not export ${exportName}`);

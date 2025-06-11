@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/api/jobs-data")
 async def read_job_data(search: str = Query(None)):
-    from qeapp.workflows.qeapp_workchain import QeAppWorkChain
+    from aiida_qe_app.workflows.qeapp_workchain import QeAppWorkChain
     from aiida_workgraph.engine.workgraph import WorkGraphEngine
     from aiida.orm import QueryBuilder
     

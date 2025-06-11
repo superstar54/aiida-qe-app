@@ -20,7 +20,7 @@ def get_bands_data_from_node(bands_node, fermi_energy=None):
         return None
     outputs = bands_node.outputs
     if "bands_projwfc" in outputs:
-        bands_output = bands_output
+        bands_output = outputs.bands_projwfc
     elif "bands" in outputs:
         bands_output = outputs.bands
     bands_data = bands_output.band_structure._get_bandplot_data(
