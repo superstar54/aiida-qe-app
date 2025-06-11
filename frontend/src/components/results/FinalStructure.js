@@ -71,7 +71,7 @@ const FinalStructureTab = ({}) => {
       setLoading(true);
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
+          `./api/jobs-data/${jobId}`
         );
 
         if (!response.ok) {

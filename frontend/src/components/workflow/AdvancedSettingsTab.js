@@ -43,7 +43,7 @@ const AdvancedSettingsTab = () => {
     const fetchCalculationData = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/calculation/pw_parameters_from_protocol/`,
+          `./api/calculation/pw_parameters_from_protocol/`,
           {
             method: 'POST',
             headers: {

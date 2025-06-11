@@ -13,7 +13,7 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--port', default=8001, help='Port number to run the server on.')
+@click.option('--port', default=8000, help='Port number to run the server on.')
 def start(port):
     """Start the FastAPI server."""
     port = int(os.getenv("PORT", port))  # Use environment variable or default port

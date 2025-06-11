@@ -33,7 +33,7 @@ const ResultTab = ({}) => {
 
       try {
         console.log('Fetching XPS data for Job ID:', jobId);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/xps/${jobId}`);
+        const response = await fetch(`./api/xps/${jobId}`);
         if (!response.ok) {
           console.error('Fetch error:', response);
           throw new Error('Failed to fetch XPS data');

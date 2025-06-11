@@ -13,7 +13,7 @@ const ComputersList = () => {
   }, []);
 
   const fetchComputers = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/computers`)
+    fetch(`./api/computers`)
       .then(response => response.json())
       .then(data => setComputers(data))
       .catch(error => {
@@ -24,7 +24,7 @@ const ComputersList = () => {
 
   // Function to handle deleting a computer
   const handleDelete = (id) => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/computers/${id}`, { method: 'DELETE' })
+    fetch(`./api/computers/${id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete computer');

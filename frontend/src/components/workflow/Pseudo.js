@@ -46,7 +46,7 @@ const PseudopotentialSetting = () => {
       try {
         setError(null); // Reset error before fetching
         const body = { structure, exchange_functional: exchangeFunctional, library_selection: librarySelection, spin_orbit: spinOrbit };
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/calculation/get_pseudos/`, {
+        const response = await fetch(`./api/calculation/get_pseudos/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),

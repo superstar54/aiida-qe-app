@@ -98,7 +98,7 @@ const AddComputer = () => {
     try {
       const parsedData = YAML.parse(yamlData);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/computers`, {
+      const response = await fetch(`./api/computers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(parsedData),
