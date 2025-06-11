@@ -7,13 +7,14 @@ from qeapp.backend.app.code import router as code_router
 from qeapp.backend.app.job_history import router as job_history_router
 from qeapp.backend.app.datanode import router as datanode_router
 from qeapp.backend.app.calculation import router as calculation_router
-from qeapp.backend.app.plugins.bands.api import router as bands_router
-from qeapp.backend.app.plugins.pdos.api import router as pdos_router
-from qeapp.backend.app.plugins.electronic_structure.api import router as electronic_structure_router
-from qeapp.backend.app.plugins.xps.api import router as xps_router
+# from qeapp.backend.app.plugins.bands.api import router as bands_router
+# from qeapp.backend.app.plugins.pdos.api import router as pdos_router
+# from qeapp.backend.app.plugins.electronic_structure.api import router as electronic_structure_router
+# from qeapp.backend.app.plugins.xps.api import router as xps_router
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import os
+from .utils import get_plugins
 
 from fastapi.responses import FileResponse
 from fastapi.exception_handlers import http_exception_handler
@@ -53,16 +54,42 @@ app.add_middleware(
 async def read_root() -> dict:
     return {"message": "Welcome to AiiDA-WorkGraph."}
 
+@app.get("/plugins")
+async def list_plugins():
+    plugins = get_plugins()
+    print(f"Found plugins: {plugins.keys()}")
+    plugin_names = [plugin_name for plugin_name in plugins.keys()]
+    return {"plugins": plugin_names}
+
+def mount_plugins():
+    plugins = get_plugins()
+    for plugin_name, plugin_module in plugins.items():
+        print(f"Mounting plugin: {plugin_name}")
+        router = plugin_module["router"]
+        static_dir = plugin_module["static_dir"]
+        if router is None or static_dir is None:
+            continue
+
+        # 1) Plugin API mounted at /plugins/{plugin_name}/api
+        app.include_router(router, prefix=f"/plugins/{plugin_name}")
+
+        # 2) Serve plugin static ESM at /plugins/{plugin_name}/static
+        app.mount(
+            f"/plugins/{plugin_name}/static",
+            StaticFiles(directory=static_dir, html=True),
+            name=f"plugin_{plugin_name}",
+        )
 
 app.include_router(job_history_router)
 app.include_router(datanode_router)
 app.include_router(daemon_router)
 app.include_router(computer_router)
 app.include_router(code_router)
-app.include_router(bands_router)
-app.include_router(pdos_router)
-app.include_router(electronic_structure_router)
-app.include_router(xps_router)
+mount_plugins()
+# app.include_router(bands_router)
+# app.include_router(pdos_router)
+# app.include_router(electronic_structure_router)
+# app.include_router(xps_router)
 
 # only import the submit router after loading the profile
 from qeapp.backend.app.submit import router as submit_router
@@ -91,26 +118,41 @@ a request to the FastAPI server for /settings. Since this route isn't defined in
 so we use the index.html serve all routes except API specific ones, then load all static assets.
 """
 backend_dir = Path(__file__).parent
-build_dir = backend_dir / "../../frontend/build/"
-build_dir = os.getenv("REACT_BUILD_DIR", build_dir)
+static_dir = backend_dir / "../../static/"
+static_dir = os.getenv("REACT_static_DIR", static_dir)
 
 
 @app.exception_handler(StarletteHTTPException)
 async def _spa_server(req: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
-        return FileResponse(f"{build_dir}/index.html", media_type="text/html")
+        return FileResponse(f"{static_dir}/index.html", media_type="text/html")
     else:
         return await http_exception_handler(req, exc)
 
 
-if os.path.isdir(build_dir):
+if os.path.isdir(static_dir):
+    print(f"Mounting React app from {static_dir}")
     app.mount(
         "/static/",
-        StaticFiles(directory=build_dir / "static"),
+        StaticFiles(directory=static_dir / "static"),
         name="React app static files",
     )
     app.mount(
         "/example_structures/",
-        StaticFiles(directory=build_dir / "example_structures"),
+        StaticFiles(directory=static_dir / "example_structures"),
         name="example_structures",
     )
+    assert (static_dir / "react-shim.js").is_file(), f"react-shim.js missing in {static_dir}"
+
+    @app.get("/react-shim.js", include_in_schema=False)
+    async def react_shim():
+        path = static_dir / "react-shim.js"
+        if not path.is_file():
+            logger.error("react-shim.js not found at %s", path)
+            raise StarletteHTTPException(status_code=404, detail="shim missing")
+        return FileResponse(path, media_type="application/javascript")
+    
+    @app.get("/react-jsx-runtime-shim.js", include_in_schema=False)
+    async def react_jsx_runtime_shim():
+        return FileResponse(static_dir / "react-jsx-runtime-shim.js",
+                            media_type="application/javascript")

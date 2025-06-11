@@ -4,6 +4,20 @@ from datetime import datetime
 from dateutil import relativedelta
 from dateutil.tz import tzlocal
 
+def get_plugins():
+    import importlib.metadata
+
+    plugins = {}
+    # Discover & mount installed plugins
+    for entry in importlib.metadata.entry_points().get("qeapp.plugins", []):
+        plugin_name = entry.name
+        try:
+            plugin_module = entry.load()
+            plugins[plugin_name] = plugin_module
+        except Exception as e:
+            print(f"Failed to load plugin {plugin_name}: {e}")
+            continue
+    return plugins
 
 def get_executor_source(tdata: Any) -> Tuple[bool, Optional[str]]:
     """Get the source code of the executor."""

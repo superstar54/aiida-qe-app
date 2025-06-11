@@ -13,6 +13,8 @@ const AccordionWizard = () => {
     handleConfirm,
     handleModify,
   } = useContext(WizardContext);
+  
+  console.log('AccordionWizard steps:', steps);
 
   return (
     <Accordion activeKey={activeStep} onSelect={(eventKey) => setActiveStep(eventKey)}>

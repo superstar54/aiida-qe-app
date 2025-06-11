@@ -72,7 +72,7 @@ def prepare_relax_inputs(structure, codes, parameters, protocol, **kwargs):
 @task()
 def inspect_relax(parameters):
     """Inspect relax calculation."""
-    return orm.Int(parameters.get_dict()["number_of_bands"])
+    return parameters["number_of_bands"]
 
 def get_inputs_from_builder(builder):
     """"""
