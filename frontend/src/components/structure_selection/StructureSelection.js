@@ -4,15 +4,16 @@ import StructureViewer from '../widgets/StructureViewer';
 import { parseXYZ, parseCIF, parseCube } from 'weas';
 import { WizardContext } from '../wizard/WizardContext';
 
+const baseURL = process.env.PUBLIC_URL || '';
 
 const exampleFiles = [
-  { name: "Bulk silicon (primitive cell)", path: '/example_structures/Si.cif', type: 'cif' },
-  { name: "Silicon oxide (alpha quartz)", path: '/example_structures/SiO2.cif', type: 'cif' },
-  { name: "Diamond (primitive cell)", path: '/example_structures/Diamond.cif', type: 'cif' },
-  { name: "ETFA molecule", path: '/example_structures/ETFA.xyz', type: 'xyz' },
-  // { name: "Gallium arsenide (primitive cell)", path: '/example_structures/GaAs.cif', type: 'cif' },
-  // { name: "Gold (conventional cell)", path: '/example_structures/Au.xyz', type: 'cif' },
-  // { name: "Cobalt (primitive cell)", path: '/example_structures/Co.xyz', type: 'cif' },
+  { name: "Bulk silicon (primitive cell)", path: `${baseURL}/example_structures/Si.cif`, type: 'cif' },
+  { name: "Silicon oxide (alpha quartz)", path: `${baseURL}/example_structures/SiO2.cif`, type: 'cif' },
+  { name: "Diamond (primitive cell)", path: `${baseURL}/example_structures/Diamond.cif`, type: 'cif' },
+  { name: "ETFA molecule", path: `${baseURL}/example_structures/ETFA.xyz`, type: 'xyz' },
+  // { name: "Gallium arsenide (primitive cell)", path: `${baseURL}/example_structures/GaAs.cif`, type: 'cif' },
+  // { name: "Gold (conventional cell)", path: `${baseURL}/example_structures/Au.xyz`, type: 'cif' },
+  // { name: "Cobalt (primitive cell)", path: `${baseURL}/example_structures/Co.xyz`, type: 'cif' },
 ];
 
 const StructureSelection = ({}) => {

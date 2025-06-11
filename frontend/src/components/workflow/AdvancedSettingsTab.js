@@ -4,6 +4,7 @@ import { WizardContext } from '../wizard/WizardContext';
 import MagnetizationSettingsTab from './Magnetization';
 import PseudopotentialSetting from './Pseudo';
 import HubbardSettingsTab from './HubbardSettingsTab';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const AdvancedSettingsTab = () => {
   const stepIndex = 1;
@@ -43,7 +44,7 @@ const AdvancedSettingsTab = () => {
     const fetchCalculationData = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/calculation/pw_parameters_from_protocol/`,
+          `${baseURL}/api/calculation/pw_parameters_from_protocol/`,
           {
             method: 'POST',
             headers: {

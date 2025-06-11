@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton, Row, Col } from 'react-bootstrap';
 import { WizardContext } from '../wizard/WizardContext';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const PSEUDODOJO_VERSION = '0.4';
 const SSSP_VERSION = '1.3';
@@ -46,7 +47,7 @@ const PseudopotentialSetting = () => {
       try {
         setError(null); // Reset error before fetching
         const body = { structure, exchange_functional: exchangeFunctional, library_selection: librarySelection, spin_orbit: spinOrbit };
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/calculation/get_pseudos/`, {
+        const response = await fetch(`${baseURL}/api/calculation/get_pseudos/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),

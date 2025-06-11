@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Spinner, Table, Alert, Row, Col, Card, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import StructureViewer from '../widgets/StructureViewer';
 import { WizardContext } from '../wizard/WizardContext';
+const baseURL = process.env.PUBLIC_URL || '';
 
 // Convert AiiDA structure data to the format expected by Atoms
 function structureToAtomsData(inputData) {
@@ -71,7 +72,7 @@ const FinalStructureTab = ({}) => {
       setLoading(true);
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
+          `${baseURL}/api/jobs-data/${jobId}`
         );
 
         if (!response.ok) {

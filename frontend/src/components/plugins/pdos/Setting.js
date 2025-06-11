@@ -2,6 +2,8 @@ import React, { useEffect, useContext, useRef } from 'react';
 import { Form } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
 const SettingTab = ({}) => {
   const stepIndex = 1;
   const tabTitle = 'PDOS Settings';
@@ -31,7 +33,7 @@ const SettingTab = ({}) => {
     }
     const fetchCalculationData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/calculation/pw_parameters_from_protocol/`, {
+        const response = await fetch(`${baseURL}/api/calculation/pw_parameters_from_protocol/`, {
           method: 'POST', // Assuming POST method is required; you can adjust as needed
           headers: {
             'Content-Type': 'application/json',

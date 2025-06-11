@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { WizardContext } from '../../wizard/WizardContext';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const SettingTab = () => {
   const stepIndex = 1;
@@ -24,7 +25,7 @@ const SettingTab = () => {
     if (!structure) return;
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/xps/get_supported_xps_core_level/`, {
+      const response = await fetch(`${baseURL}/api/xps/get_supported_xps_core_level/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
 const CodesList = () => {
   const navigate = useNavigate();
   const [codes, setCodes] = useState([]);
@@ -12,7 +14,7 @@ const CodesList = () => {
 
   const fetchCodes = () => {
     // Replace with actual API call
-    fetch(`${process.env.REACT_APP_API_URL}/api/codes`)
+    fetch(`${baseURL}/api/codes`)
       .then(response => response.json())
       .then(data => setCodes(data))
       .catch(error => console.error('Failed to fetch codes:', error));
@@ -21,7 +23,7 @@ const CodesList = () => {
   // Function to handle deleting a code
   const handleDelete = (id) => {
     // Implement the API call to delete the code
-    fetch(`${process.env.REACT_APP_API_URL}/api/codes/${id}`, { method: 'DELETE' })
+    fetch(`${baseURL}/api/codes/${id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete code');

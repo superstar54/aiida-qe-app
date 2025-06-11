@@ -8,7 +8,7 @@ from aiida_quantumespresso.common.types import ElectronicType, RelaxType, SpinTy
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.utils.mapping import prepare_process_inputs
 from aiida_quantumespresso.workflows.pw.relax import PwRelaxWorkChain
-from qeapp.utils import plugin_entries
+from aiida_qe_app.utils import plugin_entries
 
 XyData = DataFactory("core.array.xy")
 StructureData = DataFactory("core.structure")

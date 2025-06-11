@@ -5,6 +5,9 @@ import AccordionWizard from './wizard/AccordionWizard';
 import { WizardProvider } from './wizard/WizardContext';
 import { makeInitialStepsData } from './InitialStepsData';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
+
 const CalculationWizard = () => {
   const { jobId } = useParams();
   const [jobData, setJobData] = useState(null);
@@ -16,7 +19,7 @@ const CalculationWizard = () => {
     const fetchJobData = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
+          `${baseURL}/api/jobs-data/${jobId}`
         );
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
@@ -34,7 +37,7 @@ const CalculationWizard = () => {
     const fetchPlugins = async () => {
       try {
         console.log('Fetching plugins from /plugins endpoint...');
-        const res = await fetch('http://localhost:8001/plugins');
+        const res = await fetch(`${baseURL}/plugins`);
         console.log('Response from /plugins:', res);
         if (!res.ok) {
           throw new Error(`Failed to fetch plugins: ${res.status}`);

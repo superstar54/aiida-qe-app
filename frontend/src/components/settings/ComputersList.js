@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const ComputersList = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const ComputersList = () => {
   }, []);
 
   const fetchComputers = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/computers`)
+    fetch(`${baseURL}/api/computers`)
       .then(response => response.json())
       .then(data => setComputers(data))
       .catch(error => {
@@ -24,7 +25,7 @@ const ComputersList = () => {
 
   // Function to handle deleting a computer
   const handleDelete = (id) => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/computers/${id}`, { method: 'DELETE' })
+    fetch(`${baseURL}/api/computers/${id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete computer');

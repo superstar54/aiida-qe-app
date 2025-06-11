@@ -5,7 +5,7 @@ from aiida_quantumespresso.workflows.pw.bands import PwBandsWorkChain
 from aiida_quantumespresso.workflows.pdos import PdosWorkChain
 from aiida_quantumespresso.common.types import ElectronicType, RelaxType, SpinType
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
-from qeapp.utils import plugin_entries
+from aiida_qe_app.utils import plugin_entries
 import copy
 
 

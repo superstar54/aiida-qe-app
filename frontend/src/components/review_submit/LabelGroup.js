@@ -3,6 +3,7 @@ import { Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; // Assuming you're using react-router for navigation
 import { WizardContext } from '../wizard/WizardContext';
 import { accumulateData } from './utils';
+const baseURL = process.env.PUBLIC_URL || '';
 
 function getChemicalFormula(symbols) {
   const elementCounts = {};
@@ -45,7 +46,7 @@ const LabelGroupTab = ({}) => {
       const accumulatedData = accumulateData(steps);
 
       // Send the data to the backend using fetch
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submit_workgraph`, {
+      const response = await fetch(`${baseURL}/api/submit_workgraph`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

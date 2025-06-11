@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import YAML from 'yaml';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const AddComputer = () => {
   const [yamlData, setYamlData] = useState('');
@@ -98,7 +99,7 @@ const AddComputer = () => {
     try {
       const parsedData = YAML.parse(yamlData);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/computers`, {
+      const response = await fetch(`${baseURL}/api/computers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(parsedData),

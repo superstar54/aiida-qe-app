@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { WizardContext } from '../wizard/WizardContext';
+const baseURL = process.env.PUBLIC_URL || '';
 
 const TreeNode = ({ node }) => {
   if (Array.isArray(node)) {
@@ -54,7 +55,7 @@ const JobStatusTab = ({}) => {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/jobs-data/${jobId}`
+          `${baseURL}/api/jobs-data/${jobId}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch job status');

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const baseURL = process.env.PUBLIC_URL || '';
 
 function Settings() {
   const [workers, setWorkers] = useState([]);
 
   const fetchWorkers = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/daemon/worker`)
+    fetch(`${baseURL}/api/daemon/worker`)
       .then(response => response.json())
       .then(data => setWorkers(Object.values(data)))
       .catch(error => console.error('Failed to fetch workers:', error));
@@ -19,7 +20,7 @@ function Settings() {
   }, []);
 
   const handleDaemonControl = (action) => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/daemon/${action}`, { method: 'POST' })
+    fetch(`${baseURL}/api/daemon/${action}`, { method: 'POST' })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Daemon operation failed: ${response.statusText}`);
@@ -34,7 +35,7 @@ function Settings() {
   };
 
   const adjustWorkers = (action) => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/daemon/${action}`, { method: 'POST' })
+    fetch(`${baseURL}/api/daemon/${action}`, { method: 'POST' })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Failed to ${action} workers: ${response.statusText}`);

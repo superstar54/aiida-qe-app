@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from aiida.engine import submit
 from aiida.orm import StructureData, load_code
 import traceback
-from qeapp.workflows.qeapp_workgraph import qeapp_workgraph
+from aiida_qe_app.workflows.qeapp_workgraph import qeapp_workgraph
 router = APIRouter()
 from .utils import get_plugins
 
@@ -149,7 +149,7 @@ def update_builder(builder, codes):
 
 @router.post("/api/submit_workchain")
 async def submit_calculation(data: CalculationData):
-    from qeapp.workflows.qeapp_workchain import QeAppWorkChain
+    from aiida_qe_app.workflows.qeapp_workchain import QeAppWorkChain
     from aiida.orm.utils.serialize import serialize
     from copy import deepcopy
     try:

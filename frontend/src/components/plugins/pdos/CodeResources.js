@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import BaseCodeResourcesTab from '../../widgets/CodeResourcesTab';
 import { WizardContext } from '../../wizard/WizardContext';
 
+const baseURL = process.env.PUBLIC_URL || '';
+
 const codesConfig = {
   projwfc: {
     label: 'qe-7.2-projwfc@localhost',
@@ -34,7 +36,7 @@ const CodeResourcesTab = (props) => {
   }, []);
 
   const fetchCodes = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/codes`)
+    fetch(`${baseURL}/api/codes`)
       .then(response => response.json())
       .then(data => setCodes(data))
       .catch(error => console.error('Failed to fetch codes:', error));
