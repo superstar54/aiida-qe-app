@@ -118,35 +118,35 @@ a request to the FastAPI server for /settings. Since this route isn't defined in
 so we use the index.html serve all routes except API specific ones, then load all static assets.
 """
 backend_dir = Path(__file__).parent
-build_dir = backend_dir / "../../frontend/build/"
-build_dir = os.getenv("REACT_BUILD_DIR", build_dir)
+static_dir = backend_dir / "../../static/"
+static_dir = os.getenv("REACT_static_DIR", static_dir)
 
 
 @app.exception_handler(StarletteHTTPException)
 async def _spa_server(req: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
-        return FileResponse(f"{build_dir}/index.html", media_type="text/html")
+        return FileResponse(f"{static_dir}/index.html", media_type="text/html")
     else:
         return await http_exception_handler(req, exc)
 
 
-if os.path.isdir(build_dir):
-    print(f"Mounting React app from {build_dir}")
+if os.path.isdir(static_dir):
+    print(f"Mounting React app from {static_dir}")
     app.mount(
         "/static/",
-        StaticFiles(directory=build_dir / "static"),
+        StaticFiles(directory=static_dir / "static"),
         name="React app static files",
     )
     app.mount(
         "/example_structures/",
-        StaticFiles(directory=build_dir / "example_structures"),
+        StaticFiles(directory=static_dir / "example_structures"),
         name="example_structures",
     )
-    assert (build_dir / "react-shim.js").is_file(), f"react-shim.js missing in {build_dir}"
+    assert (static_dir / "react-shim.js").is_file(), f"react-shim.js missing in {static_dir}"
 
     @app.get("/react-shim.js", include_in_schema=False)
     async def react_shim():
-        path = build_dir / "react-shim.js"
+        path = static_dir / "react-shim.js"
         if not path.is_file():
             logger.error("react-shim.js not found at %s", path)
             raise StarletteHTTPException(status_code=404, detail="shim missing")
@@ -154,5 +154,5 @@ if os.path.isdir(build_dir):
     
     @app.get("/react-jsx-runtime-shim.js", include_in_schema=False)
     async def react_jsx_runtime_shim():
-        return FileResponse(build_dir / "react-jsx-runtime-shim.js",
+        return FileResponse(static_dir / "react-jsx-runtime-shim.js",
                             media_type="application/javascript")

@@ -64,6 +64,9 @@ tests = [
     "httpx",
 ]
 
+[project.entry-points."aiida_gui_apps.plugins"]
+qeapp = "qeapp:qeapp"
+
 [project.scripts]
 qeapp = "qeapp.cli:cli"
 

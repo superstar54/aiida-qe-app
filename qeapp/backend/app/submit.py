@@ -60,7 +60,7 @@ def get_advanced_setting_value(data):
             },
             "pseudos": {},
         },
-        "clean_workdir": advanced_settings["cleanUp"],
+        "clean_workdir": advanced_settings.get("cleanUp", False),
         "pseudo_family": advanced_settings.get("pseudoFamily", "SSSP/1.3/PBEsol/efficiency"),
         "kpoints_distance": advanced_settings["kPointsDistance"],
     }
