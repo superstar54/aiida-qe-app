@@ -34,7 +34,7 @@ jobs:
       working-directory: frontend/
       run: |
         npm install
-        npm run build
+        PUBLIC_URL=/plugins/apps/qeapp npm run build
     - name: Build package
       run:
         python -m build
