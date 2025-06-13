@@ -7,14 +7,12 @@ from aiida_qe_app.backend.app.code import router as code_router
 from aiida_qe_app.backend.app.job_history import router as job_history_router
 from aiida_qe_app.backend.app.datanode import router as datanode_router
 from aiida_qe_app.backend.app.calculation import router as calculation_router
-# from aiida_qe_app.backend.app.plugins.bands.api import router as bands_router
-# from aiida_qe_app.backend.app.plugins.pdos.api import router as pdos_router
-# from aiida_qe_app.backend.app.plugins.electronic_structure.api import router as electronic_structure_router
-# from aiida_qe_app.backend.app.plugins.xps.api import router as xps_router
+
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import os
 from .utils import get_plugins
+from aiida_qe_app.backend.app.submit import router as submit_router
 
 from fastapi.responses import FileResponse
 from fastapi.exception_handlers import http_exception_handler
@@ -25,6 +23,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 class BackendSettings(BaseSettings):
     """
@@ -54,12 +53,14 @@ app.add_middleware(
 async def read_root() -> dict:
     return {"message": "Welcome to AiiDA-WorkGraph."}
 
+
 @app.get("/plugins")
 async def list_plugins():
     plugins = get_plugins()
     print(f"Found plugins: {plugins.keys()}")
     plugin_names = [plugin_name for plugin_name in plugins.keys()]
     return {"plugins": plugin_names}
+
 
 def mount_plugins():
     plugins = get_plugins()
@@ -80,19 +81,14 @@ def mount_plugins():
             name=f"plugin_{plugin_name}",
         )
 
+
 app.include_router(job_history_router)
 app.include_router(datanode_router)
 app.include_router(daemon_router)
 app.include_router(computer_router)
 app.include_router(code_router)
 mount_plugins()
-# app.include_router(bands_router)
-# app.include_router(pdos_router)
-# app.include_router(electronic_structure_router)
-# app.include_router(xps_router)
 
-# only import the submit router after loading the profile
-from aiida_qe_app.backend.app.submit import router as submit_router
 app.include_router(submit_router)
 app.include_router(calculation_router)
 
@@ -147,7 +143,9 @@ if os.path.isdir(static_dir):
         StaticFiles(directory=static_dir / "images"),
         name="images",
     )
-    assert (static_dir / "react-shim.js").is_file(), f"react-shim.js missing in {static_dir}"
+    assert (
+        static_dir / "react-shim.js"
+    ).is_file(), f"react-shim.js missing in {static_dir}"
 
     @app.get("/react-shim.js", include_in_schema=False)
     async def react_shim():
@@ -156,8 +154,10 @@ if os.path.isdir(static_dir):
             logger.error("react-shim.js not found at %s", path)
             raise StarletteHTTPException(status_code=404, detail="shim missing")
         return FileResponse(path, media_type="application/javascript")
-    
+
     @app.get("/react-jsx-runtime-shim.js", include_in_schema=False)
     async def react_jsx_runtime_shim():
-        return FileResponse(static_dir / "react-jsx-runtime-shim.js",
-                            media_type="application/javascript")
+        return FileResponse(
+            static_dir / "react-jsx-runtime-shim.js",
+            media_type="application/javascript",
+        )

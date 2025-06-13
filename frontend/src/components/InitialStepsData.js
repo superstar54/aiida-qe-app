@@ -15,7 +15,7 @@ export function makeInitialStepsData(pluginIds) {
   // For each pluginId, create the lazy components
   console.log("Creating initial steps data for plugins:", pluginIds);
   const pluginLazy = pluginIds.map((id) => {
-    
+
     return {
       id,
       title: id,       // the main app should fetch the plugin metadata

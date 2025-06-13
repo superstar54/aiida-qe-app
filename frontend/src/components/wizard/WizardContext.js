@@ -11,7 +11,7 @@ export const WizardProvider = ({ children, initialStepsData, jobData }) => {
 
   useEffect(() => {
     if (!initialStepsData || initialStepsData.length === 0) {
-      setSteps([]); 
+      setSteps([]);
       return;
     }
     const seeded = initialStepsData.map((step) => ({

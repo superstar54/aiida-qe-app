@@ -8,7 +8,7 @@ const SettingTab = () => {
   const tabTitle = 'XPS Settings';
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
-  
+
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
 
   const [supportedElements, setSupportedElements] = useState([]);
@@ -46,9 +46,9 @@ const SettingTab = () => {
 
       // Update correction energies and core levels in WizardContext
       const initialData = { ...defaultData, ...data };
-      const newData = { 
-        ...initialData, 
-        correctionEnergies: result.correction_energies || {}, 
+      const newData = {
+        ...initialData,
+        correctionEnergies: result.correction_energies || {},
       };
       handleDataChange(stepIndex, tabTitle, newData);
     } catch (error) {
@@ -77,12 +77,12 @@ const SettingTab = () => {
     <Form>
       <h4>Structure</h4>
       <p>Below you can indicate if the material should be treated as a molecule or a crystal.</p>
-      
-      <ToggleButtonGroup 
-        type="radio" 
-        name="structureType" 
-        value={data.structureType || 'crystal'} 
-        onChange={(value) => handleChange('structureType', value)} 
+
+      <ToggleButtonGroup
+        type="radio"
+        name="structureType"
+        value={data.structureType || 'crystal'}
+        onChange={(value) => handleChange('structureType', value)}
         className="mb-3"
       >
         <ToggleButton id="molecule" value="molecule" variant="outline-primary">
@@ -96,10 +96,10 @@ const SettingTab = () => {
       <h5>Core-Hole Pseudopotential Group</h5>
       <Form.Group controlId="pseudoGroup">
         <Form.Label>Select a pseudopotential group</Form.Label>
-        <Form.Control 
-          as="select" 
-          value={data.pseudoGroup || 'pseudo_demo_pbe'} 
-          onChange={(e) => handleChange('pseudoGroup', e.target.value)} 
+        <Form.Control
+          as="select"
+          value={data.pseudoGroup || 'pseudo_demo_pbe'}
+          onChange={(e) => handleChange('pseudoGroup', e.target.value)}
         >
           <option value="pseudo_demo_pbe">pseudo_demo_pbe</option>
           <option value="pseudo_demo_pbesol">pseudo_demo_pbesol</option>
@@ -113,12 +113,12 @@ const SettingTab = () => {
       <h5>Select Core-Level</h5>
       {supportedElements.length > 0 ? (
         supportedElements.map((element) => (
-          <Form.Check 
+          <Form.Check
             key={element}
-            type="checkbox" 
-            label={element} 
-            checked={data.coreLevels?.[element] || false} 
-            onChange={(e) => handleCoreLevelChange(element, e.target.checked)} 
+            type="checkbox"
+            label={element}
+            checked={data.coreLevels?.[element] || false}
+            onChange={(e) => handleCoreLevelChange(element, e.target.checked)}
           />
         ))
       ) : (

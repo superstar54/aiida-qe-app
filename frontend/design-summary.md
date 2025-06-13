@@ -158,7 +158,7 @@ const AccordionStep = ({ stepNumber, title, tabs, confirmed, onConfirm, onModify
       <Accordion.Body>
         {/* Render Tabs */}
         <Tabs tabs={tabs} />
-        
+
         {/* Confirm button */}
         <Button
           variant="success"

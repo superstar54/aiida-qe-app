@@ -13,7 +13,7 @@ const AccordionWizard = () => {
     handleConfirm,
     handleModify,
   } = useContext(WizardContext);
-  
+
   console.log('AccordionWizard steps:', steps);
 
   return (

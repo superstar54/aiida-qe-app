@@ -30,9 +30,19 @@ class QeAppWorkChain(WorkChain):
                    help='If `True`, work directories of all called calculation will be cleaned at the end of execution.')
         spec.input('properties', valid_type=orm.List, default=lambda: orm.List(),
                    help='The properties to calculate, used to control the logic of QeAppWorkChain.')
-        spec.expose_inputs(PwRelaxWorkChain, namespace='relax', exclude=('clean_workdir', 'structure'),
-                           namespace_options={'required': False, 'populate_defaults': False,
-                                              'help': 'Inputs for the `PwRelaxWorkChain`, if not specified at all, the relaxation step is skipped.'})
+        spec.expose_inputs(
+            PwRelaxWorkChain,
+            namespace='relax',
+            exclude=('clean_workdir', 'structure'),
+            namespace_options={
+                'required': False,
+                'populate_defaults': False,
+                'help': (
+                    'Inputs for the `PwRelaxWorkChain`, if not specified at all, '
+                    'the relaxation step is skipped.'
+                ),
+            }
+        )
         i = 0
         for name, entry_point in plugin_entries.items():
             plugin_workchain = entry_point["workchain"]

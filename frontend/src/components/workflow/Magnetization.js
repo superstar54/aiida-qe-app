@@ -13,8 +13,8 @@ const MagnetizationSettingsTab = () => {
   const isInitialMount = useRef(true); // Track initial mount
 
   // Initialize kindLabels from data or structure
-  const initialKindLabels = data.startingMagnetization 
-    ? Object.keys(data.startingMagnetization) 
+  const initialKindLabels = data.startingMagnetization
+    ? Object.keys(data.startingMagnetization)
     : structure ? Object.keys(structure.species) : [];
 
   const [kindLabels, setKindLabels] = useState(initialKindLabels);
@@ -34,9 +34,9 @@ const MagnetizationSettingsTab = () => {
         return acc;
       }, {});
 
-      handleDataChange(stepIndex, tabTitle, { 
-        ...data, 
-        startingMagnetization: newStartingMagnetization 
+      handleDataChange(stepIndex, tabTitle, {
+        ...data,
+        startingMagnetization: newStartingMagnetization
       });
     }
   }, [structure]);
@@ -107,24 +107,24 @@ const MagnetizationSettingsTab = () => {
       <Form.Group controlId="magnetizationType">
         <Form.Label>Magnetization Type</Form.Label>
         <div className="mb-2" />
-        <ToggleButtonGroup 
-          type="radio" 
-          name="magnetizationType" 
-          value={magnetizationType} 
-          onChange={handleMagnetizationTypeChange} 
+        <ToggleButtonGroup
+          type="radio"
+          name="magnetizationType"
+          value={magnetizationType}
+          onChange={handleMagnetizationTypeChange}
           className="mb-3"
         >
-          <ToggleButton 
-            id="startingMagnetization" 
-            value="starting_magnetization" 
+          <ToggleButton
+            id="startingMagnetization"
+            value="starting_magnetization"
             variant="outline-primary"
             disabled={electronicType === 'insulator'}
           >
             Starting Magnetization
           </ToggleButton>
-          <ToggleButton 
-            id="totalMagnetization" 
-            value="tot_magnetization" 
+          <ToggleButton
+            id="totalMagnetization"
+            value="tot_magnetization"
             variant="outline-primary"
           >
             Total Magnetization

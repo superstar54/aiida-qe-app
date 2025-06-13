@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil import relativedelta
 from dateutil.tz import tzlocal
 
+
 def get_plugins():
     import importlib.metadata
 
@@ -18,6 +19,7 @@ def get_plugins():
             print(f"Failed to load plugin {plugin_name}: {e}")
             continue
     return plugins
+
 
 def get_executor_source(tdata: Any) -> Tuple[bool, Optional[str]]:
     """Get the source code of the executor."""

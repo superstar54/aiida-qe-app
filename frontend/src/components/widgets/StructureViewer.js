@@ -25,7 +25,7 @@ function StructureViewer({ structure }) {
 
       return () => {
         // Clean up the viewer when the component unmounts or updates
-        
+
       };
     }
   }, [structure]);

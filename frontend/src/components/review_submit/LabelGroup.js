@@ -87,7 +87,7 @@ const LabelGroupTab = ({}) => {
     const newData = { ...initialData, label: formula };
     handleDataChange(stepIndex, tabTitle, newData);
   }, [structure]);
-  
+
   const handleChange = (field, value) => {
     const newData = { ...data, [field]: value };
     handleDataChange(stepIndex, tabTitle, newData);

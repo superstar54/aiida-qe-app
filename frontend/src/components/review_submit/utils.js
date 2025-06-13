@@ -15,4 +15,3 @@ export const accumulateData = (steps, includeStructure = true, useId = true) => 
         }, {})
       : {};
   };
-

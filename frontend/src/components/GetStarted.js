@@ -16,19 +16,19 @@ const GetStartedPage = () => {
               </Card.Text>
               <ul className="list-unstyled">
                 <li>
-                  <span role="img" aria-label="step1">🔍</span> 
+                  <span role="img" aria-label="step1">🔍</span>
                   <strong>Step 1</strong>: Select the structure you want to run.
                 </li>
                 <li>
-                  <span role="img" aria-label="step2">⚙️</span> 
+                  <span role="img" aria-label="step2">⚙️</span>
                   <strong>Step 2</strong>: Select the properties you are interested in.
                 </li>
                 <li>
-                  <span role="img" aria-label="step3">💻</span> 
+                  <span role="img" aria-label="step3">💻</span>
                   <strong>Step 3</strong>: Choose the computational resources you want to run on.
                 </li>
                 <li>
-                  <span role="img" aria-label="step4">📝</span> 
+                  <span role="img" aria-label="step4">📝</span>
                   <strong>Step 4</strong>: Submit your workflow.
                 </li>
               </ul>

@@ -27,7 +27,7 @@ const CodeResourcesTab = (props) => {
   const tabTitle = 'PDOS Resource Settings';
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
-  
+
   const [codes, setCodes] = useState([]);
 
   // Fetch codes when the component mounts
@@ -43,9 +43,9 @@ const CodeResourcesTab = (props) => {
   };
 
   return (
-    <BaseCodeResourcesTab 
-      codesConfig={codesConfig} 
-      codes={codes} 
+    <BaseCodeResourcesTab
+      codesConfig={codesConfig}
+      codes={codes}
       data={data}
       onDataChange={(newData) => handleDataChange(stepIndex, tabTitle, newData)}
     />

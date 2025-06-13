@@ -33,7 +33,7 @@ const JobStatusTab = ({}) => {
   const tabTitle = 'Job Status';
   const { steps, handleDataChange } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
-  
+
   const jobId = steps[3]?.data?.['Label and Submit']?.jobId || null;
 
   const [jobStatus, setJobStatus] = useState(null);
@@ -129,7 +129,7 @@ const JobStatusTab = ({}) => {
       </div>
     );
   }
-  
+
 
   if (error) {
     return <div>Error: {error}</div>;

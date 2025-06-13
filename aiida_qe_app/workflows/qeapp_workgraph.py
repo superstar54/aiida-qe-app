@@ -1,8 +1,6 @@
 from aiida_workgraph import WorkGraph, task
 from aiida import orm
 from aiida_quantumespresso.workflows.pw.relax import PwRelaxWorkChain
-from aiida_quantumespresso.workflows.pw.bands import PwBandsWorkChain
-from aiida_quantumespresso.workflows.pdos import PdosWorkChain
 from aiida_quantumespresso.common.types import ElectronicType, RelaxType, SpinType
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_qe_app.utils import plugin_entries
@@ -10,8 +8,7 @@ import copy
 
 
 def prepare_hubbard_structure(structure, hubbard_dict):
-    """Prepare a HubbardStructureData node from a StructureData node and a dictionary of Hubbard U values.
-    """
+    """Prepare a HubbardStructureData node from a StructureData node and a dictionary of Hubbard U values."""
     # Check if hubbard_dict is provided
     if hubbard_dict is not None:
         hubbard_parameters = hubbard_dict["hubbard_u"]
@@ -46,6 +43,7 @@ def prepare_hubbard_structure(structure, hubbard_dict):
     else:
         return structure
 
+
 def prepare_relax_inputs(structure, codes, parameters, protocol, **kwargs):
     """Prepare inputs for the relax workchain."""
     relax_overrides = {
@@ -74,9 +72,11 @@ def inspect_relax(parameters):
     """Inspect relax calculation."""
     return parameters["number_of_bands"]
 
+
 def get_inputs_from_builder(builder):
     """"""
     from aiida.engine.processes.builder import ProcessBuilderNamespace
+
     inputs = {}
     for key, value in builder.items():
         if isinstance(value, ProcessBuilderNamespace):
@@ -86,10 +86,12 @@ def get_inputs_from_builder(builder):
             inputs[key] = value
     return inputs
 
+
 @task.graph_builder()
-def qeapp_workgraph(structure: orm.StructureData = None,
-                    parameters: orm.Dict = None,
-                    ) -> WorkGraph:
+def qeapp_workgraph(
+    structure: orm.StructureData = None,
+    parameters: orm.Dict = None,
+) -> WorkGraph:
     """BandsWorkGraph."""
     parameters = {} if parameters is None else parameters
     properties = parameters["workchain"].pop("properties", [])
@@ -109,7 +111,7 @@ def qeapp_workgraph(structure: orm.StructureData = None,
     wg = WorkGraph("QeAppWorkGraph")
     # Initialize some variables which can be overridden in the following
     current_structure = structure
-    current_number_of_bands = None
+    # current_number_of_bands = None
     # ------- relax -----------
     if "relax" in properties:
         relax_task = wg.add_task(PwRelaxWorkChain, name="relax")
@@ -124,19 +126,19 @@ def qeapp_workgraph(structure: orm.StructureData = None,
         # override the input structure with the relaxed structure
         current_structure = relax_task.outputs["output_structure"]
         # -------- inspect_relax -----------
-        inspect_relax_task = wg.add_task(
+        wg.add_task(
             inspect_relax,
             name="inspect_relax",
             parameters=relax_task.outputs["output_parameters"],
         )
-        current_number_of_bands = inspect_relax_task.outputs["result"]
+        # current_number_of_bands = inspect_relax_task.outputs["result"]
     # -------- plugins -----------
     # add plugin workchain
     for name, entry_point in plugin_entries.items():
         if name in properties:
             plugin_builder = entry_point["get_builder"](
-                    codes, structure, copy.deepcopy(parameters)
-                )
+                codes, structure, copy.deepcopy(parameters)
+            )
             plugin_task = wg.add_task(entry_point["workchain"], name=name)
             if "inspect_relax" in wg.tasks:
                 plugin_task.waiting_on.add(["inspect_relax"])
@@ -148,4 +150,3 @@ def qeapp_workgraph(structure: orm.StructureData = None,
                 plugin_task.set({"structure": current_structure})
 
     return wg
-

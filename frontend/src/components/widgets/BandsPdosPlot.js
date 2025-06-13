@@ -234,8 +234,8 @@ const BandsPdosPlot = ({ bands_data, pdos_data }) => {
     plotData.push({
       x: hasBandsData
           ? [Math.min(...plotData.map((d) => Math.min(...d.x))), Math.max(...plotData.map((d) => Math.max(...d.x)))]
-          : (plotLayout.xaxis && plotLayout.xaxis.range 
-              ? [plotLayout.xaxis.range[0], plotLayout.xaxis.range[1]] 
+          : (plotLayout.xaxis && plotLayout.xaxis.range
+              ? [plotLayout.xaxis.range[0], plotLayout.xaxis.range[1]]
               : [-1, 1]), // Fallback range when xaxis range is unavailable
       y: [0, 0],
       type: 'scatter',
@@ -389,7 +389,7 @@ const BandsPdosPlot = ({ bands_data, pdos_data }) => {
             <option value="angular_momentum">Angular Momentum</option>
           </Form.Control>
         </Form.Group>
-        
+
         {bands_data && bands_data.projected_bands && (
           <>
             <Form.Group controlId="projectBands">

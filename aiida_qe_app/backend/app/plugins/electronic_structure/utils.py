@@ -1,6 +1,7 @@
 from aiidalab_qe.common.bands_pdos.utils import _get_bands_labeling
 import numpy as np
 
+
 def prepare_data(data):
     if isinstance(data, dict):
         return {key: prepare_data(value) for key, value in data.items()}
@@ -29,7 +30,9 @@ def get_bands_data_from_node(bands_node, fermi_energy=None):
     # The fermi energy from band calculation is not robust.
     if "fermi_energy_up" in bands_output.band_parameters:
         bands_data["fermi_energy_up"] = bands_output.band_parameters["fermi_energy_up"]
-        bands_data["fermi_energy_down"] = bands_output.band_parameters["fermi_energy_down"]
+        bands_data["fermi_energy_down"] = bands_output.band_parameters[
+            "fermi_energy_down"
+        ]
     else:
         bands_data["fermi_energy"] = (
             bands_output.band_parameters["fermi_energy"] or fermi_energy
@@ -37,7 +40,7 @@ def get_bands_data_from_node(bands_node, fermi_energy=None):
     if "projwfc" in outputs:
         if "projections" in outputs.projwfc:
             pdos_data = outputs.projwfc.projections.get_pdos()
-            bands_data["projections"] =  get_raw_pdos_data(pdos_data)
+            bands_data["projections"] = get_raw_pdos_data(pdos_data)
         else:
             pdos_data_up = outputs.projwfc.projections_up.get_pdos()
             pdos_data_down = outputs.projwfc.projections_down.get_pdos()
@@ -47,6 +50,7 @@ def get_bands_data_from_node(bands_node, fermi_energy=None):
     bands_data["pathlabels"] = _get_bands_labeling(bands_data)
     bands_data = prepare_data(bands_data)
     return bands_data
+
 
 def get_raw_pdos_data(proj_data, data_type="pdos", spin=0):
     data = []
@@ -63,6 +67,7 @@ def get_raw_pdos_data(proj_data, data_type="pdos", spin=0):
         data.append({"orbital": orbital, "pdos": proj_pdos, "energy": energy})
     return data
 
+
 def get_pdos_data_from_node(pdos_node):
     """Extract the PDOS data from a PDOS node."""
     print("pdos_node", pdos_node)
@@ -76,7 +81,7 @@ def get_pdos_data_from_node(pdos_node):
     data["tdos"] = tdos_values
     if "projections" in outputs.projwfc:
         pdos_data = outputs.projwfc.projections.get_pdos()
-        data["projections"] =  get_raw_pdos_data(pdos_data)
+        data["projections"] = get_raw_pdos_data(pdos_data)
     else:
         pdos_data_up = outputs.projwfc.projections_up.get_pdos()
         pdos_data_down = outputs.projwfc.projections_down.get_pdos()
@@ -84,12 +89,7 @@ def get_pdos_data_from_node(pdos_node):
         data["projections"] += get_raw_pdos_data(pdos_data_down, spin=-1)
     if "fermi_energy_up" in outputs.nscf.output_parameters:
         data["fermi_energy_up"] = outputs.nscf.output_parameters["fermi_energy_up"]
-        data["fermi_energy_down"] = outputs.nscf.output_parameters[
-            "fermi_energy_down"
-        ]
+        data["fermi_energy_down"] = outputs.nscf.output_parameters["fermi_energy_down"]
     else:
         data["fermi_energy"] = outputs.nscf.output_parameters["fermi_energy"]
     return data
-
-
-

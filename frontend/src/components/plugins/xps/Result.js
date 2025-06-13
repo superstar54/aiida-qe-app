@@ -80,7 +80,7 @@ const ResultTab = ({}) => {
       console.log('Processing XPS data with shiftType:', shiftType, 'lorentzian:', lorentzian, 'gaussian:', gaussian);
       // Choose the correct data based on the toggle value (shiftType)
       const xpsDataType = shiftType === 'chemicalShift' ? rawXpsData[0] : rawXpsData[1];
-      
+
       // Assuming xpsSpectraBroadening is a synchronous function
       const xps_data = xpsSpectraBroadening(xpsDataType, rawXpsData[2], lorentzian, gaussian);
       setXpsData(xps_data);
@@ -142,7 +142,7 @@ const ResultTab = ({}) => {
   return (
     <div>
       <h4 className="mb-4">XPS Results</h4>
-      
+
       {/* Toggle between chemical shift and binding energy */}
       <Row className="mb-4">
         <Col md={6}>
@@ -232,7 +232,7 @@ const ResultTab = ({}) => {
         <Col>
           <Form.Group controlId="fileUpload">
             <Form.Label>Upload Experimental Data (CSV format)</Form.Label>
-            <Form.Control 
+            <Form.Control
               type="file"
               label={uploadedFile ? uploadedFile.name : 'Choose File'}
               onChange={handleFileUpload}
@@ -265,7 +265,7 @@ function voigt(x, sigma, gamma) {
 // Example usage of Voigt function
 function xpsSpectraBroadening(points, equivalentSitesData, gamma = 0.3, sigma = 0.3, label = "", intensity = 1.0) {
   const resultSpectra = {};
-  
+
   const fwhmVoigt = gamma / 2 + Math.sqrt(Math.pow(gamma, 2) / 4 + Math.pow(sigma, 2));
 
   for (const element in points) {
@@ -278,7 +278,7 @@ function xpsSpectraBroadening(points, equivalentSitesData, gamma = 0.3, sigma = 
     const minCoreLevelShift = Math.min(...Object.values(points[element]));
 
     // Energy range for the broadening function
-    const xEnergyRange = Array.from({ length: 500 }, (_, i) => 
+    const xEnergyRange = Array.from({ length: 500 }, (_, i) =>
       minCoreLevelShift - fwhmVoigt - 1.5 + i * (maxCoreLevelShift - minCoreLevelShift + fwhmVoigt + 3) / 500);
 
     for (const site in points[element]) {
@@ -307,14 +307,14 @@ function xpsSpectraBroadening(points, equivalentSitesData, gamma = 0.3, sigma = 
 
 function calculateTotalMultiplicity(points, element, equivalentSitesData) {
     let totalMultiplicity = 0;
-  
+
     const elementPoints = Object.keys(points[element]);
-  
+
     for (let i = 0; i < elementPoints.length; i++) {
       const site = elementPoints[i];
       const multiplicity = equivalentSitesData[site].multiplicity;
       totalMultiplicity += multiplicity;
     }
-  
+
     return totalMultiplicity;
   }

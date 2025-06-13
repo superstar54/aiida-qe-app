@@ -1,4 +1,4 @@
-from typing import ClassVar, Dict, List, Optional, Type, TypeVar, Tuple
+from typing import ClassVar, List, Optional, Type, TypeVar, Tuple
 from pydantic import BaseModel, Field, validator
 from aiida import orm
 
@@ -90,19 +90,21 @@ class ComputerCreateModel(BaseModel):
     workdir: str = Field(..., example="/scratch/{username}/aiida_run")
     shebang: Optional[str] = Field("#!/bin/bash", example="#!/bin/bash")
     mpirun_command: Optional[List[str]] = Field(
-        ["mpirun", "-np", "{tot_num_mpiprocs}"], example=["mpirun", "-np", "{tot_num_mpiprocs}"]
+        ["mpirun", "-np", "{tot_num_mpiprocs}"],
+        example=["mpirun", "-np", "{tot_num_mpiprocs}"],
     )
     mpiprocs_per_machine: Optional[int] = Field(None, example=16)
     default_memory_per_machine: Optional[float] = Field(None, example=64.0)
     prepend_text: Optional[str] = Field("", example="module load mpi")
     append_text: Optional[str] = Field("", example="echo 'Done'")
-    
-    @validator('mpirun_command')
+
+    @validator("mpirun_command")
     def check_mpirun_command(cls, v):
         if not isinstance(v, list):
-            raise ValueError('mpirun_command must be a list of strings')
+            raise ValueError("mpirun_command must be a list of strings")
         return v
-    
+
+
 class Code(AiidaModel):
     """AiiDA Code Model."""
 
@@ -124,8 +126,12 @@ class Code(AiidaModel):
         for result in results:
             result.extras["computer"] = orm.load_computer(result.dbcomputer_id).label
         return results
-    
+
 
 class StructureModel(BaseModel):
     symbols: List[str]
-    pbc: Optional[Tuple[bool, bool, bool]] = (True, True, True)  # Periodic boundary conditions
+    pbc: Optional[Tuple[bool, bool, bool]] = (
+        True,
+        True,
+        True,
+    )  # Periodic boundary conditions

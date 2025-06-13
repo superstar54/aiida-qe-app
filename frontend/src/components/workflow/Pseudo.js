@@ -54,7 +54,7 @@ const PseudopotentialSetting = () => {
         });
 
         if (!response.ok) throw new Error(`Error fetching cutoffs: ${response.statusText}`);
-        
+
         const result = await response.json();
         setPseudopotentials(result.pseudos);
         setCutoffs(result.cutoffs);
@@ -69,16 +69,16 @@ const PseudopotentialSetting = () => {
         } else if (librarySelection === 'SSSP precision') {
           pseudoFamily = `SSSP/${SSSP_VERSION}/${exchangeFunctional}/precision`;
         } else if (librarySelection === 'PseudoDojo standard') {
-          pseudoFamily = spinOrbit === 'on' 
-            ? `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/FR/standard/upf` 
+          pseudoFamily = spinOrbit === 'on'
+            ? `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/FR/standard/upf`
             : `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/SR/standard/upf`;
         } else if (librarySelection === 'PseudoDojo stringent') {
-          pseudoFamily = spinOrbit === 'on' 
-            ? `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/FR/stringent/upf` 
+          pseudoFamily = spinOrbit === 'on'
+            ? `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/FR/stringent/upf`
             : `PseudoDojo/${PSEUDODOJO_VERSION}/${exchangeFunctional}/SR/stringent/upf`;
         }
 
-        const newData = { 
+        const newData = {
           ...data,
           pseudos: result.pseudos,
           cutoffs: result.cutoffs,
@@ -113,7 +113,7 @@ const PseudopotentialSetting = () => {
       <div className="mb-4 text-muted">
       The exchange-correlation functional and pseudopotential library is set by the protocol configured in the "Basic Settings" tab.
       </div>
-  
+
       <div className="mb-4">
         <label htmlFor="exchangeFunctional" className="form-label fw-bold">Exchange-Correlation Functional</label>
         <select
@@ -133,7 +133,7 @@ const PseudopotentialSetting = () => {
         The exchange-correlation energy is calculated using this functional. We currently provide support for two well-established generalised gradient approximation (GGA) functionals: PBE and PBEsol.
         </small>
       </div>
-  
+
       <div className="mb-4">
         <div htmlFor="librarySelection" className="form-label fw-bold">Pseudopotential Family</div>
         <div className="btn-group" role="group">
@@ -158,7 +158,7 @@ const PseudopotentialSetting = () => {
         If you are unsure, select 'SSSP efficiency', which for most calculations will produce sufficiently accurate results at comparatively small computational costs. If your calculations require a higher accuracy, select 'SSSP accuracy' or 'PseudoDojo stringent', which will be computationally more expensive. SSSP is the standard solid-state pseudopotentials. The PseudoDojo used here has the SR relativistic type.
         </small>
       </div>
-  
+
       <h5 className="mb-3">Pseudopotential Files</h5>
       {structure ? (
         <div>
@@ -182,7 +182,7 @@ const PseudopotentialSetting = () => {
       ) : (
         <p className="text-muted">Upload pseudopotentials for each symbol in the structure.</p>
       )}
-  
+
       <h5 className="mb-3 mt-4">Calculation Cutoffs</h5>
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -216,7 +216,7 @@ const PseudopotentialSetting = () => {
       </div>
     </div>
   );
-  
+
 };
 
 export default PseudopotentialSetting;

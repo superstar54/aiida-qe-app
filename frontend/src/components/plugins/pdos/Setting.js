@@ -11,7 +11,7 @@ const SettingTab = ({}) => {
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
   const protocol = steps[1]?.data?.['Basic Settings']?.protocol || 'moderate';
   const structure = steps[0]?.data?.['Structure Selection']?.selectedStructure || null;
-  
+
   const defaultData = {
       kPointsDistance: 0.1,
       usePdosDegauss: false,
@@ -21,7 +21,7 @@ const SettingTab = ({}) => {
 
   // Use useRef to track if it's the initial mount
   const isInitialMount = useRef(true);
-  
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -76,45 +76,45 @@ const SettingTab = ({}) => {
     <Form>
       <h4>Settings</h4>
       <p>
-        By default, the tetrahedron method is used for PDOS calculation. If required you can apply Gaussian broadening with a custom degauss value. 
+        By default, the tetrahedron method is used for PDOS calculation. If required you can apply Gaussian broadening with a custom degauss value.
         For molecules and systems with localized orbitals, it is recommended to use a custom degauss value.
       </p>
 
       <Form.Group controlId="kPointsDistance">
         <Form.Label>NSCF K-points distance (1/Å)</Form.Label>
-        <Form.Control 
-          type="number" 
-          value={data.kPointsDistance || 0.1} 
-          onChange={(e) => handleChange('kPointsDistance', e.target.value, 'float')} 
-          step="0.01" 
+        <Form.Control
+          type="number"
+          value={data.kPointsDistance || 0.1}
+          onChange={(e) => handleChange('kPointsDistance', e.target.value, 'float')}
+          step="0.01"
         />
       </Form.Group>
 
       <Form.Group controlId="energyGridStep">
         <Form.Label>Energy grid step (Ry)</Form.Label>
-        <Form.Control 
-          type="number" 
-          value={data.energyGridStep || 0.01} 
-          onChange={(e) => handleChange('energyGridStep', e.target.value, 'float')} 
-          step="0.01" 
+        <Form.Control
+          type="number"
+          value={data.energyGridStep || 0.01}
+          onChange={(e) => handleChange('energyGridStep', e.target.value, 'float')}
+          step="0.01"
         />
       </Form.Group>
 
-      <Form.Check 
-        type="checkbox" 
-        label="Use custom PDOS degauss" 
-        checked={data.usePdosDegauss || false} 
-        onChange={(e) => handleChange('usePdosDegauss', e.target.checked)} 
+      <Form.Check
+        type="checkbox"
+        label="Use custom PDOS degauss"
+        checked={data.usePdosDegauss || false}
+        onChange={(e) => handleChange('usePdosDegauss', e.target.checked)}
       />
 
       {data.usePdosDegauss && (
         <Form.Group controlId="pdosDegauss">
           <Form.Label>PDOS degauss (Ry)</Form.Label>
-          <Form.Control 
-            type="number" 
-            value={data.pdosDegauss || 0.005} 
-            onChange={(e) => handleChange('pdosDegauss', e.target.value, 'float')} 
-            step="0.001" 
+          <Form.Control
+            type="number"
+            value={data.pdosDegauss || 0.005}
+            onChange={(e) => handleChange('pdosDegauss', e.target.value, 'float')}
+            step="0.001"
           />
         </Form.Group>
       )}

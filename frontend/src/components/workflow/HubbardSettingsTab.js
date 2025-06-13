@@ -28,23 +28,23 @@ const HubbardSettingsTab = () => {
 
   const handleHubbardToggle = (value) => {
     setActivateHubbard(value);
-    
+
     // Update hubbardUValues based on activation state
-    const newHubbardUValues = value 
+    const newHubbardUValues = value
       ? kindLabels.reduce((acc, kind) => ({ ...acc, [kind]: 0 }), {})
       : {};
-      
+
     handleDataChange(stepIndex, tabTitle, { ...data, activateHubbard: value, hubbardUValues: newHubbardUValues });
   };
 
   const handleDefineEigenvaluesToggle = (value) => {
     setDefineEigenvalues(value);
-    
+
     // Update eigenvalues based on defineEigenvalues state
-    const newEigenvalues = value 
+    const newEigenvalues = value
       ? kindLabels.reduce((acc, kind) => ({ ...acc, [kind]: Array(10).fill("0") }), {})
       : {};
-      
+
     handleDataChange(stepIndex, tabTitle, { ...data, defineEigenvalues: value, eigenvalues: newEigenvalues });
   };
 

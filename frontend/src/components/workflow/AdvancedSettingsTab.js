@@ -106,7 +106,7 @@ const AdvancedSettingsTab = () => {
                 onChange={(e) => handleChange('totalCharge', e.target.value, 'number')}
               />
             </Form.Group>
-  
+
             <Form.Group controlId="vdWCorrection" className="mb-3">
               <Form.Label>Van der Waals Correction</Form.Label>
               <Form.Select
@@ -123,7 +123,7 @@ const AdvancedSettingsTab = () => {
             </Form.Group>
           </Accordion.Body>
         </Accordion.Item>
-  
+
         <Accordion.Item eventKey="1">
           <Accordion.Header>Convergence Thresholds</Accordion.Header>
           <Accordion.Body>
@@ -169,12 +169,12 @@ const AdvancedSettingsTab = () => {
             </Row>
           </Accordion.Body>
         </Accordion.Item>
-  
+
         <Accordion.Item eventKey="2">
           <Accordion.Header>Smearing</Accordion.Header>
           <Accordion.Body>
             <p className="text-muted">
-              The smearing type and width are set by the chosen protocol. Tick the box to override the default, not advised unless you've mastered smearing effects 
+              The smearing type and width are set by the chosen protocol. Tick the box to override the default, not advised unless you've mastered smearing effects
               (<a href="http://theossrv1.epfl.ch/Main/ElectronicTemperature" target="_blank" rel="noopener noreferrer">click here for a discussion</a>).
             </p>
             <Row className="mb-3">
@@ -202,7 +202,7 @@ const AdvancedSettingsTab = () => {
             </Row>
           </Accordion.Body>
         </Accordion.Item>
-  
+
         <Accordion.Item eventKey="3">
           <Accordion.Header>K-Points</Accordion.Header>
           <Accordion.Body>
@@ -222,14 +222,14 @@ const AdvancedSettingsTab = () => {
             </Row>
           </Accordion.Body>
         </Accordion.Item>
-  
+
         <Accordion.Item eventKey="4">
           <Accordion.Header>Magnetization Settings</Accordion.Header>
           <Accordion.Body>
             <MagnetizationSettingsTab />
           </Accordion.Body>
         </Accordion.Item>
-  
+
         <Accordion.Item eventKey="5">
           <Accordion.Header>Pseudopotential Settings</Accordion.Header>
           <Accordion.Body>
@@ -244,7 +244,7 @@ const AdvancedSettingsTab = () => {
           </Accordion.Body>
         </Accordion.Item>
 
-        
+
 
         <Accordion.Item eventKey="7">
           <Accordion.Header>Post-Calculation Cleanup</Accordion.Header>
@@ -262,6 +262,6 @@ const AdvancedSettingsTab = () => {
       </Accordion>
     </Form>
   );
-}  
+}
 
 export default AdvancedSettingsTab;

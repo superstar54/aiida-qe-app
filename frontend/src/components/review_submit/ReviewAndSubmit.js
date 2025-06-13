@@ -8,7 +8,7 @@ const ReviewAndSubmitTab = ({}) => {
   const tabTitle = 'Review Settings';
   const { steps } = useContext(WizardContext);
   const data = steps[stepIndex]?.data?.[tabTitle] || {};
-  
+
   const [editableData, setEditableData] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -54,7 +54,7 @@ const ReviewAndSubmitTab = ({}) => {
         </div>
       )}
 
-      
+
     </div>
   );
 };
