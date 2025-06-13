@@ -63,8 +63,11 @@ qeapp = "aiida_qe_app.cli:cli"
 "qeapp.workchain" = "aiida_qe_app.workflows.qeapp_workchain:QeAppWorkChain"
 
 [tool.setuptools]
-packages = ["aiida_qe_app"] # find_packages() equivalent
 include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aiida_qe_app", "aiida_qe_app.*"]
 
 [tool.setuptools.package-data] # Corrected from [tool.uptools.package-data]
 aiida_qe_app = ["static/*", "static/**/*"]
