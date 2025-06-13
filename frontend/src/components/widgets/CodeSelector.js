@@ -9,13 +9,17 @@ const CodeSelector = ({ codeLabel, codeValue, onCodeChange, nodeValue, onNodeCha
           <Form.Control
             as="select"
             value={codeValue}
-            onChange={(e) => onCodeChange(e.target.value)}
+            onChange={e => onCodeChange(e.target.value)}
           >
-            {codeOptions.map(option => (
-              <option key={option.label} value={option.uuid}>
-                {option.label}@{option?.extras?.computer}
-              </option>
-            ))}
+            <option value="">-- Select a code --</option>
+            {codeOptions.map(option => {
+              const display = `${option.label}@${option.extras?.computer}`;
+              return (
+                <option key={display} value={display}>
+                  {display}
+                </option>
+              );
+            })}
           </Form.Control>
         </Col>
         <Col sm={2}>
