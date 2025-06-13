@@ -1,6 +1,6 @@
 from aiida_qe_app.backend.app.api import app
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 qeapp = {
