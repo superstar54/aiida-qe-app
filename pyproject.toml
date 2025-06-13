@@ -1,6 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.4,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "aiida-qe-app"
@@ -27,9 +27,7 @@ requires-python = ">=3.9"
 dependencies = [
     "ase",
     "aiida-core>=2.6",
-    "fastapi",
-    "uvicorn",
-    "pydantic_settings",
+    "aiida-gui-apps",
 ]
 
 [project.urls]
@@ -37,9 +35,6 @@ Documentation = "https://aiida-qe-app.readthedocs.io"
 Source = "https://github.com/superstar54/aiida-qe-app"
 
 [project.optional-dependencies]
-widget = [
-    "anywidget>=0.9.11",
-]
 docs = [
     "sphinx_rtd_theme",
     "sphinx~=7.2",
@@ -52,16 +47,10 @@ docs = [
     "myst-nb~=1.0.0",
     "nbsphinx",
 ]
+
 pre-commit = [
     "pre-commit~=2.2",
     "pylint~=2.17.4",
-]
-tests = [
-    'pgtest~=1.3',
-    "pytest~=7.0",
-    "pytest-cov~=2.7,<2.11",
-    "playwright",
-    "httpx",
 ]
 
 [project.entry-points."aiida_gui_apps.plugins"]
@@ -73,13 +62,15 @@ qeapp = "aiida_qe_app.cli:cli"
 [project.entry-points.'aiida.workflows']
 "qeapp.workchain" = "aiida_qe_app.workflows.qeapp_workchain:QeAppWorkChain"
 
-[tool.flit.sdist]
-exclude = [
-    "docs/",
-    "tests/",
-    "frontend/node_modules/",
-]
+[tool.setuptools]
+packages = ["aiida_qe_app"] # find_packages() equivalent
+include-package-data = true
 
+[tool.setuptools.package-data] # Corrected from [tool.uptools.package-data]
+aiida_qe_app = ["static/*", "static/**/*"]
 
 [tool.pylint.format]
 max-line-length = 120
+
+[tool.setuptools.dynamic]
+version = { attr = "aiida_qe_app.__version__" }
